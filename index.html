@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>私のページ</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 2rem;
+            max-width: 720px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #detail {
+            display: none;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>ようこそ！</h1>
+        <p>これは GitHub Pages で公開されたサンプルページです。</p>
+        <img src="myphoto.jpg" alt="自分の作品" />
+
+        <h1>Model List</h1>
+        <ul>
+            <li><a href="models/models_aika.html">あいかさん</a></li>
+            <li><a href="models/models_mika.html">Mikaさん</a></li>
+        </ul>
+
+
+    </header>
+
+    <section>
+        <p>このページは HTML・CSS・JavaScript を1ファイルにまとめた、シンプルな個人ページです。</p>
+
+        <button onclick="toggleDetail()">もっと見る</button>
+        <div id="detail">
+            <p>こんにちは！私は写真やデザインが好きで、このページでは作品を紹介していく予定です。</p>
+            <p>まだ内容は少ないですが、これから少しずつ追加していきます😊</p>
+        </div>
+    </section>
+
+    <script>
+        function toggleDetail() {
+            const detail = document.getElementById('detail');
+            detail.style.display = (detail.style.display === 'none' || detail.style.display === '') ? 'block' : 'none';
+        }
+    </script>
+
+</body>
+
+</html>
