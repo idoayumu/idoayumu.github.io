@@ -1,0 +1,58 @@
+---
+// src/pages/models/index.astro
+import Layout from "../../layouts/Layout.astro";
+import modelsData from "../../data/models.json";
+import worksData from "../../data/works.json";
+
+// 同名モデルがいる場合に所属を補足表示するロジック
+const nameCounts = modelsData.reduce((acc, model) => {
+  acc[model.name] = (acc[model.name] || 0) + 1;
+  return acc;
+}, {} as Record<string, number>);
+
+const models = modelsData.map((model) => {
+  const hasDuplicateName = nameCounts[model.name] > 1;
+  const displayName = hasDuplicateName && model.agency
+    ? `${model.name}（${model.agency}）`
+    : model.name;
+  const workCount = worksData.filter(
+    (work) => Array.isArray(work.models) && work.models.includes(model.id)
+  ).length;
+  return { ...model, displayName, workCount };
+});
+---
+
+<Layout title="Models" currentPath="/models">
+  <div class="page-heading">
+    <h1>Models</h1>
+  </div>
+
+  <ul class="models-list">
+    {models.map((model) => (
+      <li class="models-list-item">
+        <a href={`/models/${model.id}/`} class="models-list-link">
+
+          <!-- サムネイル（小さめ・正方形） -->
+          <div class="models-list-thumb">
+            <img
+              src={`/images/models/${model.thumbnail}`}
+              alt={model.displayName}
+            />
+          </div>
+
+          <!-- テキスト -->
+          <div class="models-list-text">
+            <span class="models-list-name">{model.displayName}</span>
+            {model.agency && nameCounts[model.name] === 1 && (
+              <span class="models-list-agency">{model.agency}</span>
+            )}
+          </div>
+
+          <!-- 作品数 -->
+          <span class="models-list-count">{model.workCount} works</span>
+
+        </a>
+      </li>
+    ))}
+  </ul>
+</Layout>

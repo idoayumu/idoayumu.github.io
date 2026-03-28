@@ -1,0 +1,118 @@
+---
+import Layout from "../layouts/Layout.astro";
+import worksData from "../data/works.json";
+import modelsData from "../data/models.json";
+
+const featuredWorks = worksData.filter((work) => work.featured);
+const modelMap = Object.fromEntries(modelsData.map((m) => [m.id, m]));
+---
+
+<Layout title="Home" currentPath="/">
+  <section style="margin-bottom: 5rem;">
+    <p style="font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.25em; color: var(--color-muted); text-transform: uppercase; margin-bottom: 0.5rem;">
+      Portrait Photography
+    </p>
+    <h1 style="font-family: var(--font-en); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; letter-spacing: 0.05em; line-height: 1.2;">
+      Selected Works
+    </h1>
+  </section>
+
+  <section>
+    <p class="section-title">Featured</p>
+
+    <div class="work-grid">
+      {featuredWorks.map((work) => {
+        const model = modelMap[work.models[0]];
+        return (
+          <a href={`/works/${work.id}`} class="work-card">
+            <div class="work-card-image">
+              <img
+                src={`/images/works/${work.files[0].name}`}
+                alt={work.files[0].alt}
+                loading="lazy"
+              />
+            </div>
+
+            <div class="work-card-info">
+              <p class="work-card-title">{work.title}</p>
+              <p class="work-card-meta">
+                {model ? model.name : work.models[0]} &nbsp;·&nbsp; {work.date}
+              </p>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <div style="margin-top: 4rem; text-align: center;">
+    <a
+      href="/works"
+      style="font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; border-bottom: 1px solid currentColor; padding-bottom: 2px;"
+    >
+      View All Works
+    </a>
+  </div>
+</Layout>
+
+<style>
+  .work-grid {
+    column-count: 2;
+    column-gap: 24px;
+  }
+
+  .work-card {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 32px;
+    text-decoration: none;
+    color: inherit;
+    break-inside: avoid;
+    vertical-align: top;
+  }
+
+  .work-card-image {
+    display: block;
+    line-height: 0;
+  }
+
+  .work-card-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .work-card:hover img {
+    transform: scale(1.015);
+  }
+
+  .work-card-info {
+    padding-top: 12px;
+  }
+
+  .work-card-title {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .work-card-meta {
+    margin: 4px 0 0;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 900px) {
+    .work-grid {
+      column-count: 2;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .work-grid {
+      column-count: 1;
+    }
+  }
+</style>

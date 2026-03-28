@@ -1,0 +1,102 @@
+---
+// src/pages/models/[id].astro
+import Layout from "../../layouts/Layout.astro";
+import modelsData from "../../data/models.json";
+import worksData from "../../data/works.json";
+
+export function getStaticPaths() {
+  return modelsData.map((model) => ({
+    params: { id: model.id },
+  }));
+}
+
+const { id } = Astro.params;
+const model = modelsData.find((m) => m.id === id);
+
+if (!model) throw new Error(`Model not found: ${id}`);
+
+// 同名モデルがいる場合は所属を補足
+const hasDuplicateName = modelsData.filter((m) => m.name === model.name).length > 1;
+const displayName = hasDuplicateName && model.agency
+  ? `${model.name}（${model.agency}）`
+  : model.name;
+
+// 出演作品（新しい順）
+const relatedWorks = worksData
+  .filter((work) => Array.isArray(work.models) && work.models.includes(model.id))
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+---
+
+<Layout title={displayName} currentPath="/models">
+  <a href="/models/" class="back-link">← Models</a>
+
+  <!-- プロフィール -->
+  <div class="model-profile">
+    <div class="model-profile-image">
+      <img
+        src={`/images/models/${model.thumbnail}`}
+        alt={displayName}
+      />
+    </div>
+
+    <div class="model-profile-info">
+      <h1 class="model-profile-name">{model.name}</h1>
+
+      {hasDuplicateName && model.agency && (
+        <p class="model-profile-agency">{model.agency}</p>
+      )}
+      {!hasDuplicateName && model.agency && (
+        <p class="model-profile-agency">{model.agency}</p>
+      )}
+
+      {model.bio && (
+        <p class="model-profile-bio">{model.bio}</p>
+      )}
+
+      <!-- SNSリンク -->
+      {(model.links.instagram || model.links.twitter || model.links.website) && (
+        <div class="model-profile-links">
+          {model.links.instagram && (
+            <a href={model.links.instagram} target="_blank" rel="noopener noreferrer" class="model-profile-link">
+              Instagram
+            </a>
+          )}
+          {model.links.twitter && (
+            <a href={model.links.twitter} target="_blank" rel="noopener noreferrer" class="model-profile-link">
+              X
+            </a>
+          )}
+          {model.links.website && (
+            <a href={model.links.website} target="_blank" rel="noopener noreferrer" class="model-profile-link">
+              Website
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+
+  <!-- 出演作品 -->
+  {relatedWorks.length > 0 && (
+    <section class="model-works">
+      <p class="section-title">Works</p>
+      <div class="work-grid">
+        {relatedWorks.map((work) => (
+          <a href={`/works/${work.id}/`} class="work-card">
+            <div class="work-card-image">
+              <img
+                src={`/images/works/${work.files[0].name}`}
+                alt={work.files[0].alt}
+                loading="lazy"
+              />
+            </div>
+            <div class="work-card-info">
+              <p class="work-card-title">{work.title}</p>
+              <p class="work-card-meta">{work.date}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</Layout>

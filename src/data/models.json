@@ -1,0 +1,52 @@
+[
+  {
+  "id": "minaseaoi",
+  "name": "水瀬あおい",
+  "nameKana": "ミナセアオイ",
+  "nameEn": "Aoi Minase",
+  "aliases": [],
+  "agency": "",
+  "bio": "フリーランスモデル",
+  "thumbnail": "minaseaoi_thumb.jpg",
+  "links": {
+    "instagram": "https://www.instagram.com/minase_aoi1/",
+    "twitter": "https://x.com/minase__aoi",
+    "website": ""
+  },
+  "featured": true
+},
+  {
+    "id": "momoseyuuri",
+    "name": "百瀬結梨",
+    "nameKana": "モモセユウリ",
+    "nameEn": "Yuuri Momose",
+    "aliases": [
+      "ゆうり"
+    ],
+    "agency": "",
+    "bio": "フリーランスモデル。",
+    "thumbnail": "momoseyuuri_thumb.jpg",
+    "links": {
+      "instagram": "https://instagram.com/yuuri_momomo/",
+      "twitter": "https://x.com/yuuri_momomo",
+      "website": ""
+    },
+    "featured": true
+  },
+  {
+    "id": "momo_osakabimage",
+    "name": "もも",
+    "nameKana": "モモ",
+    "nameEn": "Momo",
+    "aliases": [],
+    "agency": "大阪美マージュ",
+    "bio": "",
+    "thumbnail": "momo_osakabimage_thumb.jpg",
+    "links": {
+      "instagram": "https://www.instagram.com/m_omodesu/",
+      "twitter": "https://twitter.com/m_mdesu_",
+      "website": ""
+    },
+    "featured": true
+  }
+]

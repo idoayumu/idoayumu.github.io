@@ -1,0 +1,61 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import worksData from "../../data/works.json";
+import modelsData from "../../data/models.json";
+
+export function getStaticPaths() {
+  return worksData.map((work) => ({
+    params: { id: work.id },
+  }));
+}
+
+const { id } = Astro.params;
+const work = worksData.find((w) => w.id === id);
+
+if (!work) {
+  throw new Error(`Work not found: ${id}`);
+}
+
+const relatedModels = modelsData.filter(
+  (model) => Array.isArray(work.models) && work.models.includes(model.id)
+);
+---
+
+<Layout title={work.title}>
+  <article class="work-detail">
+    <h1>{work.title}</h1>
+
+    {work.date && <p class="work-date">{work.date}</p>}
+    {work.production && <p class="work-production">{work.production}</p>}
+
+    {relatedModels.length > 0 && (
+      <p class="work-models">
+        モデル：
+        {relatedModels.map((model, index) => (
+          <>
+            <a href={`/models/${model.id}/`}>{model.name}</a>
+            {index < relatedModels.length - 1 ? " / " : ""}
+          </>
+        ))}
+      </p>
+    )}
+
+    <div class="work-images">
+      {work.files.map((file) => (
+        <img
+          src={`/images/works/${file.name}`}
+          alt={file.alt || work.title}
+          class="work-image"
+        />
+      ))}
+    </div>
+
+    {work.tags?.length > 0 && (
+      <ul class="work-tags">
+        {work.tags.map((tag) => (
+          <li>{tag}</li>
+        ))}
+      </ul>
+    )}
+  </article>
+</Layout>
