@@ -1,34 +1,37 @@
 ---
+import "../styles/global.css";
+
 interface Props {
-  title: string;
-  currentPath?: string;
+  title?: string;
 }
-const { title, currentPath = "" } = Astro.props;
-const siteName = "光の記録　ー光景ノオトー";
+
+const { title = "光の記録　ー光景ノオトー" } = Astro.props;
 ---
+
 <!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} | {siteName}</title>
-    <link rel="stylesheet" href="/src/styles/global.css" />
+    <title>{title}</title>
   </head>
   <body>
-    <div class="site-wrapper">
-      <header class="site-header">
-        <div class="site-header-inner">
-          <a href="/" class="site-logo">{siteName}</a>
-          <nav class="site-nav">
-            <a href="/works" class={currentPath.startsWith("/works") ? "active" : ""}>Works</a>
-            <a href="/models" class={currentPath.startsWith("/models") ? "active" : ""}>Models</a>
-          </nav>
-        </div>
-      </header>
-      <main><slot /></main>
-      <footer class="site-footer">
-        <p>&copy; {new Date().getFullYear()} {siteName}</p>
-      </footer>
-    </div>
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a href="/" class="site-title">光の記録　ー光景ノオトー</a>
+        <nav class="site-nav">
+          <a href="/works/">Works</a>
+          <a href="/models/">Models</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <p>© 井戸歩</p>
+    </footer>
   </body>
 </html>

@@ -3,100 +3,36 @@ import Layout from "../../layouts/Layout.astro";
 import worksData from "../../data/works.json";
 import modelsData from "../../data/models.json";
 
-const works = [...worksData].sort(
-  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-);
-const modelMap = Object.fromEntries(modelsData.map((m) => [m.id, m]));
+const works = worksData.map((work) => {
+  const relatedModels = modelsData.filter(
+    (model) => Array.isArray(work.models) && work.models.includes(model.id)
+  );
+
+  return {
+    ...work,
+    modelNames: relatedModels.map((model) => model.name).join("・"),
+  };
+});
 ---
 
-<Layout title="Works" currentPath="/works">
-  <div class="page-heading">
+<Layout title="Works | 光の記録　ー光景ノオトー">
+  <section>
     <h1>Works</h1>
-    <p>{works.length} 作品</p>
-  </div>
+    <p>{works.length}作品</p>
 
-  <div class="works-masonry">
-    {works.map((work) => {
-      const model = modelMap[work.models[0]];
-      return (
-        <a href={`/works/${work.id}`} class="works-masonry-item">
-          <div class="works-masonry-image">
-            <img
-              src={`/images/works/${work.files[0].name}`}
-              alt={work.files[0].alt}
-              loading="lazy"
-            />
-          </div>
-          <div class="works-masonry-info">
-            <p class="works-masonry-title">{work.title}</p>
-            <p class="works-masonry-meta">
-              {model ? model.name : work.models[0]} &nbsp;·&nbsp; {work.date}
-            </p>
-          </div>
+    <div class="works-grid">
+      {works.map((work) => (
+        <a href={`/works/${work.id}/`} class="work-card">
+          <img
+            src={`/images/works/${work.files[0].name}`}
+            alt={work.files[0].alt || work.title}
+          />
+          <h3>{work.title}</h3>
+          <p class="work-meta">
+            {work.modelNames && `${work.modelNames} ・ `}{work.date}
+          </p>
         </a>
-      );
-    })}
-  </div>
+      ))}
+    </div>
+  </section>
 </Layout>
-
-<style>
-  .works-masonry {
-    column-count: 3;
-    column-gap: 2rem;
-  }
-
-  .works-masonry-item {
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 2.5rem;
-    break-inside: avoid;
-    text-decoration: none;
-    color: inherit;
-    vertical-align: top;
-  }
-
-  .works-masonry-image {
-    line-height: 0;
-    overflow: hidden;
-    background: transparent;
-  }
-
-  .works-masonry-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: transform 0.6s ease;
-  }
-
-  .works-masonry-item:hover .works-masonry-image img {
-    transform: scale(1.02);
-  }
-
-  .works-masonry-info {
-    margin-top: 0.85rem;
-  }
-
-  .works-masonry-title {
-    font-size: 0.95rem;
-    font-weight: 400;
-  }
-
-  .works-masonry-meta {
-    margin-top: 0.2rem;
-    font-family: var(--font-en);
-    font-size: 0.75rem;
-    color: var(--color-muted);
-  }
-
-  @media (max-width: 960px) {
-    .works-masonry {
-      column-count: 2;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .works-masonry {
-      column-count: 1;
-    }
-  }
-</style>
