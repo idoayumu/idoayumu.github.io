@@ -23,10 +23,13 @@ const works = worksData.map((work) => {
     <div class="works-grid">
       {works.map((work) => (
         <a href={`/works/${work.id}/`} class="work-card">
-          <img
-            src={`/images/works/${work.files[0].name}`}
-            alt={work.files[0].alt || work.title}
-          />
+          <div class="work-thumb-wrap">
+            <img
+              src={`/images/works/${work.files[0].name}`}
+              alt={work.files[0].alt || work.title}
+              class="work-thumb"
+            />
+          </div>
           <h3>{work.title}</h3>
           <p class="work-meta">
             {work.modelNames && `${work.modelNames} ・ `}{work.date}
