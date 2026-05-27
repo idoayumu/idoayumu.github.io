@@ -15,9 +15,13 @@ const models = modelsData.map((model) => {
   const displayName = hasDuplicateName && model.agency
     ? `${model.name}（${model.agency}）`
     : model.name;
-  const workCount = worksData.filter(
-    (work) => Array.isArray(work.models) && work.models.includes(model.id)
-  ).length;
+  const workCount = worksData.filter((work) => {
+    const workModelIds = Array.isArray(work.modelIds)
+      ? work.modelIds
+      : work.models || [];
+
+    return workModelIds.includes(model.id);
+  }).length;
   return { ...model, displayName, workCount };
 });
 ---

@@ -6,9 +6,13 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "image-register": "node tools/image-register/server.cjs"
   },
   "dependencies": {
-    "astro": "^5.17.1"
+    "astro": "^6.3.8",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.3"
   }
 }

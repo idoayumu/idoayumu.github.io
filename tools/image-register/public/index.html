@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <title>作品登録ツール</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <h1>作品登録ツール（最小構成）</h1>
+
+  <section>
+    <label><input type="checkbox" id="useSourcePath"> 画像の絶対パスを直接指定する</label>
+    <div id="fileMode">
+      <input type="file" id="imageFile" accept="image/*" />
+      <div id="preview"></div>
+    </div>
+    <div id="pathMode" style="display:none">
+      <input type="text" id="sourcePath" placeholder="/Volumes/外付けHDD/2026/0102ももさん/ex/IMG_0001.jpg"
+        style="width:100%" />
+      <p class="note">注意: このパスは読み取りのみ。元画像は変更・移動・削除しません。</p>
+    </div>
+  </section>
+
+  <hr />
+
+  <form id="metaForm">
+    <div class="grid">
+      <label>作品ID
+        <input name="id" required placeholder="momo-20260102-001" />
+      </label>
+      <label>タイトル
+        <input name="title" required />
+      </label>
+      <label>撮影日
+        <input name="date" type="date" required />
+      </label>
+      <label>撮影場所
+        <input name="location" required />
+      </label>
+      <label>production
+        <input name="production" list="productions" required />
+        <datalist id="productions">
+          <option value="フリーランス"></option>
+          <option value="大阪美マージュ"></option>
+          <option value="シャドウライツ"></option>
+          <option value="マナコレ撮影会"></option>
+        </datalist>
+      </label>
+      <label>モデルIDs（カンマ区切り または ["momo","aoi"]）
+        <input name="modelIds" required placeholder='minaseaoi,momoseyuuri' />
+      </label>
+    </div>
+    <label>キャプション
+      <textarea name="caption" rows="3" placeholder="光に触れるような一枚。"></textarea>
+    </label>
+
+    <div class="row">
+      <label>上書き
+        <select name="overwrite">
+          <option value="skip" selected>安全のためスキップ</option>
+          <option value="overwrite">上書きする</option>
+        </select>
+      </label>
+      <button type="submit">決定（登録）</button>
+    </div>
+  </form>
+
+  <div id="result"></div>
+
+  <script src="./main.js"></script>
+</body>
+
+</html>

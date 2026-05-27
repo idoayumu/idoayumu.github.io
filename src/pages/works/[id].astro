@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { getWorkImageUrl, getWorkThumbUrl } from "../../lib/worksCompat";
 import worksData from "../../data/works.json";
 import modelsData from "../../data/models.json";
 
@@ -16,9 +17,23 @@ if (!work) {
   throw new Error(`Work not found: ${id}`);
 }
 
+const workModelIds = Array.isArray(work.modelIds) ? work.modelIds : work.models || [];
+
 const relatedModels = modelsData.filter(
-  (model) => Array.isArray(work.models) && work.models.includes(model.id)
+  (model) => workModelIds.includes(model.id)
 );
+
+const workImages = Array.isArray(work.files)
+  ? work.files.map((file) => ({
+      src: `/images/works/large/${file.name}`,
+      alt: file.alt || work.title,
+    }))
+  : [
+      {
+        src: getWorkImageUrl(work) || getWorkThumbUrl(work) || "",
+        alt: work.title,
+      },
+    ].filter((image) => image.src);
 ---
 
 <Layout title={work.title}>
@@ -41,10 +56,10 @@ const relatedModels = modelsData.filter(
     )}
 
     <div class="work-images">
-      {work.files.map((file) => (
+      {workImages.map((image) => (
         <img
-          src={`/images/works/${file.name}`}
-          alt={file.alt || work.title}
+          src={image.src}
+          alt={image.alt}
           class="work-image"
         />
       ))}

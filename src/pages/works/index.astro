@@ -2,15 +2,22 @@
 import Layout from "../../layouts/Layout.astro";
 import worksData from "../../data/works.json";
 import modelsData from "../../data/models.json";
+import { getWorkImageUrl, getWorkThumbUrl } from "../../lib/worksCompat";
 
-const works = worksData.map((work) => {
+const works = [...worksData]
+  .sort((a, b) => new Date(b.date) - new Date(a.date))
+  .map((work) => {
+  const workModelIds = Array.isArray(work.modelIds) ? work.modelIds : work.models || [];
+
   const relatedModels = modelsData.filter(
-    (model) => Array.isArray(work.models) && work.models.includes(model.id)
+    (model) => workModelIds.includes(model.id)
   );
 
   return {
     ...work,
     modelNames: relatedModels.map((model) => model.name).join("・"),
+    thumbUrl: getWorkThumbUrl(work) || getWorkImageUrl(work) || "",
+    thumbAlt: work.files?.[0]?.alt || work.title,
   };
 });
 ---
@@ -24,11 +31,13 @@ const works = worksData.map((work) => {
       {works.map((work) => (
         <a href={`/works/${work.id}/`} class="work-card">
           <div class="work-thumb-wrap">
-            <img
-              src={`/images/works/${work.files[0].name}`}
-              alt={work.files[0].alt || work.title}
-              class="work-thumb"
-            />
+            {work.thumbUrl && (
+              <img
+                src={work.thumbUrl}
+                alt={work.thumbAlt}
+                class="work-thumb"
+              />
+            )}
           </div>
           <h3>{work.title}</h3>
           <p class="work-meta">
