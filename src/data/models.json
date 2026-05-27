@@ -1,20 +1,20 @@
 [
   {
-  "id": "minaseaoi",
-  "name": "水瀬あおい",
-  "nameKana": "ミナセアオイ",
-  "nameEn": "Aoi Minase",
-  "aliases": [],
-  "agency": "",
-  "bio": "フリーランスモデル",
-  "thumbnail": "minaseaoi_thumb.jpg",
-  "links": {
-    "instagram": "https://www.instagram.com/minase_aoi1/",
-    "twitter": "https://x.com/minase__aoi",
-    "website": ""
+    "id": "minaseaoi",
+    "name": "水瀬あおい",
+    "nameKana": "ミナセアオイ",
+    "nameEn": "Aoi Minase",
+    "aliases": [],
+    "agency": "",
+    "bio": "マナコレ撮影会",
+    "thumbnail": "minaseaoi_thumb.jpg",
+    "links": {
+      "instagram": "https://www.instagram.com/minase_aoi1/",
+      "twitter": "https://x.com/minase__aoi",
+      "website": ""
+    },
+    "featured": true
   },
-  "featured": true
-},
   {
     "id": "momoseyuuri",
     "name": "百瀬結梨",

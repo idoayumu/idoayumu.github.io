@@ -13,9 +13,6 @@
     ],
     "date": "2026-03-12",
     "production": "",
-    "tags": [
-      "ポートレート"
-    ],
     "equipment": {
       "camera": "",
       "lens": ""
@@ -26,7 +23,7 @@
     "orientation": "vertical",
     "featured": true
   },
-    {
+  {
     "id": "260328minaseaoi_0001",
     "title": "春に触れる",
     "models": [
@@ -40,9 +37,6 @@
     ],
     "date": "2026-03-12",
     "production": "",
-    "tags": [
-      "ポートレート"
-    ],
     "equipment": {
       "camera": "",
       "lens": ""
@@ -67,9 +61,6 @@
     ],
     "date": "2026-01-25",
     "production": "大阪美マージュ",
-    "tags": [
-      "ポートレート"
-    ],
     "equipment": {
       "camera": "",
       "lens": ""
@@ -94,9 +85,6 @@
     ],
     "date": "2025-09-22",
     "production": "",
-    "tags": [
-      "ポートレート"
-    ],
     "equipment": {
       "camera": "",
       "lens": ""
@@ -106,5 +94,33 @@
     },
     "orientation": "vertical",
     "featured": true
+  },
+  {
+    "id": "260527minaseaoi_0001",
+    "title": "くまといっしょ",
+    "date": "2025-10-15",
+    "location": "大阪",
+    "production": "マナコレ撮影会",
+    "caption": "ほっぺたのシールがチャーミング。",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "sourcePath": "/Users/nw/Desktop/ido-portfolio/tools/image-register/.tmp/8c9062370ac29fadfd47ce8d72ae86f7",
+    "image": "/images/works/large/251015minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/251015minaseaoi_0001.webp"
+  },
+  {
+    "id": "260527minaseaoi_0002",
+    "title": "立ちポーズ",
+    "date": "2025-10-15",
+    "location": "大阪",
+    "production": "マナコレ撮影会",
+    "caption": "傾げた表情が素敵",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "sourcePath": "/Users/nw/Desktop/ido-portfolio/tools/image-register/.tmp/8474bb388887c756a563ba23b0965e85",
+    "image": "/images/works/large/260527minaseaoi_0002.webp",
+    "thumbnail": "/images/works/thumbs/260527minaseaoi_0002.webp"
   }
 ]

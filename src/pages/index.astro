@@ -1,9 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { getWorkImageUrl, getWorkThumbUrl } from "../lib/worksCompat";
 import worksData from "../data/works.json";
 import modelsData from "../data/models.json";
 
-const featuredWorks = worksData.filter((work) => work.featured);
+const featuredWorks = [...worksData]
+  .sort((a, b) => new Date(b.date) - new Date(a.date))
+  .slice(0, 6);
 const modelMap = Object.fromEntries(modelsData.map((m) => [m.id, m]));
 ---
 
@@ -22,13 +25,14 @@ const modelMap = Object.fromEntries(modelsData.map((m) => [m.id, m]));
 
     <div class="work-grid">
       {featuredWorks.map((work) => {
-        const model = modelMap[work.models[0]];
+        const workModelIds = Array.isArray(work.modelIds) ? work.modelIds : work.models || [];
+        const model = modelMap[workModelIds[0]];
         return (
           <a href={`/works/${work.id}`} class="work-card">
             <div class="work-card-image">
               <img
-                src={`/images/works/${work.files[0].name}`}
-                alt={work.files[0].alt}
+                src={getWorkThumbUrl(work) || getWorkImageUrl(work) || ""}
+                alt={work.files?.[0]?.alt || work.title}
                 loading="lazy"
               />
             </div>
@@ -36,7 +40,7 @@ const modelMap = Object.fromEntries(modelsData.map((m) => [m.id, m]));
             <div class="work-card-info">
               <p class="work-card-title">{work.title}</p>
               <p class="work-card-meta">
-                {model ? model.name : work.models[0]} &nbsp;·&nbsp; {work.date}
+                {model ? model.name : workModelIds[0]} &nbsp;·&nbsp; {work.date}
               </p>
             </div>
           </a>

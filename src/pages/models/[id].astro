@@ -1,6 +1,7 @@
 ---
 // src/pages/models/[id].astro
 import Layout from "../../layouts/Layout.astro";
+import { getWorkImageUrl, getWorkThumbUrl } from "../../lib/worksCompat";
 import modelsData from "../../data/models.json";
 import worksData from "../../data/works.json";
 
@@ -23,7 +24,13 @@ const displayName = hasDuplicateName && model.agency
 
 // 出演作品（新しい順）
 const relatedWorks = worksData
-  .filter((work) => Array.isArray(work.models) && work.models.includes(model.id))
+  .filter((work) => {
+    const workModelIds = Array.isArray(work.modelIds)
+      ? work.modelIds
+      : work.models || [];
+
+    return workModelIds.includes(model.id);
+  })
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 ---
 
@@ -85,8 +92,8 @@ const relatedWorks = worksData
           <a href={`/works/${work.id}/`} class="work-card">
             <div class="work-card-image">
               <img
-                src={`/images/works/${work.files[0].name}`}
-                alt={work.files[0].alt}
+                src={getWorkThumbUrl(work) || getWorkImageUrl(work) || ""}
+                alt={work.files?.[0]?.alt || work.title}
                 loading="lazy"
               />
             </div>
