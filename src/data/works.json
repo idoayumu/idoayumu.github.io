@@ -2,98 +2,54 @@
   {
     "id": "260328minaseaoi_0002",
     "title": "ひだまりの笑顔",
-    "models": [
+    "date": "2026-03-12",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "",
+    "modelIds": [
       "minaseaoi"
     ],
-    "files": [
-      {
-        "name": "260328minaseaoi_0002.jpg",
-        "alt": "ひだまりの笑顔"
-      }
-    ],
-    "date": "2026-03-12",
-    "production": "マナコレ撮影会",
-    "equipment": {
-      "camera": "",
-      "lens": ""
-    },
-    "links": {
-      "instagram": ""
-    },
-    "orientation": "vertical",
-    "featured": true
+    "image": "/images/works/large/260328minaseaoi_0002.jpg",
+    "thumbnail": "/images/works/thumbs/260328minaseaoi_0002.webp"
   },
   {
     "id": "260328minaseaoi_0001",
     "title": "春に触れる",
-    "models": [
+    "date": "2026-03-12",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "",
+    "modelIds": [
       "minaseaoi"
     ],
-    "files": [
-      {
-        "name": "260328minaseaoi_0001.jpg",
-        "alt": "春に触れる"
-      }
-    ],
-    "date": "2026-03-12",
-    "production": "マナコレ撮影会",
-    "equipment": {
-      "camera": "",
-      "lens": ""
-    },
-    "links": {
-      "instagram": ""
-    },
-    "orientation": "vertical",
-    "featured": true
+    "image": "/images/works/large/260328minaseaoi_0001.jpg",
+    "thumbnail": "/images/works/thumbs/260328minaseaoi_0001.webp"
   },
   {
     "id": "260226momo_0001",
     "title": "委ねる",
-    "models": [
+    "date": "2026-01-25",
+    "location": "滋賀",
+    "production": "大阪美マージュ",
+    "caption": "",
+    "modelIds": [
       "momo_osakabimage"
     ],
-    "files": [
-      {
-        "name": "260226momo_0001.jpg",
-        "alt": "委ねる"
-      }
-    ],
-    "date": "2026-01-25",
-    "production": "大阪美マージュ",
-    "equipment": {
-      "camera": "",
-      "lens": ""
-    },
-    "links": {
-      "instagram": ""
-    },
-    "orientation": "vertical",
-    "featured": true
+    "image": "/images/works/large/260226momo_0001.jpg",
+    "thumbnail": "/images/works/thumbs/260226momo_0001.webp"
   },
   {
     "id": "260226momoseyuuri_0001",
     "title": "あなたの声が",
-    "models": [
+    "date": "2025-09-22",
+    "location": "京都",
+    "production": "",
+    "caption": "",
+    "modelIds": [
       "momoseyuuri"
     ],
-    "files": [
-      {
-        "name": "260226momoseyuuri_0001.jpg",
-        "alt": "あなたの声が"
-      }
-    ],
-    "date": "2025-09-22",
-    "production": "",
-    "equipment": {
-      "camera": "",
-      "lens": ""
-    },
-    "links": {
-      "instagram": ""
-    },
-    "orientation": "vertical",
-    "featured": true
+    "image": "/images/works/large/260226momoseyuuri_0001.jpg",
+    "thumbnail": "/images/works/thumbs/260226momoseyuuri_0001.webp"
   },
   {
     "id": "260527minaseaoi_0001",
@@ -105,9 +61,8 @@
     "modelIds": [
       "minaseaoi"
     ],
-    "sourcePath": "/Users/nw/Desktop/ido-portfolio/tools/image-register/.tmp/8c9062370ac29fadfd47ce8d72ae86f7",
-    "image": "/images/works/large/251015minaseaoi_0001.webp",
-    "thumbnail": "/images/works/thumbs/251015minaseaoi_0001.webp"
+    "image": "/images/works/large/260527minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/260527minaseaoi_0001.webp"
   },
   {
     "id": "260527minaseaoi_0002",
@@ -119,8 +74,74 @@
     "modelIds": [
       "minaseaoi"
     ],
-    "sourcePath": "/Users/nw/Desktop/ido-portfolio/tools/image-register/.tmp/8474bb388887c756a563ba23b0965e85",
     "image": "/images/works/large/260527minaseaoi_0002.webp",
     "thumbnail": "/images/works/thumbs/260527minaseaoi_0002.webp"
+  },
+  {
+    "id": "260601momo_0001",
+    "title": "夏に触れる",
+    "date": "2025-07-15",
+    "location": "大阪",
+    "production": "大阪美マージュ",
+    "caption": "指先が夏に触れた瞬間。",
+    "modelIds": [
+      "momo_osakabimage"
+    ],
+    "image": "/images/works/large/260601momo_0001.webp",
+    "thumbnail": "/images/works/thumbs/260601momo_0001.webp"
+  },
+  {
+    "id": "260601marin_minaseaoi_0001",
+    "title": "摂津峡ピース",
+    "date": "2025-07-19",
+    "location": "大阪",
+    "production": "マナコレ撮影会",
+    "caption": "摂津峡でペア撮",
+    "modelIds": [
+      "minaseaoi",
+      "marin_manacolle"
+    ],
+    "image": "/images/works/large/260601marin_minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/260601marin_minaseaoi_0001.webp"
+  },
+  {
+    "id": "260602momo_0001",
+    "title": "広い海",
+    "date": "2025-07-15",
+    "location": "大阪",
+    "production": "大阪美マージュ",
+    "caption": "海は広いな大きいな",
+    "modelIds": [
+      "momo_osakabimage"
+    ],
+    "image": "/images/works/large/260602momo_0001.webp",
+    "thumbnail": "/images/works/thumbs/260602momo_0001.webp"
+  },
+  {
+    "id": "260602marin_minaseaoi_0001",
+    "title": "摂津峡にて",
+    "date": "2025-07-19",
+    "location": "大阪",
+    "production": "マナコレ撮影会",
+    "caption": "仲良しコンビ",
+    "modelIds": [
+      "minaseaoi",
+      "marin_manacolle"
+    ],
+    "image": "/images/works/large/260602marin_minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/260602marin_minaseaoi_0001.webp"
+  },
+  {
+    "id": "260602momoseyuuri_0001",
+    "title": "梅小路公園の光景",
+    "date": "2025-09-22",
+    "location": "京都",
+    "production": "",
+    "caption": "光景ポートレート",
+    "modelIds": [
+      "momoseyuuri"
+    ],
+    "image": "/images/works/large/260602momoseyuuri_0001.webp",
+    "thumbnail": "/images/works/thumbs/260602momoseyuuri_0001.webp"
   }
 ]

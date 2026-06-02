@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <title>モデル新規登録ツール</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <main>
+    <h1>モデル新規登録ツール</h1>
+
+    <form id="modelForm">
+      <div class="grid">
+        <label>モデルID
+          <input name="id" required placeholder="momo_osakabimage" autocomplete="off" />
+        </label>
+        <label>表示名
+          <input name="name" required placeholder="もも" autocomplete="off" />
+        </label>
+        <label>所属・撮影会名
+          <input name="agency" placeholder="大阪美マージュ" autocomplete="off" />
+        </label>
+        <label>Xアカウント
+          <input name="twitter" placeholder="@example または https://x.com/example" autocomplete="off" />
+        </label>
+        <label>Instagramアカウント
+          <input name="instagram" placeholder="@example または https://instagram.com/example/" autocomplete="off" />
+        </label>
+        <label>プロフィール画像
+          <input type="file" id="profileImage" name="profileImage" accept="image/*" required />
+        </label>
+      </div>
+
+      <label>aliases（別名・任意）
+        <textarea name="aliases" rows="3" placeholder="MOMO&#10;ももちゃん"></textarea>
+      </label>
+
+      <div id="preview"></div>
+      <div id="warnings"></div>
+      <div class="row">
+        <button type="submit" id="submitButton">登録</button>
+        <button type="button" id="confirmButton" hidden>警告を確認して登録</button>
+      </div>
+    </form>
+
+    <div id="result"></div>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+
+</html>

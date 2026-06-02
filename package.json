@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "image-register": "node tools/image-register/server.cjs"
+    "image-register": "node tools/image-register/server.cjs",
+    "model-register": "node tools/model-register/server.cjs"
   },
   "dependencies": {
     "astro": "^6.3.8",

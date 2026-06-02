@@ -214,6 +214,48 @@ p {
   color: #555;
 }
 
+.model-works .work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 220px);
+  gap: 2rem 1.5rem;
+  justify-content: start;
+  align-items: start;
+}
+
+.model-works .work-card {
+  display: inline-block;
+  width: 220px;
+  margin-bottom: 0;
+  align-self: start;
+}
+
+.model-works .work-card-image {
+  width: 100%;
+  line-height: 0;
+  overflow: hidden;
+  background: #f0f0eb;
+}
+
+.model-works .work-card-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.model-works .work-card-info {
+  width: 100%;
+  padding-top: 0.75rem;
+}
+
+.model-works .work-card-title,
+.model-works .work-card-meta {
+  margin: 0;
+}
+
+.model-works .work-card-meta {
+  margin-top: 0.25rem;
+}
+
 /* Work detail */
 
 .work-detail {

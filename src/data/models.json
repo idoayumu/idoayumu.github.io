@@ -48,5 +48,23 @@
       "website": ""
     },
     "featured": true
+  },
+  {
+    "id": "marin_manacolle",
+    "name": "Marin",
+    "nameKana": "",
+    "nameEn": "",
+    "aliases": [
+      "Marin"
+    ],
+    "agency": "マナコレ撮影会",
+    "bio": "",
+    "thumbnail": "marin_manacolle_profile.webp",
+    "links": {
+      "instagram": "https://www.instagram.com/niram1030/",
+      "twitter": "https://x.com/niram1030",
+      "website": ""
+    },
+    "featured": true
   }
 ]

@@ -93,7 +93,7 @@ const relatedWorks = worksData
             <div class="work-card-image">
               <img
                 src={getWorkThumbUrl(work) || getWorkImageUrl(work) || ""}
-                alt={work.files?.[0]?.alt || work.title}
+                alt={work.title}
                 loading="lazy"
               />
             </div>
