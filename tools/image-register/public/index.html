@@ -27,32 +27,51 @@
   <hr />
 
   <form id="metaForm">
+    <p class="note">作品ID：登録日YYMMDD + モデル名（marin_minaseaoiなど） + _ + 通し番号4桁で自動生成されます</p>
+    <input type="hidden" name="id" id="workId" />
     <div class="grid">
-      <label>作品ID
-        <input name="id" required placeholder="momo-20260102-001" />
+      <label>登録日
+        <span id="registrationDateDisplay" class="readonly-value"></span>
+      </label>
+      <label>登録日YYMMDD
+        <span id="registrationDatePrefix" class="readonly-value"></span>
+      </label>
+      <label>モデル名
+        <input id="workIdModelName" required pattern="[A-Za-z0-9_]+" placeholder="minaseaoi" />
+      </label>
+      <label>通し番号4桁
+        <input id="workIdSequence" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="0001" />
+      </label>
+      <label>作品IDプレビュー
+        <span id="workIdPreview" class="readonly-value preview-value">未入力</span>
       </label>
       <label>タイトル
         <input name="title" required />
+        <span id="titleDuplicateWarning" class="warning" aria-live="polite"></span>
       </label>
       <label>撮影日
         <input name="date" type="date" required />
       </label>
       <label>撮影場所
-        <input name="location" required />
+        <input name="location" list="locations" required />
+        <datalist id="locations"></datalist>
       </label>
       <label>production
         <input name="production" list="productions" required />
-        <datalist id="productions">
-          <option value="フリーランス"></option>
-          <option value="大阪美マージュ"></option>
-          <option value="シャドウライツ"></option>
-          <option value="マナコレ撮影会"></option>
-        </datalist>
+        <datalist id="productions"></datalist>
       </label>
-      <label>モデルIDs（カンマ区切り または ["momo","aoi"]）
-        <input name="modelIds" required placeholder='minaseaoi,momoseyuuri' />
+      <label>モデルIDs（カンマ区切り または ["momo_osakabimage","minaseaoi"]）
+        <input name="modelIds" id="modelIds" required placeholder='minaseaoi,momoseyuuri' />
       </label>
     </div>
+
+    <div class="model-picker">
+      <label>モデル候補検索
+        <input id="modelSearch" type="search" placeholder="表示名・モデルID・所属で検索" autocomplete="off" />
+      </label>
+      <div id="modelSuggestions" class="suggestions" aria-live="polite"></div>
+    </div>
+
     <label>キャプション
       <textarea name="caption" rows="3" placeholder="光に触れるような一枚。"></textarea>
     </label>
@@ -64,6 +83,7 @@
           <option value="overwrite">上書きする</option>
         </select>
       </label>
+      <button type="button" id="clearForm">一括クリア</button>
       <button type="submit">決定（登録）</button>
     </div>
   </form>
