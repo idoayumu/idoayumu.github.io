@@ -7,6 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "validate:data": "node tools/validate-data.cjs",
     "image-register": "node tools/image-register/server.cjs",
     "model-register": "node tools/model-register/server.cjs"
   },
