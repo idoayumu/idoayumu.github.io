@@ -1,122 +1,253 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getWorkImageUrl, getWorkThumbUrl } from "../lib/worksCompat";
-import worksData from "../data/works.json";
-import modelsData from "../data/models.json";
-
-const featuredWorks = [...worksData]
-  .sort((a, b) => new Date(b.date) - new Date(a.date))
-  .slice(0, 6);
-const modelMap = Object.fromEntries(modelsData.map((m) => [m.id, m]));
 ---
 
-<Layout title="Home" currentPath="/">
-  <section style="margin-bottom: 5rem;">
-    <p style="font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.25em; color: var(--color-muted); text-transform: uppercase; margin-bottom: 0.5rem;">
-      Portrait Photography
-    </p>
-    <h1 style="font-family: var(--font-en); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; letter-spacing: 0.05em; line-height: 1.2;">
-      Selected Works
+<Layout title="光の記録 ー光景ノオトー">
+  <section class="home-hero" aria-labelledby="hero-title">
+    <img
+      class="home-hero-bg"
+      src="/images/site/top-hero.webp"
+      alt="木漏れ日の光がやわらかくにじむ光景"
+      fetchpriority="high"
+    />
+
+    <div class="home-hero-copy">
+      <p class="home-kicker">光景ポートレート</p>
+    <h1 id="hero-title">
+      <span class="hero-main">光の記録</span>
+      <span class="hero-sub">ー光景ノオトー</span>
     </h1>
-  </section>
-
-  <section>
-    <p class="section-title">Featured</p>
-
-    <div class="work-grid">
-      {featuredWorks.map((work) => {
-        const workModelIds = Array.isArray(work.modelIds) ? work.modelIds : work.models || [];
-        const model = modelMap[workModelIds[0]];
-        return (
-          <a href={`/works/${work.id}`} class="work-card">
-            <div class="work-card-image">
-              <img
-                src={getWorkThumbUrl(work) || getWorkImageUrl(work) || ""}
-                alt={work.files?.[0]?.alt || work.title}
-                loading="lazy"
-              />
-            </div>
-
-            <div class="work-card-info">
-              <p class="work-card-title">{work.title}</p>
-              <p class="work-card-meta">
-                {model ? model.name : workModelIds[0]} &nbsp;·&nbsp; {work.date}
-              </p>
-            </div>
-          </a>
-        );
-      })}
+      <p class="home-lead">光と人が出会う瞬間を写す。</p>
+      <p class="home-text">私はそれを光景ポートレートと呼んでいる。</p>
     </div>
   </section>
 
-  <div style="margin-top: 4rem; text-align: center;">
-    <a
-      href="/works"
-      style="font-family: var(--font-en); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; border-bottom: 1px solid currentColor; padding-bottom: 2px;"
-    >
-      View All Works
+<section class="home-section home-about">
+  <p class="home-label">About the concept</p>
+
+  <h2>光景ポートレートとは</h2>
+
+  <p>
+    人物の表情だけでなく、
+    その場に満ちる光や空気、余白まで一緒に写すポートレート。
+  </p>
+
+  <p>
+    その瞬間の光景が、
+    ひとりの記憶として立ち上がる写真を目指しています。
+  </p>
+</section>
+
+  <section class="home-links" aria-label="サイト内への導線">
+    <a href="/works/" class="home-link-card">
+      <span>Works</span>
+      <strong>代表作品を見る</strong>
+      <small>光と人が重なる瞬間を集めています。</small>
     </a>
-  </div>
+
+    <a href="/models/" class="home-link-card">
+      <span>Models</span>
+      <strong>モデルを見る</strong>
+      <small>作品に登場する人たちの記録です。</small>
+    </a>
+
+    <a href="/about/" class="home-link-card">
+      <span>About</span>
+      <strong>写真家について</strong>
+      <small>光景ポートレートの考え方と制作について。</small>
+    </a>
+  </section>
 </Layout>
 
 <style>
-  .work-grid {
-    column-count: 2;
-    column-gap: 24px;
+  :global(.site-main) {
+    max-width: none;
+    padding-top: 1.25rem;
   }
 
-  .work-card {
-    display: inline-block;
+  .home-hero,
+  .home-section,
+  .home-links {
+    width: min(100%, 1100px);
+    margin-inline: auto;
+  }
+
+  .home-hero {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: clamp(420px, 72vh, 760px);
+    overflow: hidden;
+    border-radius: 2px;
+    background: #111;
+  }
+
+  .hero-main {
+  display: block;
+  font-size: 1em;
+}
+
+.hero-sub {
+  display: block;
+  font-size: 0.65em;
+  margin-top: 0.15em;
+}
+
+  .home-hero-bg {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    margin-bottom: 32px;
-    text-decoration: none;
-    color: inherit;
-    break-inside: avoid;
-    vertical-align: top;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
-  .work-card-image {
-    display: block;
-    line-height: 0;
+  .home-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.58),
+      rgba(0, 0, 0, 0.18)
+    );
   }
 
-  .work-card-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: transform 0.4s ease;
+.home-hero-copy {
+  position: relative;
+  z-index: 1;
+  width: min(92%, 780px);
+  padding: 2rem;
+  transform: translateY(-40px);
+}
+
+  .home-kicker,
+  .home-label,
+  .home-link-card span {
+    color: #8a74a8;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    line-height: 1.5;
+    text-transform: uppercase;
   }
 
-  .work-card:hover img {
-    transform: scale(1.015);
+.home-kicker {
+  margin-bottom: 1rem;
+  color: #d7c7ef;
+  font-size: 1.05rem;
+  letter-spacing: 0.25em;
+}
+
+  .home-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 4.4rem);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.home-lead {
+  margin: 1.4rem 0 0;
+  font-size: clamp(1.3rem, 3.5vw, 2.1rem);
+  line-height: 1.8;
+  color: #fff;
+}
+
+.home-text {
+  margin: 0.35rem 0 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 1.15rem;
+  line-height: 1.9;
+}
+
+  .home-section {
+    margin-top: 4.5rem;
+    padding-top: 2.2rem;
+    border-top: 1px solid #e8e0f2;
   }
 
-  .work-card-info {
-    padding-top: 12px;
+  .home-section h2 {
+    margin: 0.45rem 0 1rem;
+    font-size: clamp(1.45rem, 7vw, 2.35rem);
+    font-weight: 500;
+    line-height: 1.35;
   }
 
-  .work-card-title {
-    margin: 0;
+  .home-section p:last-child {
+    max-width: 42rem;
+    color: #444;
     font-size: 1rem;
+    line-height: 2.05;
+  }
+
+  .home-links {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 3rem;
+  }
+
+  .home-link-card {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.1rem 0;
+    border-top: 1px solid #e8e0f2;
+  }
+
+  .home-link-card:last-child {
+    border-bottom: 1px solid #e8e0f2;
+  }
+
+  .home-link-card strong {
+    font-size: 1.15rem;
+    font-weight: 500;
     line-height: 1.5;
   }
 
-  .work-card-meta {
-    margin: 4px 0 0;
-    font-size: 0.75rem;
-    color: var(--color-muted);
-    line-height: 1.6;
+  .home-link-card small {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.7;
   }
 
-  @media (max-width: 900px) {
-    .work-grid {
-      column-count: 2;
+  @media (min-width: 720px) {
+    :global(.site-main) {
+      padding-top: 2rem;
+    }
+
+    .home-hero-copy {
+      justify-self: start;
+      margin-left: clamp(1rem, 5vw, 4rem);
+    }
+
+    .home-links {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+
+    .home-link-card {
+      min-height: 12rem;
+      align-content: start;
+      padding: 1.2rem 1rem 1.35rem;
+      border: 1px solid #e8e0f2;
+      transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .home-link-card:hover {
+      border-color: #b9a5d4;
+      transform: translateY(-2px);
     }
   }
 
-  @media (max-width: 640px) {
-    .work-grid {
-      column-count: 1;
+  @media (max-width: 719px) {
+    .home-hero {
+      min-height: 520px;
+    }
+
+    .home-hero-copy {
+      padding: 1.4rem;
     }
   }
 </style>
