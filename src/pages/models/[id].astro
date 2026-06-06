@@ -32,6 +32,46 @@ const relatedWorks = worksData
     return workModelIds.includes(model.id);
   })
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+const links = model.links || {};
+
+function getAccountLabel(url, options = { prefix: "" }) {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    const label = parsed.pathname.replace(/^\/+|\/+$/g, "");
+    const account = label.split("/").pop();
+    return account ? `${options.prefix}${account}` : "";
+  } catch {
+    return url;
+  }
+}
+
+const socialLinks = [];
+
+if (links.twitter) {
+  socialLinks.push({
+    label: "X",
+    value: getAccountLabel(links.twitter, { prefix: "@" }),
+    href: links.twitter,
+  });
+}
+
+if (links.instagram) {
+  socialLinks.push({
+    label: "Instagram",
+    value: getAccountLabel(links.instagram),
+    href: links.instagram,
+  });
+}
+
+if (links.website) {
+  socialLinks.push({
+    label: "Website",
+    value: "Official",
+    href: links.website,
+  });
+}
 ---
 
 <Layout title={displayName} currentPath="/models">
@@ -60,33 +100,28 @@ const relatedWorks = worksData
         <p class="model-profile-bio">{model.bio}</p>
       )}
 
-      <!-- SNSリンク -->
-      {(model.links.instagram || model.links.twitter || model.links.website) && (
-        <div class="model-profile-links">
-          {model.links.instagram && (
-            <a href={model.links.instagram} target="_blank" rel="noopener noreferrer" class="model-profile-link">
-              Instagram
-            </a>
-          )}
-          {model.links.twitter && (
-            <a href={model.links.twitter} target="_blank" rel="noopener noreferrer" class="model-profile-link">
-              X
-            </a>
-          )}
-          {model.links.website && (
-            <a href={model.links.website} target="_blank" rel="noopener noreferrer" class="model-profile-link">
-              Website
-            </a>
-          )}
-        </div>
+      {socialLinks.length > 0 && (
+        <section class="model-section model-social" aria-labelledby="model-social-title">
+          <p class="model-section-label">Links</p>
+          <h2 id="model-social-title">SNS</h2>
+          <div class="model-social-links">
+            {socialLinks.map((link) => (
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                {link.label}
+                <span>{link.value}</span>
+              </a>
+            ))}
+          </div>
+        </section>
       )}
     </div>
   </div>
 
   <!-- 出演作品 -->
   {relatedWorks.length > 0 && (
-    <section class="model-works">
-      <p class="section-title">Works</p>
+    <section class="model-section model-works" aria-labelledby="model-works-title">
+      <p class="model-section-label">Works</p>
+      <h2 id="model-works-title">Works</h2>
       <div class="work-grid">
         {relatedWorks.map((work) => (
           <a href={`/works/${work.id}/`} class="work-card">
@@ -107,3 +142,67 @@ const relatedWorks = worksData
     </section>
   )}
 </Layout>
+
+<style>
+  .model-section {
+    margin-top: 2rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid #e8e0f2;
+  }
+
+  .model-works {
+    margin-top: 3.5rem;
+  }
+
+  .model-section-label {
+    margin-bottom: 0.45rem;
+    color: #8a74a8;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .model-section h2 {
+    margin: 0 0 1rem;
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .model-social-links {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .model-social-links a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid #e8e0f2;
+    color: #111;
+  }
+
+  .model-social-links a:last-child {
+    border-bottom: 1px solid #e8e0f2;
+  }
+
+  .model-social-links span {
+    color: #8a74a8;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 520px) {
+    .model-social-links a {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .model-social-links span {
+      text-align: left;
+    }
+  }
+</style>

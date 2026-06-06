@@ -1,0 +1,273 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const conceptImage = "/images/site/about-aoi.webp";
+---
+
+<Layout title="About | 光の記録 ー光景ノオトー">
+  <section class="about-hero" aria-labelledby="about-title">
+    <p class="about-label">About</p>
+    <h1 id="about-title">井戸歩について</h1>
+    <div class="about-profile">
+      <p class="about-name">井戸歩</p>
+      <p class="about-role">ハイパーメディアクリエイティブフォトグラファー</p>
+      <div class="about-profile-copy">
+        <p>京都を拠点に、<br />光景ポートレートを撮影しています。</p>
+        <p>人と光が出会う一瞬を、<br />静かな記録として残しています。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-concept" aria-labelledby="concept-title">
+    <div class="about-concept-copy">
+      <p class="about-label">Concept</p>
+      <h2 id="concept-title">光景ポートレートとは</h2>
+      <div class="about-concept-text">
+        <p>光景ポートレート。</p>
+        <p>
+          人物を主役にしながらも、そこに差す光、空気、余白、
+          そして時間の気配まで写しとること。
+        </p>
+        <p>「写真は真を写すのではなく、光を写す。」</p>
+      </div>
+    </div>
+    <div class="about-concept-image">
+      <img src={conceptImage} alt="光景ポートレートの代表作品" loading="lazy" />
+    </div>
+  </section>
+
+  <section class="about-section" aria-labelledby="gear-title">
+    <p class="about-label">Gear</p>
+    <h2 id="gear-title">主な使用機材</h2>
+    <div class="about-gear-grid">
+      <section class="about-gear-system" aria-label="Canon system">
+        <h3>Canon EOS R6 Mark II</h3>
+        <ul>
+          <li>EF70-200mm F2.8</li>
+          <li>RF35mm F1.4</li>
+        </ul>
+      </section>
+
+      <section class="about-gear-system" aria-label="FUJIFILM system">
+        <h3>FUJIFILM X-T5</h3>
+        <ul>
+          <li>XF56mm F1.2</li>
+          <li>XF35mm F1.4</li>
+        </ul>
+      </section>
+    </div>
+  </section>
+
+  <section class="about-section" aria-labelledby="sns-title">
+    <p class="about-label">Links</p>
+    <h2 id="sns-title">SNS</h2>
+    <div class="about-social-links">
+      <a href="https://x.com/huran_1212" target="_blank" rel="noopener noreferrer">
+        X <span>@huran_1212</span>
+      </a>
+      <a href="https://www.instagram.com/ido_ayumu/" target="_blank" rel="noopener noreferrer">
+        Instagram <span>ido_ayumu</span>
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .about-hero,
+  .about-concept,
+  .about-section {
+    width: min(100%, 820px);
+    margin-inline: auto;
+  }
+
+  .about-hero {
+    padding: 1.25rem 0 3rem;
+  }
+
+  .about-label {
+    margin-bottom: 0.7rem;
+    color: #8a74a8;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .about-hero h1 {
+    margin-bottom: 2rem;
+    font-size: clamp(2.2rem, 11vw, 4.4rem);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+  }
+
+  .about-profile {
+    display: grid;
+    gap: 0.65rem;
+    max-width: 42rem;
+  }
+
+  .about-profile p {
+    margin: 0;
+  }
+
+  .about-name {
+    font-size: 1.25rem;
+    letter-spacing: 0.08em;
+  }
+
+  .about-role {
+    color: #8a74a8;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .about-profile-copy {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .about-profile-copy p {
+    color: #444;
+    line-height: 2.05;
+  }
+
+  .about-profile-copy p:last-child {
+    color: #444;
+    line-height: 2.05;
+  }
+
+  .about-concept {
+    margin-top: 1rem;
+    display: grid;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e8e0f2;
+  }
+
+  .about-concept h2,
+  .about-section h2 {
+    margin: 0 0 1.4rem;
+    font-size: clamp(1.45rem, 7vw, 2.35rem);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .about-concept-text {
+    display: grid;
+    gap: 1rem;
+    max-width: 42rem;
+  }
+
+  .about-concept-text p {
+    margin: 0;
+    color: #444;
+    line-height: 2;
+  }
+
+  .about-concept-text p:first-child,
+  .about-concept-text p:last-child {
+    color: #111;
+    font-size: 1.08rem;
+  }
+
+  .about-concept-image {
+    overflow: hidden;
+    background: #f1eef7;
+  }
+
+  .about-concept-image img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .about-section {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e8e0f2;
+  }
+
+  .about-gear-grid {
+    display: grid;
+    gap: 1.6rem;
+  }
+
+  .about-gear-system {
+    padding-top: 1rem;
+    border-top: 1px solid #e8e0f2;
+  }
+
+  .about-gear-system h3 {
+    margin-bottom: 1rem;
+    color: #111;
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.55;
+  }
+
+  .about-gear-system ul {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-gear-system li {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .about-gear-system li::before {
+    content: "";
+    display: inline-block;
+    width: 1.4rem;
+    height: 1px;
+    margin-right: 0.65rem;
+    vertical-align: middle;
+    background: #b9a5d4;
+  }
+
+  .about-social-links {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .about-social-links a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid #e8e0f2;
+    color: #111;
+  }
+
+  .about-social-links a:last-child {
+    border-bottom: 1px solid #e8e0f2;
+  }
+
+  .about-social-links span {
+    color: #8a74a8;
+  }
+
+  @media (min-width: 720px) {
+    .about-hero {
+      padding-top: 2.5rem;
+    }
+
+    .about-concept {
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
+      align-items: center;
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+
+    .about-gear-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem;
+    }
+  }
+</style>

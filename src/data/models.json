@@ -5,8 +5,8 @@
     "nameKana": "ミナセアオイ",
     "nameEn": "Aoi Minase",
     "aliases": [],
-    "agency": "",
-    "bio": "マナコレ撮影会",
+    "agency": "マナコレ撮影会",
+    "bio": "",
     "thumbnail": "minaseaoi_thumb.jpg",
     "links": {
       "instagram": "https://www.instagram.com/minase_aoi1/",
@@ -52,7 +52,7 @@
   {
     "id": "marin_manacolle",
     "name": "Marin",
-    "nameKana": "",
+    "nameKana": "マリン",
     "nameEn": "",
     "aliases": [
       "Marin"

@@ -4,31 +4,55 @@ import Layout from "../../layouts/Layout.astro";
 import modelsData from "../../data/models.json";
 import worksData from "../../data/works.json";
 
+function normalizeSortName(model) {
+  const raw = String(model.sortName || model.kana || model.nameKana || model.name || model.id || "").trim();
+  const normalized = raw
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[ァ-ン]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0x60));
+
+  return {
+    group: model.nameKana || model.kana || model.sortName ? 0 : 1,
+    value: normalized,
+  };
+}
+
 // 同名モデルがいる場合に所属を補足表示するロジック
 const nameCounts = modelsData.reduce((acc, model) => {
   acc[model.name] = (acc[model.name] || 0) + 1;
   return acc;
 }, {} as Record<string, number>);
 
-const models = modelsData.map((model) => {
-  const hasDuplicateName = nameCounts[model.name] > 1;
-  const displayName = hasDuplicateName && model.agency
-    ? `${model.name}（${model.agency}）`
-    : model.name;
-  const workCount = worksData.filter((work) => {
-    const workModelIds = Array.isArray(work.modelIds)
-      ? work.modelIds
-      : work.models || [];
+const models = modelsData
+  .map((model) => {
+    const hasDuplicateName = nameCounts[model.name] > 1;
+    const displayName = hasDuplicateName && model.agency
+      ? `${model.name}（${model.agency}）`
+      : model.name;
+    const listAgency = !hasDuplicateName && model.agency ? model.agency : "";
+    const workCount = worksData.filter((work) => {
+      const workModelIds = Array.isArray(work.modelIds)
+        ? work.modelIds
+        : work.models || [];
 
-    return workModelIds.includes(model.id);
-  }).length;
-  return { ...model, displayName, workCount };
-});
+      return workModelIds.includes(model.id);
+    }).length;
+    return { ...model, displayName, listAgency, workCount, sortKey: normalizeSortName(model) };
+  })
+  .sort((a, b) => {
+    if (a.sortKey.group !== b.sortKey.group) return a.sortKey.group - b.sortKey.group;
+    const nameCompare = a.sortKey.value.localeCompare(b.sortKey.value, "ja");
+    return nameCompare || a.id.localeCompare(b.id, "en");
+  });
 ---
 
 <Layout title="Models" currentPath="/models">
   <div class="page-heading">
     <h1>Models</h1>
+    <p>
+      これまで撮影してきたモデルの記録です。<br />
+      作品ページとあわせて、光景ポートレートの歩みとして残しています。
+    </p>
   </div>
 
   <ul class="models-list">
@@ -41,15 +65,16 @@ const models = modelsData.map((model) => {
             <img
               src={`/images/models/${model.thumbnail}`}
               alt={model.displayName}
+              loading="lazy"
             />
           </div>
 
           <!-- テキスト -->
           <div class="models-list-text">
             <span class="models-list-name">{model.displayName}</span>
-            {model.agency && nameCounts[model.name] === 1 && (
-              <span class="models-list-agency">{model.agency}</span>
-            )}
+            <span class="models-list-agency" aria-hidden={model.listAgency ? undefined : "true"}>
+              {model.listAgency || "\u00A0"}
+            </span>
           </div>
 
           <!-- 作品数 -->
@@ -60,3 +85,84 @@ const models = modelsData.map((model) => {
     ))}
   </ul>
 </Layout>
+
+<style>
+  .page-heading {
+    margin-bottom: 2rem;
+  }
+
+  .page-heading h1 {
+    margin-bottom: 0.75rem;
+  }
+
+  .page-heading p {
+    max-width: 38rem;
+    color: #555;
+    line-height: 2;
+  }
+
+  .models-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .models-list-link {
+    display: grid;
+    gap: 0.75rem;
+    color: inherit;
+  }
+
+  .models-list-thumb {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #f0f0eb;
+  }
+
+  .models-list-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+  }
+
+  .models-list-link:hover .models-list-thumb img {
+    transform: scale(1.015);
+  }
+
+  .models-list-text {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .models-list-name {
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+
+  .models-list-agency,
+  .models-list-count {
+    color: #666;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
+  .models-list-count {
+    color: #8a74a8;
+  }
+
+  @media (max-width: 560px) {
+    .models-list {
+      grid-template-columns: 1fr;
+      gap: 1.8rem;
+    }
+
+    .models-list-thumb {
+      aspect-ratio: 3 / 2;
+    }
+  }
+</style>
