@@ -144,6 +144,60 @@ if (links.website) {
 </Layout>
 
 <style>
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: #8a74a8;
+    font-size: 0.9rem;
+  }
+
+  .model-profile {
+    display: grid;
+    gap: 1.8rem;
+    width: min(100%, 920px);
+    margin-inline: auto;
+    padding-top: 0.5rem;
+  }
+
+  .model-profile-image {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #f1eef7;
+  }
+
+  .model-profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .model-profile-info {
+    min-width: 0;
+  }
+
+  .model-profile-name {
+    margin: 0;
+    font-size: clamp(2rem, 10vw, 4rem);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+  }
+
+  .model-profile-agency {
+    margin: 0.8rem 0 0;
+    color: #8a74a8;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .model-profile-bio {
+    max-width: 34rem;
+    margin: 1.2rem 0 0;
+    color: #444;
+    line-height: 2;
+  }
+
   .model-section {
     margin-top: 2rem;
     padding-top: 1.4rem;
@@ -192,6 +246,19 @@ if (links.website) {
     color: #8a74a8;
     text-align: right;
     overflow-wrap: anywhere;
+  }
+
+  @media (min-width: 720px) {
+    .model-profile {
+      grid-template-columns: minmax(320px, 1.05fr) minmax(0, 0.95fr);
+      align-items: center;
+      gap: clamp(1.5rem, 4vw, 3rem);
+      padding-top: 1.5rem;
+    }
+
+    .model-social {
+      margin-top: 2.5rem;
+    }
   }
 
   @media (max-width: 520px) {
