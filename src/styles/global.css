@@ -43,6 +43,10 @@ img {
   letter-spacing: 0.04em;
 }
 
+.site-title-short {
+  display: none;
+}
+
 .site-nav {
   display: flex;
   gap: 1.25rem;
@@ -51,6 +55,34 @@ img {
 .site-nav a {
   font-size: 0.95rem;
   color: #444;
+}
+
+@media (max-width: 560px) {
+  .site-header-inner {
+    gap: 1rem;
+  }
+
+  .site-title {
+    flex-shrink: 0;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .site-title-full {
+    display: none;
+  }
+
+  .site-title-short {
+    display: inline;
+  }
+
+  .site-nav {
+    gap: 0.8rem;
+  }
+
+  .site-nav a {
+    font-size: 0.9rem;
+  }
 }
 
 .site-main {
