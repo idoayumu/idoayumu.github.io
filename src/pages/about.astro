@@ -25,7 +25,7 @@ const conceptImage = "/images/site/about-aoi.webp";
       <div class="about-concept-text">
         <p>光景ポートレート。</p>
         <p>
-          人物を主役にしながらも、そこに差す光、空気、余白、
+          人物を主役にしながらも、そこに差す光、空気、<span class="no-break">余白</span>、
           そして時間の気配まで写しとること。
         </p>
         <p>「写真は真を写すのではなく、光を写す。」</p>
@@ -163,6 +163,10 @@ const conceptImage = "/images/site/about-aoi.webp";
     margin: 0;
     color: #444;
     line-height: 2;
+  }
+
+  .no-break {
+    white-space: nowrap;
   }
 
   .about-concept-text p:first-child,
