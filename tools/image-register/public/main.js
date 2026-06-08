@@ -3,12 +3,14 @@ const fileMode = document.getElementById('fileMode');
 const pathMode = document.getElementById('pathMode');
 const imageFile = document.getElementById('imageFile');
 const preview = document.getElementById('preview');
+const imageInfo = document.getElementById('imageInfo');
 const form = document.getElementById('metaForm');
 const result = document.getElementById('result');
 const clearFormButton = document.getElementById('clearForm');
 const modelIdsInput = document.getElementById('modelIds');
 const modelSearch = document.getElementById('modelSearch');
 const modelSuggestions = document.getElementById('modelSuggestions');
+const selectedModels = document.getElementById('selectedModels');
 const productionsList = document.getElementById('productions');
 const locationsList = document.getElementById('locations');
 const titleInput = form.elements.title;
@@ -19,9 +21,19 @@ const workIdModelName = document.getElementById('workIdModelName');
 const workIdSequence = document.getElementById('workIdSequence');
 const workIdPreview = document.getElementById('workIdPreview');
 const titleDuplicateWarning = document.getElementById('titleDuplicateWarning');
+const modeInputs = Array.from(document.querySelectorAll('input[name="modeSwitch"]'));
+const editWorkSelectorWrap = document.getElementById('editWorkSelectorWrap');
+const editWorkSelect = document.getElementById('editWorkSelect');
+const editImageNote = document.getElementById('editImageNote');
+const editIdNote = document.getElementById('editIdNote');
+const overwriteWrap = document.getElementById('overwriteWrap');
+const productionInput = form.elements.production;
 
 let modelCandidates = [];
+let works = [];
 let existingWorkTitles = [];
+let currentMode = 'create';
+let currentEditWork = null;
 
 function todayParts() {
   const now = new Date();
@@ -36,10 +48,9 @@ function todayParts() {
   };
 }
 
-function setRegistrationDate() {
-  const registrationDate = todayParts();
-  registrationDateDisplay.textContent = registrationDate.display;
-  registrationDatePrefix.textContent = registrationDate.prefix;
+function setRegistrationDate(parts = todayParts()) {
+  registrationDateDisplay.textContent = parts.display;
+  registrationDatePrefix.textContent = parts.prefix;
 }
 
 function getGeneratedWorkId() {
@@ -55,27 +66,33 @@ function updateWorkIdPreview() {
   workIdInput.value = workId;
   workIdPreview.textContent = workId || '未入力';
   workIdPreview.classList.toggle('is-empty', !workId);
+  renderImageInfo();
 }
 
 useSourcePathChk.addEventListener('change', () => {
   const usePath = useSourcePathChk.checked;
-  pathMode.style.display = usePath ? '' : 'none';
-  fileMode.style.display = usePath ? 'none' : '';
-  preview.innerHTML = '';
+  pathMode.hidden = !usePath;
+  fileMode.hidden = usePath;
+  if (usePath) {
+    preview.innerHTML = '';
+  } else if (currentMode === 'edit' && currentEditWork && !imageFile.files?.[0]) {
+    renderExistingWorkPreview(currentEditWork);
+  }
   imageFile.value = '';
+  renderImageInfo();
 });
 
 imageFile.addEventListener('change', () => {
   preview.innerHTML = '';
+  renderImageInfo();
   const f = imageFile.files && imageFile.files[0];
   if (!f) return;
   const url = URL.createObjectURL(f);
   const img = new Image();
   img.src = url;
-  img.style.maxWidth = '400px';
-  img.style.maxHeight = '300px';
   img.onload = () => URL.revokeObjectURL(url);
   preview.appendChild(img);
+  renderImageInfo();
 });
 
 function normalizeText(value) {
@@ -92,7 +109,10 @@ function normalizeTitle(value) {
 
 function renderTitleDuplicateWarning() {
   const title = normalizeTitle(titleInput.value);
-  const hasDuplicate = title && existingWorkTitles.some((existingTitle) => normalizeTitle(existingTitle) === title);
+  const currentId = currentMode === 'edit' ? currentEditWork?.id : '';
+  const hasDuplicate = title && existingWorkTitles.some((work) => (
+    work.id !== currentId && normalizeTitle(work.title) === title
+  ));
 
   titleDuplicateWarning.textContent = hasDuplicate
     ? '同じタイトルの作品が既に存在します。必要であればそのまま登録できます。'
@@ -118,26 +138,250 @@ function setSelectedModelIds(ids) {
   modelIdsInput.value = ids.map((id) => id.trim()).filter(Boolean).join(',');
 }
 
+function getModelSortValue(model, id) {
+  return normalizeText(model?.nameKana || model?.name || id);
+}
+
+function getSortedModelIdsForWorkId() {
+  return getSelectedModelIds()
+    .map((id) => ({
+      id,
+      model: modelCandidates.find((candidate) => candidate.id === id)
+    }))
+    .sort((a, b) => {
+      const sortByName = getModelSortValue(a.model, a.id).localeCompare(getModelSortValue(b.model, b.id), 'ja');
+      if (sortByName !== 0) return sortByName;
+      return a.id.localeCompare(b.id);
+    })
+    .map((item) => item.id);
+}
+
+function syncWorkIdModelNameFromSelection() {
+  const generatedModelName = getSortedModelIdsForWorkId().join('_');
+  workIdModelName.value = generatedModelName;
+  updateWorkIdPreview();
+}
+
 function addModelId(id) {
   const selected = getSelectedModelIds();
   if (!selected.includes(id)) {
     setSelectedModelIds([...selected, id]);
   }
+  syncWorkIdModelNameFromSelection();
   modelSearch.value = '';
+  renderSelectedModels();
   renderModelSuggestions();
-  modelIdsInput.focus();
+  modelSearch.focus();
+}
+
+function removeModelId(id) {
+  const selected = getSelectedModelIds().filter((modelId) => modelId !== id);
+  setSelectedModelIds(selected);
+  syncWorkIdModelNameFromSelection();
+  renderSelectedModels();
+  renderModelSuggestions();
+}
+
+function getModelLabel(model) {
+  return model.displayName
+    ? `${model.name}（${model.displayName}）`
+    : model.name || '(名称未設定)';
+}
+
+function renderSelectedModels() {
+  const selected = getSelectedModelIds();
+  selectedModels.innerHTML = '';
+
+  if (!selected.length) {
+    selectedModels.textContent = '未選択';
+    selectedModels.classList.add('is-empty');
+    return;
+  }
+
+  selectedModels.classList.remove('is-empty');
+
+  selected.forEach((id) => {
+    const model = modelCandidates.find((candidate) => candidate.id === id);
+    const tag = document.createElement('button');
+    tag.type = 'button';
+    tag.className = 'model-tag';
+    tag.addEventListener('click', () => removeModelId(id));
+
+    const label = model
+      ? [getModelLabel(model), model.agency].filter(Boolean).join(' / ')
+      : id;
+
+    tag.textContent = `${label} ×`;
+    selectedModels.appendChild(tag);
+  });
+}
+
+function renderImageInfo() {
+  const file = imageFile.files && imageFile.files[0];
+  const workId = getGeneratedWorkId();
+  const existingImage = currentMode === 'edit' && currentEditWork
+    ? currentEditWork.image || currentEditWork.thumbnail || ''
+    : '';
+
+  if (!file && !workId && !existingImage) {
+    imageInfo.innerHTML = '';
+    return;
+  }
+
+  const fileName = file ? file.name : currentMode === 'edit' ? '未選択（既存画像を維持）' : '未選択';
+  imageInfo.innerHTML = '';
+
+  const list = document.createElement('dl');
+
+  [
+    ['選択画像', fileName],
+    ['生成予定ID', workId || '未入力'],
+    ...(existingImage ? [['既存画像', existingImage]] : [])
+  ].forEach(([label, value]) => {
+    const row = document.createElement('div');
+    const term = document.createElement('dt');
+    const description = document.createElement('dd');
+
+    term.textContent = label;
+    description.textContent = value;
+    row.append(term, description);
+    list.appendChild(row);
+  });
+
+  imageInfo.appendChild(list);
 }
 
 function resetImageInput() {
   useSourcePathChk.checked = false;
-  pathMode.style.display = 'none';
-  fileMode.style.display = '';
+  pathMode.hidden = true;
+  fileMode.hidden = false;
   preview.innerHTML = '';
+  imageInfo.innerHTML = '';
   imageFile.value = '';
   document.getElementById('sourcePath').value = '';
 }
 
+function renderExistingWorkPreview(work) {
+  preview.innerHTML = '';
+  const src = work?.image || work?.thumbnail || '';
+  if (!src) return;
+
+  const img = new Image();
+  img.src = src;
+  preview.appendChild(img);
+}
+
+function parseWorkIdParts(id) {
+  const match = String(id || '').match(/^(\d{2})(\d{2})(\d{2})([A-Za-z0-9][A-Za-z0-9_]*)_(\d{4})$/);
+  if (!match) return null;
+
+  const [, year, month, day, modelName, sequence] = match;
+  return {
+    display: `20${year}/${month}/${day}`,
+    prefix: `${year}${month}${day}`,
+    modelName,
+    sequence
+  };
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  const isEdit = currentMode === 'edit';
+
+  editWorkSelectorWrap.hidden = !isEdit;
+  editImageNote.hidden = !isEdit;
+  editIdNote.hidden = !isEdit;
+  overwriteWrap.hidden = isEdit;
+  productionInput.required = !isEdit;
+  clearFormButton.textContent = isEdit ? '入力を戻す' : '一括クリア';
+  form.querySelector('button[type="submit"]').textContent = isEdit ? '保存' : '決定（登録）';
+  currentEditWork = null;
+  editWorkSelect.value = '';
+  result.textContent = '';
+  modelSearch.value = '';
+  form.reset();
+  modeInputs.forEach((input) => {
+    input.checked = input.value === currentMode;
+  });
+  resetImageInput();
+  setRegistrationDate();
+  updateWorkIdPreview();
+  renderSelectedModels();
+  renderModelSuggestions();
+  renderTitleDuplicateWarning();
+}
+
+function workOptionLabel(work) {
+  const models = Array.isArray(work.modelNames) && work.modelNames.length
+    ? work.modelNames.join('・')
+    : getWorkModelIds(work).join(',');
+  return [work.id, work.title, models].filter(Boolean).join(' / ');
+}
+
+function getWorkModelIds(work) {
+  return Array.isArray(work?.modelIds) ? work.modelIds : work?.models || [];
+}
+
+function fillWorkSelect() {
+  editWorkSelect.innerHTML = '<option value="">選択してください</option>';
+  works.forEach((work) => {
+    const option = document.createElement('option');
+    option.value = work.id;
+    option.textContent = workOptionLabel(work);
+    editWorkSelect.appendChild(option);
+  });
+}
+
+async function loadWorks() {
+  try {
+    const resp = await fetch('/api/works');
+    const json = await resp.json();
+    if (!resp.ok || !json.ok) throw new Error(json.message || resp.statusText);
+    works = json.works || [];
+    fillWorkSelect();
+  } catch (err) {
+    console.error(err);
+    result.innerHTML = '<span class="error">既存作品を読み込めません。</span>';
+  }
+}
+
+function fillFormFromWork(work) {
+  if (!work) return;
+  currentEditWork = work;
+
+  form.elements.title.value = work.title || '';
+  form.elements.date.value = work.date || '';
+  form.elements.location.value = work.location || '';
+  form.elements.production.value = work.production || '';
+  form.elements.caption.value = work.caption || '';
+  setSelectedModelIds(getWorkModelIds(work));
+
+  const idParts = parseWorkIdParts(work.id);
+  if (idParts) {
+    setRegistrationDate({ display: idParts.display, prefix: idParts.prefix });
+    workIdModelName.value = idParts.modelName;
+    workIdSequence.value = idParts.sequence;
+  } else {
+    syncWorkIdModelNameFromSelection();
+    workIdSequence.value = '';
+  }
+
+  resetImageInput();
+  renderExistingWorkPreview(work);
+  updateWorkIdPreview();
+  renderSelectedModels();
+  renderModelSuggestions();
+  renderTitleDuplicateWarning();
+}
+
 function clearForm() {
+  if (currentMode === 'edit' && currentEditWork) {
+    if (!window.confirm('編集中の入力を選択時の内容へ戻します。よろしいですか？')) return;
+    fillFormFromWork(currentEditWork);
+    result.textContent = '';
+    return;
+  }
+
   if (!window.confirm('フォーム内容を一括クリアします。よろしいですか？')) return;
 
   form.reset();
@@ -146,6 +390,7 @@ function clearForm() {
   result.textContent = '';
   setRegistrationDate();
   updateWorkIdPreview();
+  renderSelectedModels();
   renderModelSuggestions();
   renderTitleDuplicateWarning();
   workIdModelName.focus();
@@ -175,6 +420,8 @@ function renderModelSuggestions() {
       const searchText = normalizeText([
         model.id,
         model.name,
+        model.displayName,
+        model.nameKana,
         model.agency,
         ...(Array.isArray(model.aliases) ? model.aliases : [])
       ].join(' '));
@@ -196,11 +443,18 @@ function renderModelSuggestions() {
 
     const name = document.createElement('span');
     name.className = 'suggestion-name';
-    name.textContent = model.name || '(名称未設定)';
+    name.textContent = getModelLabel(model);
 
     const meta = document.createElement('span');
     meta.className = 'suggestion-meta';
-    meta.textContent = [model.id, model.agency].filter(Boolean).join(' / ');
+    const metaItems = [
+      model.agency ? `所属: ${model.agency}` : '所属: 未設定',
+      `ID: ${model.id}`,
+      `${model.workCount || 0} works`,
+      model.nameKana ? `読み: ${model.nameKana}` : '',
+      Array.isArray(model.aliases) && model.aliases.length ? `別名: ${model.aliases.join(', ')}` : ''
+    ].filter(Boolean);
+    meta.textContent = metaItems.join(' / ');
 
     button.append(name, meta);
     modelSuggestions.appendChild(button);
@@ -214,9 +468,12 @@ async function loadSuggestions() {
     if (!resp.ok || !json.ok) throw new Error(json.message || resp.statusText);
 
     modelCandidates = json.models || [];
-    existingWorkTitles = json.workTitles || [];
+    existingWorkTitles = (json.workTitleEntries || []).length
+      ? json.workTitleEntries
+      : (json.workTitles || []).map((title) => ({ id: '', title }));
     fillDatalist(productionsList, json.productions || []);
     fillDatalist(locationsList, json.locations || []);
+    renderSelectedModels();
     renderModelSuggestions();
     renderTitleDuplicateWarning();
   } catch (err) {
@@ -232,24 +489,61 @@ workIdSequence.addEventListener('input', updateWorkIdPreview);
 titleInput.addEventListener('input', renderTitleDuplicateWarning);
 clearFormButton.addEventListener('click', clearForm);
 modelSearch.addEventListener('input', renderModelSuggestions);
-modelIdsInput.addEventListener('input', renderModelSuggestions);
+modelIdsInput.addEventListener('input', () => {
+  syncWorkIdModelNameFromSelection();
+  renderSelectedModels();
+  renderModelSuggestions();
+});
 loadSuggestions();
+loadWorks();
+
+async function readApiResponse(resp) {
+  const contentType = resp.headers.get('content-type') || '';
+  const text = await resp.text();
+
+  if (contentType.includes('application/json')) {
+    try {
+      return { data: JSON.parse(text) };
+    } catch {
+      throw new Error(`HTTP ${resp.status}: JSONの解析に失敗しました。${text.slice(0, 200)}`);
+    }
+  }
+
+  return {
+    data: {
+      ok: false,
+      message: text.trim() || resp.statusText || 'サーバーから空の応答が返りました。'
+    }
+  };
+}
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  result.textContent = '登録中...';
+  result.textContent = currentMode === 'edit' ? '保存中...' : '登録中...';
 
   const fd = new FormData(form);
   const workId = getGeneratedWorkId();
-  if (!workId) {
+  if (currentMode === 'create' && !workId) {
     result.innerHTML = '<span class="error">モデル名は半角英数字または _、通し番号は4桁数字で入力してください。</span>';
     return;
   }
 
-  fd.set('id', workId);
+  if (currentMode === 'edit' && !currentEditWork) {
+    result.innerHTML = '<span class="error">編集する作品を選択してください。</span>';
+    return;
+  }
+
+  fd.set('id', currentMode === 'edit' ? currentEditWork.id : workId);
+  fd.set('mode', currentMode);
   fd.set('modelIds', getSelectedModelIds().join(','));
   const usePath = useSourcePathChk.checked;
   fd.append('useSourcePath', usePath ? 'true' : 'false');
+
+  const updatesExistingImage = currentMode === 'edit' && (usePath || Boolean(imageFile.files && imageFile.files[0]));
+  if (updatesExistingImage && !window.confirm('既存画像を上書きします。元画像は .bak に退避しますが、表示画像は置き換わります。続行しますか？')) {
+    result.textContent = '画像上書きをキャンセルしました。';
+    return;
+  }
 
   if (usePath) {
     const p = document.getElementById('sourcePath').value.trim();
@@ -258,28 +552,46 @@ form.addEventListener('submit', async (e) => {
       return;
     }
     fd.append('sourcePath', p);
-  } else {
+  } else if (currentMode === 'create') {
     if (!imageFile.files || !imageFile.files[0]) {
       result.textContent = '画像ファイルを選択してください。';
       return;
     }
-    fd.append('imageFile', imageFile.files[0]);
+    fd.set('imageFile', imageFile.files[0]);
+  } else if (imageFile.files && imageFile.files[0]) {
+    fd.set('imageFile', imageFile.files[0]);
   }
 
   try {
     const resp = await fetch('/api/register', { method: 'POST', body: fd });
-    const json = await resp.json();
+    const { data: json } = await readApiResponse(resp);
     if (!resp.ok || !json.ok) {
-      result.innerHTML = `<span class="error">失敗: ${json.message || resp.statusText}</span>`;
+      result.innerHTML = `<span class="error">失敗: HTTP ${resp.status} ${json.message || resp.statusText}</span>`;
     } else {
       const e = json.entry;
       result.innerHTML = `
-        <div class="success">登録成功</div>
+        <div class="success">${currentMode === 'edit' ? '保存成功' : '登録成功'}</div>
         <pre>${JSON.stringify(e, null, 2)}</pre>
       `;
+      await Promise.all([loadSuggestions(), loadWorks()]);
+      if (currentMode === 'edit') {
+        editWorkSelect.value = e.id;
+        fillFormFromWork(e);
+      }
     }
   } catch (err) {
     console.error(err);
-    result.innerHTML = `<span class="error">通信エラー</span>`;
+    const message = err instanceof Error ? err.message : String(err);
+    result.innerHTML = `<span class="error">通信エラー: ${message}</span>`;
   }
+});
+
+modeInputs.forEach((input) => {
+  input.addEventListener('change', () => setMode(input.value));
+});
+
+editWorkSelect.addEventListener('change', () => {
+  result.textContent = '';
+  const work = works.find((item) => item.id === editWorkSelect.value);
+  fillFormFromWork(work);
 });

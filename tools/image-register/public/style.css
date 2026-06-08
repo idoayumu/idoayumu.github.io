@@ -1,40 +1,273 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
+    margin: 0;
+    padding: 24px;
+    background: #f8f8f6;
+    color: #111;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    padding: 16px;
+    line-height: 1.7;
+}
+
+.page-shell {
+    width: min(100%, 980px);
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 22px;
 }
 
 h1 {
-    margin-bottom: 12px;
+    margin: 0;
+    font-size: 1.9rem;
+    line-height: 1.25;
+}
+
+.page-header p {
+    margin: 6px 0 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.register-form {
+    display: grid;
+    gap: 18px;
+}
+
+.mode-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    margin-bottom: 16px;
+    padding: 12px;
+    border: 1px solid #deded6;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.mode-switch label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+}
+
+.mode-switch input {
+    width: auto;
+    margin: 0;
+}
+
+.edit-selector {
+    display: block;
+    margin-bottom: 18px;
+    padding: 14px;
+    border: 1px solid #deded6;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.edit-selector select {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.tool-section {
+    padding: 18px;
+    border: 1px solid #deded6;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.section-heading {
+    margin-bottom: 14px;
+}
+
+.section-heading p {
+    margin: 0 0 2px;
+    color: #8a74a8;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.4;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
+    gap: 14px;
+}
+
+.two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field-full {
+    grid-column: 1 / -1;
 }
 
 label {
     display: block;
-    font-weight: 600;
+    min-width: 0;
+    font-weight: 700;
+}
+
+input,
+textarea,
+select,
+button {
+    font: inherit;
 }
 
 label input,
 label textarea,
 label select {
     width: 100%;
-    margin-top: 4px;
+    margin-top: 5px;
     font-weight: 400;
+}
+
+input,
+textarea,
+select {
+    padding: 10px 12px;
+    border: 1px solid #d8d8d0;
+    border-radius: 4px;
+    background: #fff;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-weight: 600;
+}
+
+.checkbox-label input {
+    width: auto;
+    margin: 0;
+}
+
+.image-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.85fr) minmax(320px, 1.15fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.image-controls {
+    display: grid;
+    gap: 12px;
+}
+
+.path-mode {
+    display: grid;
+    gap: 8px;
+}
+
+.preview-panel {
+    min-width: 0;
+}
+
+#preview {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 260px;
+    aspect-ratio: 3 / 2;
+    margin-top: 6px;
+    overflow: hidden;
+    border: 1px dashed #d8d8d0;
+    border-radius: 6px;
+    background: #f1f1ec;
+}
+
+#preview:empty::before {
+    content: "画像を選択するとプレビューが表示されます";
+    padding: 16px;
+    color: #777;
+    font-size: 0.92rem;
+    text-align: center;
+}
+
+#preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.image-info {
+    color: #555;
+    font-size: 0.92rem;
+}
+
+.image-info dl {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+}
+
+.image-info div {
+    display: grid;
+    gap: 2px;
+    padding: 9px 10px;
+    border: 1px solid #ecece4;
+    border-radius: 4px;
+    background: #fbfbf8;
+}
+
+.image-info dt {
+    color: #777;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.image-info dd {
+    margin: 0;
+    color: #111;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    overflow-wrap: anywhere;
 }
 
 .readonly-value {
     display: block;
-    min-height: 1.4em;
-    margin-top: 4px;
-    font-weight: 600;
+    min-height: 1.45em;
+    margin-top: 5px;
+    padding: 9px 10px;
+    border: 1px solid #ecece4;
+    border-radius: 4px;
+    background: #fbfbf8;
+    font-weight: 700;
 }
 
 .preview-value {
+    color: #111;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
 }
 
 .preview-value.is-empty {
@@ -43,49 +276,89 @@ label select {
     font-weight: 400;
 }
 
-.row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.id-grid {
     margin-top: 12px;
 }
 
 .model-picker {
-    margin-top: 12px;
+    display: grid;
+    gap: 14px;
+}
+
+.field-title {
+    margin: 0 0 6px;
+    font-weight: 700;
+}
+
+.field-help {
+    display: block;
+    margin-top: 4px;
+    color: #666;
+    font-size: 0.84rem;
+    font-weight: 400;
+}
+
+.selected-model-area {
+    padding: 12px;
+    border: 1px solid #ecece4;
+    border-radius: 6px;
+    background: #fbfbf8;
+}
+
+.selected-models {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 38px;
+    color: #555;
+    font-size: 0.92rem;
+}
+
+.selected-models.is-empty {
+    align-items: center;
+}
+
+.model-tag {
+    padding: 7px 11px;
+    border: 1px solid #d8d8d0;
+    border-radius: 999px;
+    background: #fff;
+    color: #222;
+}
+
+.model-tag:hover {
+    background: #f2eef8;
 }
 
 .suggestions {
     display: grid;
-    gap: 6px;
-    margin-top: 8px;
-    max-width: 520px;
+    gap: 7px;
     color: #555;
-    font-size: 0.9em;
+    font-size: 0.92rem;
 }
 
 .suggestion-item {
     display: grid;
-    grid-template-columns: minmax(120px, 1fr) minmax(160px, 1.4fr);
-    gap: 8px;
+    grid-template-columns: minmax(150px, 0.8fr) minmax(240px, 1.6fr);
+    gap: 10px;
     align-items: center;
     width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #d0d7de;
+    padding: 10px 12px;
+    border: 1px solid #d8d8d0;
     border-radius: 6px;
     background: #fff;
     color: #222;
-    cursor: pointer;
     text-align: left;
 }
 
 .suggestion-item:hover {
-    background: #f6f8fa;
+    background: #fbf8ff;
 }
 
 .suggestion-item:disabled {
     color: #777;
     cursor: default;
-    background: #f6f8fa;
+    background: #f6f6f2;
 }
 
 .suggestion-name {
@@ -95,14 +368,68 @@ label select {
 .suggestion-meta {
     color: #555;
     font-size: 0.92em;
+    line-height: 1.5;
 }
 
-#preview {
-    margin-top: 8px;
+.model-ids-details {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.model-ids-details summary {
+    width: fit-content;
+    cursor: pointer;
+}
+
+.model-ids-details label {
+    margin-top: 10px;
+}
+
+.save-row {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.7fr) minmax(240px, 1fr);
+    gap: 14px;
+    align-items: end;
+}
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.primary-button,
+.secondary-button {
+    padding: 11px 16px;
+}
+
+.primary-button {
+    background: #111;
+    color: #fff;
+}
+
+.secondary-button {
+    border: 1px solid #d8d8d0;
+    background: #fff;
+    color: #111;
+}
+
+#result {
+    margin-top: 20px;
+}
+
+pre {
+    overflow: auto;
+    padding: 12px;
+    border: 1px solid #e4e4dc;
+    border-radius: 4px;
+    background: #fff;
 }
 
 .error {
     color: #b00020;
+    font-weight: 700;
 }
 
 .warning {
@@ -115,18 +442,45 @@ label select {
 }
 
 .success {
+    margin-bottom: 8px;
     color: #0a7d2b;
     font-weight: 700;
-    margin-bottom: 8px;
 }
 
 .note {
+    margin: 0;
     color: #555;
-    font-size: 0.9em;
+    font-size: 0.92rem;
 }
 
-pre {
-    background: #f6f8fa;
-    padding: 10px;
-    overflow: auto;
+@media (max-width: 760px) {
+    body {
+        padding: 16px;
+    }
+
+    .tool-section {
+        padding: 15px;
+    }
+
+    .two-col,
+    .image-layout,
+    .save-row {
+        grid-template-columns: 1fr;
+    }
+
+    .field-full {
+        grid-column: auto;
+    }
+
+    .suggestion-item {
+        grid-template-columns: 1fr;
+    }
+
+    .button-row {
+        justify-content: stretch;
+    }
+
+    .button-row button {
+        flex: 1;
+    }
 }

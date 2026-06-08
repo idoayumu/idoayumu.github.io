@@ -1,7 +1,9 @@
 // src/types/index.ts
 
 export interface ModelLinks {
+  x?: string;
   instagram?: string;
+  threads?: string;
   twitter?: string;
   website?: string;
 }
@@ -9,11 +11,14 @@ export interface ModelLinks {
 export interface Model {
   id: string;
   name: string;
+  displayName?: string;
   nameKana: string;
   nameEn: string;
   aliases: string[];
+  agency?: string;
   bio: string;
   thumbnail: string;
+  profileImagePosition?: string;
   links: ModelLinks;
   featured: boolean;
 }

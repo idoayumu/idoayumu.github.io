@@ -66,5 +66,26 @@
       "website": ""
     },
     "featured": true
+  },
+  {
+    "id": "caho",
+    "name": "Caho",
+    "displayName": "Caho",
+    "nameKana": "かほ",
+    "nameEn": "",
+    "aliases": [
+      "Caho"
+    ],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "caho_profile.webp",
+    "links": {
+      "instagram": "https://www.instagram.com/caho_portrait/",
+      "x": "https://x.com/caho_portrait",
+      "threads": "",
+      "website": ""
+    },
+    "featured": true,
+    "profileImagePosition": "center"
   }
 ]

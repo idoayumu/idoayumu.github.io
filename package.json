@@ -9,7 +9,8 @@
     "astro": "astro",
     "validate:data": "node tools/validate-data.cjs",
     "image-register": "node tools/image-register/server.cjs",
-    "model-register": "node tools/model-register/server.cjs"
+    "model-register": "node tools/model-register/server.cjs",
+    "site-settings": "node tools/site-settings/server.cjs"
   },
   "dependencies": {
     "astro": "^6.3.8",

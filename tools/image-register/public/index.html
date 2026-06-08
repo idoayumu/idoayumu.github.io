@@ -9,86 +9,176 @@
 </head>
 
 <body>
-  <h1>作品登録ツール（最小構成）</h1>
+  <main class="page-shell">
+    <header class="page-header">
+      <h1>作品登録ツール</h1>
+      <p>画像、作品情報、モデル、作品IDを確認して登録します。</p>
+    </header>
 
-  <section>
-    <label><input type="checkbox" id="useSourcePath"> 画像の絶対パスを直接指定する</label>
-    <div id="fileMode">
-      <input type="file" id="imageFile" accept="image/*" />
-      <div id="preview"></div>
-    </div>
-    <div id="pathMode" style="display:none">
-      <input type="text" id="sourcePath" placeholder="/Volumes/外付けHDD/2026/0102ももさん/ex/IMG_0001.jpg"
-        style="width:100%" />
-      <p class="note">注意: このパスは読み取りのみ。元画像は変更・移動・削除しません。</p>
-    </div>
-  </section>
-
-  <hr />
-
-  <form id="metaForm">
-    <p class="note">作品ID：登録日YYMMDD + モデル名（marin_minaseaoiなど） + _ + 通し番号4桁で自動生成されます</p>
-    <input type="hidden" name="id" id="workId" />
-    <div class="grid">
-      <label>登録日
-        <span id="registrationDateDisplay" class="readonly-value"></span>
+    <div class="mode-switch" role="radiogroup" aria-label="登録モード">
+      <label>
+        <input type="radio" name="modeSwitch" value="create" checked />
+        新規登録
       </label>
-      <label>登録日YYMMDD
-        <span id="registrationDatePrefix" class="readonly-value"></span>
-      </label>
-      <label>モデル名
-        <input id="workIdModelName" required pattern="[A-Za-z0-9_]+" placeholder="minaseaoi" />
-      </label>
-      <label>通し番号4桁
-        <input id="workIdSequence" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="0001" />
-      </label>
-      <label>作品IDプレビュー
-        <span id="workIdPreview" class="readonly-value preview-value">未入力</span>
-      </label>
-      <label>タイトル
-        <input name="title" required />
-        <span id="titleDuplicateWarning" class="warning" aria-live="polite"></span>
-      </label>
-      <label>撮影日
-        <input name="date" type="date" required />
-      </label>
-      <label>撮影場所
-        <input name="location" list="locations" required />
-        <datalist id="locations"></datalist>
-      </label>
-      <label>production
-        <input name="production" list="productions" required />
-        <datalist id="productions"></datalist>
-      </label>
-      <label>モデルIDs（カンマ区切り または ["momo_osakabimage","minaseaoi"]）
-        <input name="modelIds" id="modelIds" required placeholder='minaseaoi,momoseyuuri' />
+      <label>
+        <input type="radio" name="modeSwitch" value="edit" />
+        既存作品を編集
       </label>
     </div>
 
-    <div class="model-picker">
-      <label>モデル候補検索
-        <input id="modelSearch" type="search" placeholder="表示名・モデルID・所属で検索" autocomplete="off" />
-      </label>
-      <div id="modelSuggestions" class="suggestions" aria-live="polite"></div>
-    </div>
-
-    <label>キャプション
-      <textarea name="caption" rows="3" placeholder="光に触れるような一枚。"></textarea>
+    <label id="editWorkSelectorWrap" class="edit-selector" hidden>編集する作品を選択
+      <select id="editWorkSelect">
+        <option value="">選択してください</option>
+      </select>
     </label>
 
-    <div class="row">
-      <label>上書き
-        <select name="overwrite">
-          <option value="skip" selected>安全のためスキップ</option>
-          <option value="overwrite">上書きする</option>
-        </select>
-      </label>
-      <button type="button" id="clearForm">一括クリア</button>
-      <button type="submit">決定（登録）</button>
-    </div>
-  </form>
+    <form id="metaForm" class="register-form">
+      <input type="hidden" name="id" id="workId" />
 
-  <div id="result"></div>
+      <section class="tool-section image-section" aria-labelledby="image-section-title">
+        <div class="section-heading">
+          <p>Image</p>
+          <h2 id="image-section-title">画像</h2>
+        </div>
+
+        <div class="image-layout">
+          <div class="image-controls">
+            <label class="checkbox-label">
+              <input type="checkbox" id="useSourcePath">
+              画像の絶対パスを直接指定する
+            </label>
+
+            <div id="fileMode">
+              <label>ファイル選択
+                <input type="file" id="imageFile" accept="image/*" />
+              </label>
+            </div>
+
+            <div id="pathMode" class="path-mode" hidden>
+              <label>画像の絶対パス
+                <input type="text" id="sourcePath" placeholder="/Volumes/外付けHDD/2026/0102ももさん/ex/IMG_0001.jpg" />
+              </label>
+              <p class="note">このパスは読み取りのみ。元画像は変更・移動・削除しません。</p>
+            </div>
+
+            <div id="imageInfo" class="image-info"></div>
+            <p id="editImageNote" class="note" hidden>画像を選択しない場合、既存画像とサムネイルを維持します。</p>
+          </div>
+
+          <div class="preview-panel">
+            <p class="field-title">画像プレビュー</p>
+            <div id="preview"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tool-section" aria-labelledby="work-info-title">
+        <div class="section-heading">
+          <p>Details</p>
+          <h2 id="work-info-title">作品情報</h2>
+        </div>
+
+        <div class="grid two-col">
+          <label>タイトル
+            <input name="title" required />
+            <span id="titleDuplicateWarning" class="warning" aria-live="polite"></span>
+          </label>
+          <label>撮影日
+            <input name="date" type="date" required />
+          </label>
+          <label>撮影場所
+            <input name="location" list="locations" required />
+            <datalist id="locations"></datalist>
+          </label>
+          <label>Production（撮影当時の所属・撮影会・企画名）
+            <input name="production" list="productions" required placeholder="マナコレ撮影会 / 大阪美マージュ / リク撮" />
+            <datalist id="productions"></datalist>
+            <span class="field-help">新規登録では入力推奨。編集時は既存空欄データ保護のため空欄保存もできます。</span>
+          </label>
+          <label class="field-full">キャプション
+            <textarea name="caption" rows="4" placeholder="光に触れるような一枚。"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="tool-section model-section" aria-labelledby="model-section-title">
+        <div class="section-heading">
+          <p>Models</p>
+          <h2 id="model-section-title">モデル</h2>
+        </div>
+
+        <div class="model-picker">
+          <label>モデル候補検索
+            <input id="modelSearch" type="search" placeholder="表示名・モデルID・所属で検索" autocomplete="off" />
+          </label>
+          <div id="modelSuggestions" class="suggestions" aria-live="polite"></div>
+
+          <div class="selected-model-area">
+            <p class="field-title">選択済みモデル</p>
+            <div id="selectedModels" class="selected-models"></div>
+          </div>
+
+          <details class="model-ids-details">
+            <summary>modelIds確認欄</summary>
+            <label>modelIds（タグ選択で自動入力 / 直接編集も可）
+              <input name="modelIds" id="modelIds" required placeholder="minaseaoi,momoseyuuri" />
+            </label>
+          </details>
+        </div>
+      </section>
+
+      <section class="tool-section" aria-labelledby="work-id-title">
+        <div class="section-heading">
+          <p>ID</p>
+          <h2 id="work-id-title">作品ID</h2>
+        </div>
+
+        <p class="note">作品ID：登録日YYMMDD + モデル名（marin_minaseaoiなど） + _ + 通し番号4桁で自動生成されます</p>
+        <p id="editIdNote" class="note" hidden>編集モードでは既存IDを維持します。下のプレビューは参考表示です。</p>
+
+        <div class="grid two-col id-grid">
+          <label>登録日
+            <span id="registrationDateDisplay" class="readonly-value"></span>
+          </label>
+          <label>登録日YYMMDD
+            <span id="registrationDatePrefix" class="readonly-value"></span>
+          </label>
+          <label>モデル名
+            <input id="workIdModelName" required pattern="[A-Za-z0-9_]+" placeholder="minaseaoi" />
+            <span class="field-help">作品ID用。モデルIDを50音順に _ で連結します。例: marin_manacolle_minaseaoi</span>
+          </label>
+          <label>通し番号4桁
+            <input id="workIdSequence" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="0001" />
+          </label>
+          <label class="field-full">作品IDプレビュー
+            <span id="workIdPreview" class="readonly-value preview-value">未入力</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="tool-section save-section" aria-labelledby="save-section-title">
+        <div class="section-heading">
+          <p>Save</p>
+          <h2 id="save-section-title">保存</h2>
+        </div>
+
+        <div class="save-row">
+          <label id="overwriteWrap">上書き設定
+            <select name="overwrite">
+              <option value="skip" selected>安全のためスキップ</option>
+              <option value="overwrite">上書きする</option>
+            </select>
+          </label>
+          <div class="button-row">
+            <button type="button" id="clearForm" class="secondary-button">一括クリア</button>
+            <button type="submit" class="primary-button">決定（登録）</button>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <div id="result"></div>
+  </main>
 
   <script src="./main.js"></script>
 </body>

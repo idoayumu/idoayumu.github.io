@@ -89,20 +89,84 @@ function normalizeModelIds(value) {
   return [...new Set(items.map(item => asTrimmedString(item)).filter(Boolean))];
 }
 
+function workImageAbsPath(imagePath) {
+  return path.join(ROOT, 'public', String(imagePath || '').replace(/^\/+/, ''));
+}
+
+function getWorkModelIds(work) {
+  return Array.isArray(work.modelIds) ? work.modelIds : work.models || [];
+}
+
+async function validateModelIds(modelIdsArray) {
+  const models = await readModels();
+  const modelIdSet = new Set(models.map(model => model.id));
+  return modelIdsArray.filter(modelId => !modelIdSet.has(modelId));
+}
+
+function buildWorkFields(body) {
+  return {
+    title: asTrimmedString(body.title),
+    date: asTrimmedString(body.date),
+    location: asTrimmedString(body.location),
+    production: asTrimmedString(body.production),
+    caption: asTrimmedString(body.caption)
+  };
+}
+
+async function writeWorkImages(sourcePath, largeAbs, thumbAbs) {
+  const meta = await sharp(sourcePath, { failOn: 'none', unlimited: true }).metadata();
+
+  await sharp(sourcePath, { failOn: 'none', unlimited: true })
+    .resize(longEdgeResizeOptions(meta, 2000))
+    .webp({ quality: 85 })
+    .toFile(largeAbs);
+
+  await sharp(sourcePath, { failOn: 'none', unlimited: true })
+    .resize(longEdgeResizeOptions(meta, 700))
+    .webp({ quality: 80 })
+    .toFile(thumbAbs);
+}
+
+async function backupExistingWorkImages(largeAbs, thumbAbs) {
+  await Promise.all([largeAbs, thumbAbs].map(async (filePath) => {
+    try {
+      await fsp.access(filePath, fs.constants.R_OK);
+      await fsp.copyFile(filePath, `${filePath}.bak`);
+    } catch (err) {
+      if (err.code !== 'ENOENT') throw err;
+    }
+  }));
+}
+
 app.get('/api/suggestions', async (_req, res) => {
   try {
     const [models, works] = await Promise.all([readModels(), readWorks()]);
+    const workCountByModelId = new Map();
+
+    works.forEach((work) => {
+      const workModelIds = Array.isArray(work.modelIds)
+        ? work.modelIds
+        : work.models || [];
+
+      workModelIds.forEach((modelId) => {
+        workCountByModelId.set(modelId, (workCountByModelId.get(modelId) || 0) + 1);
+      });
+    });
 
     res.json({
       ok: true,
       models: models.map(model => ({
         id: model.id,
         name: model.name || '',
+        displayName: model.displayName || '',
+        nameKana: model.nameKana || '',
         agency: model.agency || '',
-        aliases: Array.isArray(model.aliases) ? model.aliases : []
+        aliases: Array.isArray(model.aliases) ? model.aliases : [],
+        workCount: workCountByModelId.get(model.id) || 0
       })),
       productions: uniqueNonEmpty(works.map(work => work.production)),
       locations: uniqueNonEmpty(works.map(work => work.location)),
+      workTitleEntries: works.map(work => ({ id: work.id, title: work.title || '' })).filter(work => work.title),
       workTitles: works.map(work => work.title || '').filter(Boolean)
     });
   } catch (err) {
@@ -110,6 +174,126 @@ app.get('/api/suggestions', async (_req, res) => {
     res.status(500).json({ ok: false, message: '候補データを読み込めません。' });
   }
 });
+
+app.get('/api/works', async (_req, res) => {
+  try {
+    const [works, models] = await Promise.all([readWorks(), readModels()]);
+    const modelById = new Map(models.map(model => [model.id, model]));
+
+    res.json({
+      ok: true,
+      works: works.map(work => ({
+        ...work,
+        modelIds: getWorkModelIds(work),
+        modelNames: getWorkModelIds(work)
+          .map(modelId => modelById.get(modelId)?.name || modelId)
+          .filter(Boolean)
+      }))
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ ok: false, message: '作品データを読み込めません。' });
+  }
+});
+
+async function handleUpdateWork(req, res) {
+  let cleanupTemp = null;
+
+  if (req.file) {
+    cleanupTemp = async () => {
+      try {
+        await fsp.unlink(req.file.path);
+      } catch { }
+    };
+  }
+
+  try {
+    await ensureDirs();
+
+    const workId = asTrimmedString(req.body.id);
+    const { title, date, location, production, caption } = buildWorkFields(req.body);
+    const { modelIds, useSourcePath = 'false', sourcePath: bodySourcePath } = req.body;
+
+    if (!workId || !title || !date || !location || !modelIds) {
+      return res.status(400).json({ ok: false, message: '必須項目が不足しています。' });
+    }
+
+    let modelIdsArray;
+    try {
+      modelIdsArray = normalizeModelIds(modelIds);
+    } catch {
+      return res.status(400).json({ ok: false, message: 'modelIds を配列に解釈できません。' });
+    }
+    if (!modelIdsArray.length) {
+      return res.status(400).json({ ok: false, message: 'modelIds は1件以上が必要です。' });
+    }
+
+    const works = await readWorks();
+    const index = works.findIndex(work => work.id === workId);
+    if (index === -1) {
+      return res.status(404).json({ ok: false, message: `作品が見つかりません: ${workId}` });
+    }
+
+    const unknownModelIds = await validateModelIds(modelIdsArray);
+    if (unknownModelIds.length) {
+      return res.status(400).json({
+        ok: false,
+        message: `models.json に存在しないモデルIDです: ${unknownModelIds.join(', ')}`
+      });
+    }
+
+    const current = works[index];
+    const largeRel = current.image || `/images/works/large/${workId}.webp`;
+    const thumbRel = current.thumbnail || `/images/works/thumbs/${workId}.webp`;
+
+    let sourcePath = '';
+    if (useSourcePath === 'true') {
+      const requestedSourcePath = asTrimmedString(bodySourcePath);
+      if (!requestedSourcePath) {
+        return res.status(400).json({ ok: false, message: 'sourcePath が未指定です。' });
+      }
+      sourcePath = requestedSourcePath;
+      try {
+        await fsp.access(sourcePath, fs.constants.R_OK);
+      } catch {
+        return res.status(400).json({ ok: false, message: 'sourcePath の画像が見つからないか読み取り不可です。' });
+      }
+    } else if (req.file) {
+      sourcePath = req.file.path;
+    }
+
+    if (sourcePath) {
+      const largeAbs = workImageAbsPath(largeRel);
+      const thumbAbs = workImageAbsPath(thumbRel);
+      await backupExistingWorkImages(largeAbs, thumbAbs);
+      await writeWorkImages(sourcePath, largeAbs, thumbAbs);
+    }
+
+    const entry = {
+      ...current,
+      id: workId,
+      title,
+      date,
+      location,
+      production,
+      caption,
+      modelIds: modelIdsArray,
+      image: largeRel,
+      thumbnail: thumbRel
+    };
+
+    const next = [...works];
+    next[index] = entry;
+    await writeWorksAtomically(next);
+
+    return res.json({ ok: true, entry });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ ok: false, message: 'サーバエラーが発生しました。' });
+  } finally {
+    if (cleanupTemp) await cleanupTemp();
+  }
+}
 
 app.post('/api/register', upload.single('imageFile'), async (req, res) => {
   let cleanupTemp = null;
@@ -124,6 +308,10 @@ app.post('/api/register', upload.single('imageFile'), async (req, res) => {
 
   try {
     await ensureDirs();
+
+    if (String(req.body.mode || '') === 'edit') {
+      return handleUpdateWork(req, res);
+    }
 
     const {
       id, title, date, location, production, caption,
@@ -166,9 +354,7 @@ app.post('/api/register', upload.single('imageFile'), async (req, res) => {
       return res.status(409).json({ ok: false, message: `既存IDです: ${workId}` });
     }
 
-    const models = await readModels();
-    const modelIdSet = new Set(models.map(model => model.id));
-    const unknownModelIds = modelIdsArray.filter(modelId => !modelIdSet.has(modelId));
+    const unknownModelIds = await validateModelIds(modelIdsArray);
     if (unknownModelIds.length) {
       return res.status(400).json({
         ok: false,
@@ -214,17 +400,7 @@ app.post('/api/register', upload.single('imageFile'), async (req, res) => {
     }
 
     // 画像生成
-    const meta = await sharp(sourcePath, { failOn: 'none', unlimited: true }).metadata();
-
-    await sharp(sourcePath, { failOn: 'none', unlimited: true })
-      .resize(longEdgeResizeOptions(meta, 2000))
-      .webp({ quality: 85 })
-      .toFile(largeAbs);
-
-    await sharp(sourcePath, { failOn: 'none', unlimited: true })
-      .resize(longEdgeResizeOptions(meta, 700))
-      .webp({ quality: 80 })
-      .toFile(thumbAbs);
+    await writeWorkImages(sourcePath, largeAbs, thumbAbs);
 
     // 登録レコード。元画像の絶対パスは works.json に保存しない。
     const entry = {
@@ -251,6 +427,8 @@ app.post('/api/register', upload.single('imageFile'), async (req, res) => {
     if (cleanupTemp) await cleanupTemp();
   }
 });
+
+app.post('/api/update', upload.single('imageFile'), handleUpdateWork);
 
 const server = app.listen(PORT, HOST, () => {
   console.log(`Image register tool running at http://${HOST}:${PORT}`);

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <title>サイト設定</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <main>
+    <header class="page-header">
+      <h1>サイト設定</h1>
+      <p>Aboutページの画像を季節やイベントごとに差し替えます。</p>
+    </header>
+
+    <section class="tool-section" aria-labelledby="about-image-title">
+      <div class="section-heading">
+        <p>About</p>
+        <h2 id="about-image-title">About画像</h2>
+      </div>
+
+      <div class="image-grid">
+        <div>
+          <p class="field-title">現在使用中の画像</p>
+          <div class="preview-frame">
+            <img id="currentPreview" alt="現在使用中のAbout画像" />
+          </div>
+          <dl id="currentInfo" class="info-list"></dl>
+        </div>
+
+        <form id="aboutImageForm">
+          <label>新しい画像を選択
+            <input type="file" id="aboutImage" name="aboutImage" accept="image/*" required />
+          </label>
+
+          <fieldset class="season-group">
+            <legend>季節</legend>
+            <label>
+              <input type="radio" name="season" value="spring" required />
+              春 (spring)
+            </label>
+            <label>
+              <input type="radio" name="season" value="summer" />
+              夏 (summer)
+            </label>
+            <label>
+              <input type="radio" name="season" value="autumn" />
+              秋 (autumn)
+            </label>
+            <label>
+              <input type="radio" name="season" value="winter" />
+              冬 (winter)
+            </label>
+            <label>
+              <input type="radio" name="season" value="special" />
+              特別 (special)
+            </label>
+          </fieldset>
+
+          <label>メモ（モデル名や挨拶など：30文字以内）
+            <textarea name="memo" id="aboutImageMemo" rows="2" maxlength="30" required placeholder="水瀬あおい"></textarea>
+          </label>
+
+          <div>
+            <p class="field-title">新しい画像プレビュー</p>
+            <div id="newPreview" class="preview-frame empty"></div>
+          </div>
+
+          <button type="submit">保存</button>
+        </form>
+      </div>
+    </section>
+
+    <div id="result"></div>
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+
+</html>
