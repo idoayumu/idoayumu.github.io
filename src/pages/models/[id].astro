@@ -21,6 +21,12 @@ const hasDuplicateName = modelsData.filter((m) => m.name === model.name).length 
 const displayName = hasDuplicateName && model.agency
   ? `${model.name}（${model.agency}）`
   : model.name;
+const profileImagePosition = model.profileImagePosition || "center";
+const profileImageShift = profileImagePosition === "left center"
+  ? "0%"
+  : profileImagePosition === "right center"
+    ? "-10%"
+    : "-5%";
 
 // 出演作品（新しい順）
 const relatedWorks = worksData
@@ -49,11 +55,11 @@ function getAccountLabel(url, options = { prefix: "" }) {
 
 const socialLinks = [];
 
-if (links.twitter) {
+if (links.x || links.twitter) {
   socialLinks.push({
     label: "X",
-    value: getAccountLabel(links.twitter, { prefix: "@" }),
-    href: links.twitter,
+    value: getAccountLabel(links.x || links.twitter, { prefix: "@" }),
+    href: links.x || links.twitter,
   });
 }
 
@@ -62,6 +68,14 @@ if (links.instagram) {
     label: "Instagram",
     value: getAccountLabel(links.instagram),
     href: links.instagram,
+  });
+}
+
+if (links.threads) {
+  socialLinks.push({
+    label: "Threads",
+    value: getAccountLabel(links.threads, { prefix: "@" }),
+    href: links.threads,
   });
 }
 
@@ -83,6 +97,7 @@ if (links.website) {
       <img
         src={`/images/models/${model.thumbnail}`}
         alt={displayName}
+        style={`--profile-image-position: ${profileImagePosition}; --profile-image-shift: ${profileImageShift};`}
       />
     </div>
 
@@ -166,10 +181,12 @@ if (links.website) {
   }
 
   .model-profile-image img {
-    width: 100%;
+    width: 110%;
+    max-width: none;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: var(--profile-image-position, center);
+    transform: translateX(var(--profile-image-shift, -5%));
   }
 
   .model-profile-info {

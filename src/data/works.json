@@ -43,8 +43,8 @@
     "title": "あなたの声が",
     "date": "2025-09-22",
     "location": "京都",
-    "production": "",
-    "caption": "",
+    "production": "リク撮",
+    "caption": "あなたの声が",
     "modelIds": [
       "momoseyuuri"
     ],
@@ -143,5 +143,18 @@
     ],
     "image": "/images/works/large/260602momoseyuuri_0001.webp",
     "thumbnail": "/images/works/thumbs/260602momoseyuuri_0001.webp"
+  },
+  {
+    "id": "260608caho_0001",
+    "title": "Present",
+    "date": "2025-11-30",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "紅葉のプレゼント",
+    "modelIds": [
+      "caho"
+    ],
+    "image": "/images/works/large/260608caho_0001.webp",
+    "thumbnail": "/images/works/thumbs/260608caho_0001.webp"
   }
 ]

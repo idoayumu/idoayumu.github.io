@@ -1,0 +1,215 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+  background: #f8f8f6;
+  color: #111;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.7;
+}
+
+main {
+  width: min(100%, 920px);
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 22px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  line-height: 1.25;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: #666;
+}
+
+.tool-section {
+  padding: 18px;
+  border: 1px solid #deded6;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.section-heading {
+  margin-bottom: 16px;
+}
+
+.section-heading p {
+  margin: 0 0 2px;
+  color: #8a74a8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+label {
+  display: block;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+input,
+select,
+textarea,
+button {
+  width: 100%;
+  margin-top: 5px;
+  padding: 10px 12px;
+  border: 1px solid #d8d8d0;
+  border-radius: 4px;
+  background: #fff;
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  border: 0;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+}
+
+.season-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin: 0 0 16px;
+  padding: 12px;
+  border: 1px solid #d8d8d0;
+  border-radius: 4px;
+}
+
+.season-group legend {
+  padding: 0 4px;
+  font-weight: 700;
+}
+
+.season-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.season-group input {
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.field-title {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.preview-frame {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px dashed #d8d8d0;
+  border-radius: 6px;
+  background: #f1f1ec;
+}
+
+.preview-frame.empty::before {
+  content: "画像を選択するとプレビューが表示されます";
+  padding: 16px;
+  color: #777;
+  text-align: center;
+}
+
+.preview-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info-list {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.info-list div {
+  padding: 9px 10px;
+  border: 1px solid #ecece4;
+  border-radius: 4px;
+  background: #fbfbf8;
+}
+
+.info-list dt {
+  color: #777;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.info-list dd {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+#result {
+  margin-top: 20px;
+}
+
+pre {
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid #e4e4dc;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.success {
+  margin-bottom: 8px;
+  color: #0a7d2b;
+  font-weight: 700;
+}
+
+.error {
+  color: #b00020;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 16px;
+  }
+
+  .tool-section {
+    padding: 15px;
+  }
+
+  .image-grid {
+    grid-template-columns: 1fr;
+  }
+}

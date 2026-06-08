@@ -1,7 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import siteSettings from "../data/site-settings.json";
 
-const conceptImage = "/images/site/about-aoi.webp";
+const conceptImage = siteSettings.aboutImage || "/images/site/about/2026_spring_001.webp";
+const conceptImageMemo = siteSettings.aboutImageMemo?.trim();
 ---
 
 <Layout title="About | 光の記録 ー光景ノオトー">
@@ -33,6 +35,7 @@ const conceptImage = "/images/site/about-aoi.webp";
     </div>
     <div class="about-concept-image">
       <img src={conceptImage} alt="光景ポートレートの代表作品" loading="lazy" />
+      {conceptImageMemo && <p>{conceptImageMemo}</p>}
     </div>
   </section>
 
@@ -177,7 +180,7 @@ const conceptImage = "/images/site/about-aoi.webp";
 
   .about-concept-image {
     overflow: hidden;
-    background: #f1eef7;
+    background: transparent;
   }
 
   .about-concept-image img {
@@ -185,6 +188,20 @@ const conceptImage = "/images/site/about-aoi.webp";
     aspect-ratio: 4 / 5;
     object-fit: cover;
     object-position: center;
+  }
+
+  .about-concept-image p {
+    margin: 0;
+    padding: 0.7rem 0 0;
+    overflow: hidden;
+    background: transparent;
+    color: #6f647d;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .about-section {

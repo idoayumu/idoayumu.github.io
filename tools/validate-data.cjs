@@ -120,7 +120,7 @@ function checkLinks(model) {
     addWarning(`models.json:${model.id}: links should be an object or array`);
     return;
   }
-  ['instagram', 'twitter', 'website'].forEach((key) => {
+  ['instagram', 'x', 'twitter', 'threads', 'website'].forEach((key) => {
     if (model.links[key] != null && typeof model.links[key] !== 'string') {
       addWarning(`models.json:${model.id}: links.${key} should be a string`);
     }
@@ -245,6 +245,13 @@ models.forEach((model, index) => {
 
   if (model.featured != null && typeof model.featured !== 'boolean') {
     addWarning(`${label}: featured should be boolean when present`);
+  }
+
+  if (
+    model.profileImagePosition != null
+    && !['left center', 'center', 'right center'].includes(model.profileImagePosition)
+  ) {
+    addWarning(`${label}: profileImagePosition should be "left center", "center", or "right center"`);
   }
 });
 

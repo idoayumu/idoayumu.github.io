@@ -67,7 +67,7 @@ function levenshtein(a, b) {
 function parseAliases(value) {
   if (!value) return [];
   return String(value)
-    .split(/[\n,、]/)
+    .split(/\r?\n/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
@@ -78,19 +78,28 @@ function normalizeSocialUrl(value, service) {
   if (/^https?:\/\//i.test(raw)) return raw;
   const handle = raw.replace(/^@/, '');
   if (!handle) return '';
+  if (service === 'x') return `https://x.com/${handle}`;
   if (service === 'instagram') return `https://www.instagram.com/${handle}/`;
-  if (service === 'twitter') return `https://x.com/${handle}`;
+  if (service === 'threads') return `https://www.threads.net/@${handle}`;
+  if (service === 'website') return `https://${raw}`;
   return raw;
 }
 
-function findSimilarModels(models, name, aliases) {
+function findSimilarModels(models, name, aliases, excludeId = '') {
   const candidates = [name, ...aliases]
     .map(normalizeText)
     .filter(Boolean);
   const warnings = [];
 
   for (const model of models) {
-    const existingNames = [model.name, ...(Array.isArray(model.aliases) ? model.aliases : [])]
+    if (excludeId && model.id === excludeId) continue;
+
+    const existingNames = [
+      model.name,
+      model.displayName,
+      model.nameKana,
+      ...(Array.isArray(model.aliases) ? model.aliases : [])
+    ]
       .map(normalizeText)
       .filter(Boolean);
 
@@ -107,6 +116,7 @@ function findSimilarModels(models, name, aliases) {
           warnings.push({
             id: model.id,
             name: model.name,
+            agency: model.agency || '',
             matched: exact ? 'exact' : contains ? 'contains' : 'similar'
           });
           break;
@@ -124,6 +134,47 @@ function validateId(id) {
   return /^[a-z0-9][a-z0-9_-]*$/.test(id);
 }
 
+function normalizeProfileImagePosition(value) {
+  if (value === 'left') return 'left center';
+  if (value === 'right') return 'right center';
+  if (value === 'left center' || value === 'right center') return value;
+  return 'center';
+}
+
+function modelImageAbsPath(imageName) {
+  if (String(imageName || '').startsWith('/images/')) {
+    return path.join(ROOT, 'public', String(imageName).replace(/^\/+/, ''));
+  }
+  return path.join(MODELS_IMAGE_DIR, imageName);
+}
+
+function buildModelFields(body, fallback = {}) {
+  const formalName = String(body.name || '').trim();
+  const shortDisplayName = String(body.displayName || formalName || '').trim();
+
+  return {
+    name: formalName,
+    displayName: shortDisplayName,
+    nameKana: String(body.nameKana || '').trim(),
+    aliases: parseAliases(body.aliases),
+    agency: String(body.agency || '').trim(),
+    profileImagePosition: normalizeProfileImagePosition(body.profileImagePosition || fallback.profileImagePosition || 'center'),
+    links: {
+      instagram: normalizeSocialUrl(body.instagram, 'instagram'),
+      x: normalizeSocialUrl(body.x, 'x'),
+      threads: normalizeSocialUrl(body.threads, 'threads'),
+      website: normalizeSocialUrl(body.website, 'website')
+    }
+  };
+}
+
+async function writeProfileImage(sourcePath, targetPath) {
+  await sharp(sourcePath, { failOn: 'none', unlimited: true })
+    .resize({ width: 2000, height: 2000, fit: 'inside', withoutEnlargement: true })
+    .webp({ quality: 84 })
+    .toFile(targetPath);
+}
+
 app.get('/api/models', async (_req, res) => {
   try {
     const models = await readModels();
@@ -134,27 +185,118 @@ app.get('/api/models', async (_req, res) => {
   }
 });
 
+async function handleUpdateModel(req, res) {
+  let cleanupTemp = null;
+
+  try {
+    await ensureDirs();
+
+    const modelId = String(req.body.id || '').trim();
+    const force = String(req.body.force || 'false');
+
+    if (!modelId) {
+      return res.status(400).json({ ok: false, message: 'モデルIDが未指定です。' });
+    }
+
+    if (req.file) {
+      cleanupTemp = async () => {
+        try {
+          await fsp.unlink(req.file.path);
+        } catch {}
+      };
+    }
+
+    const models = await readModels();
+    const index = models.findIndex((model) => model.id === modelId);
+    if (index === -1) {
+      if (cleanupTemp) await cleanupTemp();
+      return res.status(404).json({ ok: false, message: `モデルが見つかりません: ${modelId}` });
+    }
+
+    const current = models[index];
+    const fields = buildModelFields(req.body, current);
+
+    if (!fields.name) {
+      if (cleanupTemp) await cleanupTemp();
+      return res.status(400).json({ ok: false, message: '表示名は必須です。' });
+    }
+
+    const warnings = findSimilarModels(models, fields.name, [
+      fields.displayName,
+      fields.nameKana,
+      ...fields.aliases
+    ], modelId);
+
+    if (warnings.length && force !== 'true') {
+      if (cleanupTemp) await cleanupTemp();
+      return res.status(409).json({
+        ok: false,
+        needsConfirmation: true,
+        message: '似ている名前のモデルが見つかりました。確認してから保存してください。',
+        warnings
+      });
+    }
+
+    const thumbnail = current.thumbnail || current.profileImage || `${modelId}_profile.webp`;
+    if (req.file) {
+      await writeProfileImage(req.file.path, modelImageAbsPath(thumbnail));
+      await cleanupTemp();
+      cleanupTemp = null;
+    }
+
+    const entry = {
+      ...current,
+      name: fields.name,
+      displayName: fields.displayName,
+      nameKana: fields.nameKana,
+      aliases: fields.aliases,
+      agency: fields.agency,
+      thumbnail,
+      profileImagePosition: fields.profileImagePosition,
+      links: fields.links
+    };
+
+    const next = [...models];
+    next[index] = entry;
+    await writeModelsAtomically(next);
+
+    return res.json({ ok: true, entry, warnings });
+  } catch (err) {
+    if (cleanupTemp) await cleanupTemp();
+    console.error(err);
+    return res.status(500).json({ ok: false, message: 'サーバエラーが発生しました。' });
+  }
+}
+
 app.post('/api/register', upload.single('profileImage'), async (req, res) => {
   let cleanupTemp = null;
 
   try {
     await ensureDirs();
 
+    if (String(req.body.mode || '') === 'edit') {
+      return handleUpdateModel(req, res);
+    }
+
     const {
       id,
       name,
+      nameKana = '',
       agency = '',
-      twitter = '',
+      x = '',
       instagram = '',
+      threads = '',
+      website = '',
       aliases = '',
+      profileImagePosition = 'center',
       force = 'false'
     } = req.body;
 
     const modelId = String(id || '').trim();
-    const displayName = String(name || '').trim();
-    const aliasList = parseAliases(aliases);
+    const fields = buildModelFields(req.body);
+    const formalName = fields.name;
 
-    if (!modelId || !displayName) {
+    if (!modelId || !formalName) {
       return res.status(400).json({ ok: false, message: 'モデルIDと表示名は必須です。' });
     }
     if (!validateId(modelId)) {
@@ -179,7 +321,11 @@ app.post('/api/register', upload.single('profileImage'), async (req, res) => {
       return res.status(409).json({ ok: false, message: `既存IDです: ${modelId}` });
     }
 
-    const warnings = findSimilarModels(models, displayName, aliasList);
+    const warnings = findSimilarModels(models, formalName, [
+      fields.displayName,
+      fields.nameKana,
+      ...fields.aliases
+    ]);
     if (warnings.length && force !== 'true') {
       await cleanupTemp();
       return res.status(409).json({
@@ -198,27 +344,22 @@ app.post('/api/register', upload.single('profileImage'), async (req, res) => {
       return res.status(409).json({ ok: false, message: `画像ファイルが既に存在します: ${thumbnail}` });
     }
 
-    await sharp(req.file.path, { failOn: 'none', unlimited: true })
-      .resize({ width: 900, height: 900, fit: 'cover', position: 'attention', withoutEnlargement: true })
-      .webp({ quality: 82 })
-      .toFile(imageAbs);
+    await writeProfileImage(req.file.path, imageAbs);
 
     await cleanupTemp();
 
     const entry = {
       id: modelId,
-      name: displayName,
-      nameKana: '',
+      name: fields.name,
+      displayName: fields.displayName,
+      nameKana: fields.nameKana,
       nameEn: '',
-      aliases: aliasList,
-      agency: String(agency || '').trim(),
+      aliases: fields.aliases,
+      agency: fields.agency,
       bio: '',
       thumbnail,
-      links: {
-        instagram: normalizeSocialUrl(instagram, 'instagram'),
-        twitter: normalizeSocialUrl(twitter, 'twitter'),
-        website: ''
-      },
+      profileImagePosition: fields.profileImagePosition,
+      links: fields.links,
       featured: true
     };
 
@@ -230,6 +371,16 @@ app.post('/api/register', upload.single('profileImage'), async (req, res) => {
     console.error(err);
     return res.status(500).json({ ok: false, message: 'サーバエラーが発生しました。' });
   }
+});
+
+app.post('/api/update', upload.single('profileImage'), handleUpdateModel);
+
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  return res.status(500).json({
+    ok: false,
+    message: `サーバエラーが発生しました。${err.message ? ` ${err.message}` : ''}`
+  });
 });
 
 app.listen(PORT, HOST, () => {

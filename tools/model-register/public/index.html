@@ -12,29 +12,75 @@
   <main>
     <h1>モデル新規登録ツール</h1>
 
+    <div class="mode-switch" role="radiogroup" aria-label="登録モード">
+      <label>
+        <input type="radio" name="mode" value="create" checked />
+        新規登録
+      </label>
+      <label>
+        <input type="radio" name="mode" value="edit" />
+        既存モデルを編集
+      </label>
+    </div>
+
+    <label id="editSelectorWrap" class="edit-selector" hidden>編集するモデルを選択
+      <select id="editModelSelect">
+        <option value="">選択してください</option>
+      </select>
+    </label>
+
     <form id="modelForm">
       <div class="grid">
-        <label>モデルID
+        <label class="field-full">モデルID
           <input name="id" required placeholder="momo_osakabimage" autocomplete="off" />
+          <span class="field-help">小文字英数字・ハイフン・アンダースコアで固定。例: marin_manacolle, minaseaoi</span>
         </label>
         <label>表示名
-          <input name="name" required placeholder="もも" autocomplete="off" />
+          <input name="name" required placeholder="水瀬あおい" autocomplete="off" />
+        </label>
+        <label>短縮表示名
+          <input name="displayName" placeholder="あおい" autocomplete="off" />
+        </label>
+        <label>読み仮名
+          <input name="nameKana" placeholder="ミナセアオイ" autocomplete="off" />
+          <span id="nameKanaWarning" class="field-warning"></span>
         </label>
         <label>所属・撮影会名
           <input name="agency" placeholder="大阪美マージュ" autocomplete="off" />
         </label>
-        <label>Xアカウント
-          <input name="twitter" placeholder="@example または https://x.com/example" autocomplete="off" />
+        <label>X
+          <input name="x" placeholder="@example または https://x.com/example" autocomplete="off" />
         </label>
-        <label>Instagramアカウント
+        <label>Instagram
           <input name="instagram" placeholder="@example または https://instagram.com/example/" autocomplete="off" />
         </label>
-        <label>プロフィール画像
-          <input type="file" id="profileImage" name="profileImage" accept="image/*" required />
+        <label>Threads
+          <input name="threads" placeholder="@example または https://www.threads.net/@example" autocomplete="off" />
         </label>
+        <label>Website
+          <input name="website" placeholder="https://example.com/" autocomplete="off" />
+        </label>
+        <label class="field-full">プロフィール画像
+          <input type="file" id="profileImage" name="profileImage" accept="image/*" />
+        </label>
+        <fieldset class="field-full radio-group">
+          <legend>顔の位置</legend>
+          <label>
+            <input type="radio" name="profileImagePosition" value="left" />
+            左
+          </label>
+          <label>
+            <input type="radio" name="profileImagePosition" value="center" checked />
+            中央
+          </label>
+          <label>
+            <input type="radio" name="profileImagePosition" value="right" />
+            右
+          </label>
+        </fieldset>
       </div>
 
-      <label>aliases（別名・任意）
+      <label class="field-full">aliases（別名・任意 / 1行1別名）
         <textarea name="aliases" rows="3" placeholder="MOMO&#10;ももちゃん"></textarea>
       </label>
 

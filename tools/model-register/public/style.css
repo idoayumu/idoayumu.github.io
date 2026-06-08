@@ -12,7 +12,7 @@ body {
 }
 
 main {
-  max-width: 860px;
+  max-width: 760px;
   margin: 0 auto;
 }
 
@@ -28,19 +28,53 @@ label {
   font-weight: 600;
 }
 
+.mode-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid #d8d8d0;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.mode-switch label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.mode-switch input {
+  width: auto;
+  margin: 0;
+}
+
+.edit-selector {
+  margin-bottom: 20px;
+}
+
 input,
 textarea,
+select,
 button {
   font: inherit;
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #d8d8d0;
   border-radius: 4px;
   background: #fff;
+}
+
+input[readonly] {
+  color: #555;
+  background: #f2f2ee;
 }
 
 button {
@@ -58,8 +92,57 @@ button[hidden] {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.field-help,
+.field-warning {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.84rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.field-help {
+  color: #666;
+}
+
+.field-warning {
+  color: #9a6700;
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin: 0 0 16px;
+  padding: 12px;
+  border: 1px solid #d8d8d0;
+  border-radius: 4px;
+}
+
+.radio-group legend {
+  padding: 0 4px;
+  font-weight: 600;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.radio-group input {
+  width: auto;
+  margin: 0;
 }
 
 .row {
@@ -69,12 +152,24 @@ button[hidden] {
   align-items: center;
 }
 
-#preview img {
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
+#preview {
+  width: min(100%, 320px);
+  aspect-ratio: 3 / 2;
   margin-bottom: 16px;
   background: #eee;
+  overflow: hidden;
+}
+
+#preview:empty {
+  display: none;
+}
+
+#preview img {
+  width: 110%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.18s ease, object-position 0.18s ease;
 }
 
 #result {
@@ -103,4 +198,14 @@ pre {
   padding: 12px 16px;
   border: 1px solid #d8b400;
   background: #fff8cf;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
