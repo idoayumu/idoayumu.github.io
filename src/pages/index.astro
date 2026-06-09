@@ -1,12 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import siteSettings from "../data/site-settings.json";
+
+const heroImage = siteSettings.heroImage || "/images/site/top-hero.webp";
 ---
 
 <Layout title="光の記録 ー光景ノオトー">
   <section class="home-hero" aria-labelledby="hero-title">
     <img
       class="home-hero-bg"
-      src="/images/site/top-hero.webp"
+      src={heroImage}
       alt="木漏れ日の光がやわらかくにじむ光景"
       fetchpriority="high"
     />

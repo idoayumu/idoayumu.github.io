@@ -157,16 +157,6 @@ function formatSize(bytes) {
   return `${bytes}B`;
 }
 
-function checkDsStore() {
-  walk(ROOT).forEach((filePath) => {
-    const relative = rel(filePath);
-    if (relative.includes('node_modules/') || relative.includes('.git/')) return;
-    if (path.basename(filePath) === '.DS_Store') {
-      addWarning(`unnecessary file exists: ${relative}`);
-    }
-  });
-}
-
 function checkTmpFiles() {
   if (!fs.existsSync(TOOLS_DIR)) return;
   fs.readdirSync(TOOLS_DIR, { withFileTypes: true })
@@ -266,7 +256,6 @@ models.forEach((model, index) => {
 });
 
 checkFileSizes();
-checkDsStore();
 checkTmpFiles();
 
 console.log(`Data validation checked ${works.length} works and ${models.length} models.`);

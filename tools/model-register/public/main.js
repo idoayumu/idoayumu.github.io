@@ -9,6 +9,7 @@ const positionInputs = Array.from(form.elements.profileImagePosition || []);
 const modeInputs = Array.from(document.querySelectorAll('input[name="mode"]'));
 const editSelectorWrap = document.getElementById('editSelectorWrap');
 const editModelSelect = document.getElementById('editModelSelect');
+const editModelSearch = document.getElementById('editModelSearch');
 const idInput = form.elements.id;
 const nameKanaInput = form.elements.nameKana;
 const nameKanaWarning = document.getElementById('nameKanaWarning');
@@ -17,6 +18,14 @@ const imageLabel = imageInput.closest('label');
 let pendingFormData = null;
 let models = [];
 let currentMode = 'create';
+
+function normalizeText(value) {
+  return String(value || '')
+    .normalize('NFKC')
+    .trim()
+    .toLowerCase()
+    .replace(/[ァ-ン]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0x60));
+}
 
 function getPreviewPosition() {
   const selected = positionInputs.find((input) => input.checked)?.value;
@@ -133,9 +142,26 @@ function modelOptionLabel(model) {
   return [model.name, model.agency, model.id].filter(Boolean).join(' / ');
 }
 
+function modelSearchText(model) {
+  return normalizeText([
+    model.id,
+    model.name,
+    model.displayName,
+    model.nameKana,
+    model.agency,
+    ...(Array.isArray(model.aliases) ? model.aliases : [])
+  ].join(' '));
+}
+
 function fillModelSelect() {
+  const selectedValue = editModelSelect.value;
+  const query = normalizeText(editModelSearch.value);
+  const visibleModels = query
+    ? models.filter((model) => modelSearchText(model).includes(query))
+    : models;
+
   editModelSelect.innerHTML = '<option value="">選択してください</option>';
-  models
+  visibleModels
     .slice()
     .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'ja') || a.id.localeCompare(b.id))
     .forEach((model) => {
@@ -144,11 +170,15 @@ function fillModelSelect() {
       option.textContent = modelOptionLabel(model);
       editModelSelect.appendChild(option);
     });
+
+  if (visibleModels.some((model) => model.id === selectedValue)) {
+    editModelSelect.value = selectedValue;
+  }
 }
 
 async function loadModels() {
   try {
-    const resp = await fetch('/api/models');
+    const resp = await fetch('api/models');
     const json = await resp.json();
     if (!resp.ok || !json.ok) throw new Error(json.message || resp.statusText);
     models = json.models || [];
@@ -190,6 +220,8 @@ function setMode(mode) {
 
   if (isEdit) {
     editModelSelect.value = '';
+    editModelSearch.value = '';
+    fillModelSelect();
   }
 }
 
@@ -255,7 +287,7 @@ async function submit(force = false) {
   }
 
   try {
-    const endpoint = '/api/register';
+    const endpoint = 'api/register';
     const resp = await fetch(endpoint, { method: 'POST', body: fd });
     const { data: json } = await readApiResponse(resp);
 
@@ -322,6 +354,7 @@ editModelSelect.addEventListener('change', () => {
   fillForm(selectedModel());
 });
 
+editModelSearch.addEventListener('input', fillModelSelect);
 nameKanaInput.addEventListener('input', renderNameKanaWarning);
 renderNameKanaWarning();
 loadModels();
