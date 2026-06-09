@@ -10,6 +10,15 @@
 
 <body>
   <main>
+    <nav class="admin-nav" aria-label="管理ツールナビゲーション">
+      <a class="admin-nav-title" href="/admin/">光景ノオト管理ツール</a>
+      <div class="admin-nav-links">
+        <a href="/admin/works/">作品管理</a>
+        <a href="/admin/models/">モデル管理</a>
+        <a class="is-active" href="/admin/settings/">サイト設定</a>
+      </div>
+    </nav>
+
     <header class="page-header">
       <h1>サイト設定</h1>
       <p>Aboutページの画像を季節やイベントごとに差し替えます。</p>
@@ -66,6 +75,64 @@
           <div>
             <p class="field-title">新しい画像プレビュー</p>
             <div id="newPreview" class="preview-frame empty"></div>
+          </div>
+
+          <button type="submit">保存</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="tool-section" aria-labelledby="hero-image-title">
+      <div class="section-heading">
+        <p>Top Hero</p>
+        <h2 id="hero-image-title">TOPヒーロー画像</h2>
+      </div>
+
+      <div class="image-grid">
+        <div>
+          <p class="field-title">現在使用中のヒーロー画像</p>
+          <div class="preview-frame hero-preview-frame">
+            <img id="currentHeroPreview" alt="現在使用中のヒーロー画像" />
+          </div>
+          <dl id="currentHeroInfo" class="info-list"></dl>
+        </div>
+
+        <form id="heroImageForm">
+          <label>新しいヒーロー画像を選択
+            <input type="file" id="heroImage" name="heroImage" accept="image/*" required />
+          </label>
+
+          <fieldset class="season-group">
+            <legend>季節</legend>
+            <label>
+              <input type="radio" name="season" value="spring" required />
+              春 (spring)
+            </label>
+            <label>
+              <input type="radio" name="season" value="summer" />
+              夏 (summer)
+            </label>
+            <label>
+              <input type="radio" name="season" value="autumn" />
+              秋 (autumn)
+            </label>
+            <label>
+              <input type="radio" name="season" value="winter" />
+              冬 (winter)
+            </label>
+            <label>
+              <input type="radio" name="season" value="special" />
+              特別 (special)
+            </label>
+          </fieldset>
+
+          <label>メモ（任意）
+            <textarea name="memo" id="heroImageMemo" rows="2" placeholder="管理ツール導入前"></textarea>
+          </label>
+
+          <div>
+            <p class="field-title">新しいヒーロー画像プレビュー</p>
+            <div id="newHeroPreview" class="preview-frame hero-preview-frame empty"></div>
           </div>
 
           <button type="submit">保存</button>

@@ -10,6 +10,15 @@
 
 <body>
   <main>
+    <nav class="admin-nav" aria-label="管理ツールナビゲーション">
+      <a class="admin-nav-title" href="/admin/">光景ノオト管理ツール</a>
+      <div class="admin-nav-links">
+        <a href="/admin/works/">作品管理</a>
+        <a class="is-active" href="/admin/models/">モデル管理</a>
+        <a href="/admin/settings/">サイト設定</a>
+      </div>
+    </nav>
+
     <h1>モデル新規登録ツール</h1>
 
     <div class="mode-switch" role="radiogroup" aria-label="登録モード">
@@ -23,11 +32,16 @@
       </label>
     </div>
 
-    <label id="editSelectorWrap" class="edit-selector" hidden>編集するモデルを選択
-      <select id="editModelSelect">
-        <option value="">選択してください</option>
-      </select>
-    </label>
+    <div id="editSelectorWrap" class="edit-selector" hidden>
+      <label>モデルを検索
+        <input type="search" id="editModelSearch" placeholder="モデルID・表示名・よみ・所属" autocomplete="off" />
+      </label>
+      <label>編集するモデルを選択
+        <select id="editModelSelect">
+          <option value="">選択してください</option>
+        </select>
+      </label>
+    </div>
 
     <form id="modelForm">
       <div class="grid">

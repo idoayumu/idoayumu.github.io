@@ -16,6 +16,41 @@ body {
     margin: 0 auto;
 }
 
+.admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 20px;
+    align-items: center;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #deded6;
+}
+
+.admin-nav-title {
+    color: #111;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+}
+
+.admin-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+}
+
+.admin-nav a {
+    color: #666;
+    text-decoration: none;
+}
+
+.admin-nav a:hover,
+.admin-nav .is-active {
+    color: #111;
+    font-weight: 700;
+}
+
 .page-header {
     margin-bottom: 22px;
 }
@@ -72,6 +107,20 @@ h1 {
 .edit-selector select {
     width: 100%;
     margin-top: 6px;
+}
+
+.edit-selector input {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.edit-selector label {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.edit-selector label:last-child {
+    margin-bottom: 0;
 }
 
 .tool-section {

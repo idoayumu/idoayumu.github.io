@@ -24,6 +24,7 @@ const titleDuplicateWarning = document.getElementById('titleDuplicateWarning');
 const modeInputs = Array.from(document.querySelectorAll('input[name="modeSwitch"]'));
 const editWorkSelectorWrap = document.getElementById('editWorkSelectorWrap');
 const editWorkSelect = document.getElementById('editWorkSelect');
+const editWorkSearch = document.getElementById('editWorkSearch');
 const editImageNote = document.getElementById('editImageNote');
 const editIdNote = document.getElementById('editIdNote');
 const overwriteWrap = document.getElementById('overwriteWrap');
@@ -297,6 +298,7 @@ function setMode(mode) {
   form.querySelector('button[type="submit"]').textContent = isEdit ? '保存' : '決定（登録）';
   currentEditWork = null;
   editWorkSelect.value = '';
+  editWorkSearch.value = '';
   result.textContent = '';
   modelSearch.value = '';
   form.reset();
@@ -318,23 +320,44 @@ function workOptionLabel(work) {
   return [work.id, work.title, models].filter(Boolean).join(' / ');
 }
 
+function workSearchText(work) {
+  return normalizeText([
+    work.id,
+    work.title,
+    ...(Array.isArray(work.modelNames) ? work.modelNames : []),
+    ...getWorkModelIds(work),
+    work.date,
+    work.location
+  ].join(' '));
+}
+
 function getWorkModelIds(work) {
   return Array.isArray(work?.modelIds) ? work.modelIds : work?.models || [];
 }
 
 function fillWorkSelect() {
+  const selectedValue = editWorkSelect.value;
+  const query = normalizeText(editWorkSearch.value);
+  const visibleWorks = query
+    ? works.filter((work) => workSearchText(work).includes(query))
+    : works;
+
   editWorkSelect.innerHTML = '<option value="">選択してください</option>';
-  works.forEach((work) => {
+  visibleWorks.forEach((work) => {
     const option = document.createElement('option');
     option.value = work.id;
     option.textContent = workOptionLabel(work);
     editWorkSelect.appendChild(option);
   });
+
+  if (visibleWorks.some((work) => work.id === selectedValue)) {
+    editWorkSelect.value = selectedValue;
+  }
 }
 
 async function loadWorks() {
   try {
-    const resp = await fetch('/api/works');
+    const resp = await fetch('api/works');
     const json = await resp.json();
     if (!resp.ok || !json.ok) throw new Error(json.message || resp.statusText);
     works = json.works || [];
@@ -463,7 +486,7 @@ function renderModelSuggestions() {
 
 async function loadSuggestions() {
   try {
-    const resp = await fetch('/api/suggestions');
+    const resp = await fetch('api/suggestions');
     const json = await resp.json();
     if (!resp.ok || !json.ok) throw new Error(json.message || resp.statusText);
 
@@ -489,6 +512,7 @@ workIdSequence.addEventListener('input', updateWorkIdPreview);
 titleInput.addEventListener('input', renderTitleDuplicateWarning);
 clearFormButton.addEventListener('click', clearForm);
 modelSearch.addEventListener('input', renderModelSuggestions);
+editWorkSearch.addEventListener('input', fillWorkSelect);
 modelIdsInput.addEventListener('input', () => {
   syncWorkIdModelNameFromSelection();
   renderSelectedModels();
@@ -563,7 +587,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   try {
-    const resp = await fetch('/api/register', { method: 'POST', body: fd });
+    const resp = await fetch('api/register', { method: 'POST', body: fd });
     const { data: json } = await readApiResponse(resp);
     if (!resp.ok || !json.ok) {
       result.innerHTML = `<span class="error">失敗: HTTP ${resp.status} ${json.message || resp.statusText}</span>`;

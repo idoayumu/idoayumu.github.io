@@ -10,6 +10,15 @@
 
 <body>
   <main class="page-shell">
+    <nav class="admin-nav" aria-label="管理ツールナビゲーション">
+      <a class="admin-nav-title" href="/admin/">光景ノオト管理ツール</a>
+      <div class="admin-nav-links">
+        <a class="is-active" href="/admin/works/">作品管理</a>
+        <a href="/admin/models/">モデル管理</a>
+        <a href="/admin/settings/">サイト設定</a>
+      </div>
+    </nav>
+
     <header class="page-header">
       <h1>作品登録ツール</h1>
       <p>画像、作品情報、モデル、作品IDを確認して登録します。</p>
@@ -26,11 +35,16 @@
       </label>
     </div>
 
-    <label id="editWorkSelectorWrap" class="edit-selector" hidden>編集する作品を選択
-      <select id="editWorkSelect">
-        <option value="">選択してください</option>
-      </select>
-    </label>
+    <div id="editWorkSelectorWrap" class="edit-selector" hidden>
+      <label>作品を検索
+        <input type="search" id="editWorkSearch" placeholder="作品ID・タイトル・モデル名・撮影日・撮影地" autocomplete="off" />
+      </label>
+      <label>編集する作品を選択
+        <select id="editWorkSelect">
+          <option value="">選択してください</option>
+        </select>
+      </label>
+    </div>
 
     <form id="metaForm" class="register-form">
       <input type="hidden" name="id" id="workId" />
