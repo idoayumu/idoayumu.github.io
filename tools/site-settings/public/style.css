@@ -217,6 +217,132 @@ button {
   overflow-wrap: anywhere;
 }
 
+.history-section + .history-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #ecece4;
+}
+
+.history-heading {
+  margin-bottom: 12px;
+}
+
+.history-heading h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.history-heading p {
+  margin: 2px 0 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.history-card {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e4e4dc;
+  border-radius: 6px;
+  background: #fbfbf8;
+}
+
+.history-card.is-current {
+  border-color: #8a74a8;
+  box-shadow: 0 0 0 2px rgba(138, 116, 168, 0.12);
+}
+
+.history-thumb {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #f1f1ec;
+}
+
+.history-thumb-hero {
+  aspect-ratio: 16 / 9;
+}
+
+.history-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.history-card-body {
+  display: grid;
+  gap: 10px;
+}
+
+.history-card-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.history-card h4 {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.current-badge {
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #8a74a8;
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.history-meta {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.history-meta div {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 8px;
+}
+
+.history-meta dt {
+  color: #777;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.history-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.history-use-button:disabled {
+  background: #d8d8d0;
+  color: #666;
+  cursor: default;
+}
+
+.history-empty {
+  margin: 0;
+  color: #666;
+}
+
 #result {
   margin-top: 20px;
 }

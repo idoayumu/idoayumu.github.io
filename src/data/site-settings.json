@@ -3,8 +3,26 @@
   "aboutImageSeason": "spring",
   "aboutImageYear": 2026,
   "aboutImageMemo": "水瀬あおい",
+  "aboutImageHistory": [
+    {
+      "path": "/images/site/about/2026_spring_001.webp",
+      "year": 2026,
+      "season": "spring",
+      "memo": "水瀬あおい",
+      "savedAt": "2026-06-10T00:00:00.000Z"
+    }
+  ],
   "heroImage": "/images/site/top-hero.webp",
   "heroImageSeason": "spring",
   "heroImageYear": 2026,
-  "heroImageMemo": "管理ツール導入前"
+  "heroImageMemo": "管理ツール導入前",
+  "heroImageHistory": [
+    {
+      "path": "/images/site/top-hero.webp",
+      "year": 2026,
+      "season": "spring",
+      "memo": "管理ツール導入前",
+      "savedAt": "2026-06-10T00:00:00.000Z"
+    }
+  ]
 }
