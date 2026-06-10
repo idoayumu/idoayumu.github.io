@@ -169,5 +169,18 @@
     ],
     "image": "/images/works/large/260610misaki_0001.webp",
     "thumbnail": "/images/works/thumbs/260610misaki_0001.webp"
+  },
+  {
+    "id": "260610marin_manacolle_0001",
+    "title": "薄むらさき",
+    "date": "2025-05-18",
+    "location": "滋賀",
+    "production": "マナコレ撮影会",
+    "caption": "薄紫色",
+    "modelIds": [
+      "marin_manacolle"
+    ],
+    "image": "/images/works/large/260610marin_manacolle_0001.webp",
+    "thumbnail": "/images/works/thumbs/260610marin_manacolle_0001.webp"
   }
 ]
