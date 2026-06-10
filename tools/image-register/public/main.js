@@ -20,6 +20,7 @@ const registrationDatePrefix = document.getElementById('registrationDatePrefix')
 const workIdModelName = document.getElementById('workIdModelName');
 const workIdSequence = document.getElementById('workIdSequence');
 const workIdPreview = document.getElementById('workIdPreview');
+const workIdDuplicateWarning = document.getElementById('workIdDuplicateWarning');
 const titleDuplicateWarning = document.getElementById('titleDuplicateWarning');
 const modeInputs = Array.from(document.querySelectorAll('input[name="modeSwitch"]'));
 const editWorkSelectorWrap = document.getElementById('editWorkSelectorWrap');
@@ -29,6 +30,7 @@ const editImageNote = document.getElementById('editImageNote');
 const editIdNote = document.getElementById('editIdNote');
 const overwriteWrap = document.getElementById('overwriteWrap');
 const productionInput = form.elements.production;
+const submitButton = form.querySelector('button[type="submit"]');
 const DEV_SITE_BASE_URL = 'http://localhost:4321';
 const PROD_SITE_BASE_URL = 'https://idoayumu.github.io';
 
@@ -94,7 +96,26 @@ function updateWorkIdPreview() {
   workIdInput.value = workId;
   workIdPreview.textContent = workId || '未入力';
   workIdPreview.classList.toggle('is-empty', !workId);
+  renderWorkIdDuplicateWarning();
   renderImageInfo();
+}
+
+function isGeneratedWorkIdDuplicate() {
+  const workId = getGeneratedWorkId();
+  if (!workId) return false;
+  const currentId = currentMode === 'edit' ? currentEditWork?.id : '';
+  return works.some((work) => work.id === workId && work.id !== currentId);
+}
+
+function renderWorkIdDuplicateWarning() {
+  const hasDuplicate = isGeneratedWorkIdDuplicate();
+  workIdDuplicateWarning.textContent = hasDuplicate
+    ? 'この作品IDはすでに使用されています'
+    : '';
+  if (submitButton) {
+    submitButton.disabled = hasDuplicate;
+    submitButton.title = hasDuplicate ? '作品IDが重複しているため保存できません。' : '';
+  }
 }
 
 useSourcePathChk.addEventListener('change', () => {
@@ -322,7 +343,7 @@ function setMode(mode) {
   overwriteWrap.hidden = isEdit;
   productionInput.required = !isEdit;
   clearFormButton.textContent = isEdit ? '入力を戻す' : '一括クリア';
-  form.querySelector('button[type="submit"]').textContent = isEdit ? '保存' : '決定（登録）';
+  submitButton.textContent = isEdit ? '保存' : '決定（登録）';
   currentEditWork = null;
   editWorkSelect.value = '';
   editWorkSearch.value = '';
@@ -389,6 +410,7 @@ async function loadWorks() {
     if (!resp.ok || !json.ok) throw new Error(json.message || resp.statusText);
     works = json.works || [];
     fillWorkSelect();
+    renderWorkIdDuplicateWarning();
   } catch (err) {
     console.error(err);
     result.innerHTML = '<span class="error">既存作品を読み込めません。</span>';
@@ -581,6 +603,12 @@ form.addEventListener('submit', async (e) => {
 
   if (currentMode === 'edit' && !currentEditWork) {
     result.innerHTML = '<span class="error">編集する作品を選択してください。</span>';
+    return;
+  }
+
+  if (isGeneratedWorkIdDuplicate()) {
+    renderWorkIdDuplicateWarning();
+    result.innerHTML = '<span class="error">この作品IDはすでに使用されています。通し番号などを変更してください。</span>';
     return;
   }
 
