@@ -53,6 +53,22 @@ function getAccountLabel(url, options = { prefix: "" }) {
   }
 }
 
+function getWebsiteLabel(url, label = "") {
+  const explicitLabel = String(label || "").trim();
+  if (explicitLabel) return explicitLabel;
+  if (!url) return "";
+
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, "");
+    if (host === "lit.link") return "lit.link";
+    if (host === "linktr.ee") return "Linktree";
+    return host || "Website";
+  } catch {
+    return "Website";
+  }
+}
+
 const socialLinks = [];
 
 if (links.x || links.twitter) {
@@ -81,8 +97,8 @@ if (links.threads) {
 
 if (links.website) {
   socialLinks.push({
-    label: "Website",
-    value: "Official",
+    label: "Other",
+    value: getWebsiteLabel(links.website, links.websiteLabel),
     href: links.website,
   });
 }

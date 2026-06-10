@@ -55,12 +55,12 @@
         <label>短縮表示名
           <input name="displayName" placeholder="あおい" autocomplete="off" />
         </label>
-        <label>読み仮名
+        <label>読み仮名（カナ）
           <input name="nameKana" placeholder="ミナセアオイ" autocomplete="off" />
           <span id="nameKanaWarning" class="field-warning"></span>
         </label>
         <label>所属・撮影会名
-          <input name="agency" placeholder="大阪美マージュ" autocomplete="off" />
+          <input name="agency" placeholder="任意。未入力なら表示されません" autocomplete="off" />
         </label>
         <label>X
           <input name="x" placeholder="@example または https://x.com/example" autocomplete="off" />
@@ -68,11 +68,14 @@
         <label>Instagram
           <input name="instagram" placeholder="@example または https://instagram.com/example/" autocomplete="off" />
         </label>
-        <label>Threads
+        <label class="field-full">Threads
           <input name="threads" placeholder="@example または https://www.threads.net/@example" autocomplete="off" />
         </label>
-        <label>Website
+        <label class="field-full">Other URL
           <input name="website" placeholder="https://example.com/" autocomplete="off" />
+        </label>
+        <label class="field-full">Other表示名
+          <input name="websiteLabel" placeholder="lit.link / 公式サイト / 撮影会名" autocomplete="off" />
         </label>
         <label class="field-full">プロフィール画像
           <input type="file" id="profileImage" name="profileImage" accept="image/*" />
