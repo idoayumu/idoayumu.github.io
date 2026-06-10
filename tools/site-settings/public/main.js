@@ -19,6 +19,14 @@ const fallbackHeroSeason = 'spring';
 const fallbackHeroYear = 2026;
 const fallbackHeroMemo = '管理ツール導入前';
 
+function apiUrl(path) {
+  const normalizedPath = path.replace(/^\/+/, '');
+  if (window.location.pathname.startsWith('/admin/settings')) {
+    return `/admin/settings/api/${normalizedPath}`;
+  }
+  return `/api/${normalizedPath}`;
+}
+
 function countMemoLines(value) {
   return value.split(/\r\n|\r|\n/).length;
 }
@@ -154,7 +162,7 @@ function renderHistoryList(container, items, type) {
 }
 
 async function loadImageHistory() {
-  const resp = await fetch('api/image-history');
+  const resp = await fetch(apiUrl('image-history'));
   const json = await resp.json();
   if (!resp.ok || !json.ok) throw new Error(json.message || resp.statusText);
 
@@ -164,7 +172,7 @@ async function loadImageHistory() {
 
 async function loadSettings() {
   try {
-    const resp = await fetch('api/settings');
+    const resp = await fetch(apiUrl('settings'));
     const json = await resp.json();
     if (!resp.ok || !json.ok) throw new Error(json.message || resp.statusText);
     renderCurrent(json.settings);
@@ -197,7 +205,7 @@ async function useHistoryImage(type, imagePath) {
   result.textContent = '切り替え中...';
 
   try {
-    const resp = await fetch('api/use-image', {
+    const resp = await fetch(apiUrl('use-image'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -272,7 +280,7 @@ form.addEventListener('submit', async (event) => {
     }
 
     const fd = new FormData(form);
-    const resp = await fetch('api/about-image', { method: 'POST', body: fd });
+    const resp = await fetch(apiUrl('about-image'), { method: 'POST', body: fd });
     const json = await readApiResponse(resp);
 
     if (!resp.ok || !json.ok) {
@@ -302,7 +310,7 @@ heroForm.addEventListener('submit', async (event) => {
 
   try {
     const fd = new FormData(heroForm);
-    const resp = await fetch('api/hero-image', { method: 'POST', body: fd });
+    const resp = await fetch(apiUrl('hero-image'), { method: 'POST', body: fd });
     const json = await readApiResponse(resp);
 
     if (!resp.ok || !json.ok) {

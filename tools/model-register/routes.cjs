@@ -148,6 +148,8 @@ function modelImageAbsPath(imageName) {
 function buildModelFields(body, fallback = {}) {
   const formalName = String(body.name || '').trim();
   const shortDisplayName = String(body.displayName || formalName || '').trim();
+  const website = normalizeSocialUrl(body.website, 'website');
+  const websiteLabel = website ? String(body.websiteLabel || '').trim() : '';
 
   return {
     name: formalName,
@@ -160,7 +162,8 @@ function buildModelFields(body, fallback = {}) {
       instagram: normalizeSocialUrl(body.instagram, 'instagram'),
       x: normalizeSocialUrl(body.x, 'x'),
       threads: normalizeSocialUrl(body.threads, 'threads'),
-      website: normalizeSocialUrl(body.website, 'website')
+      website,
+      websiteLabel
     }
   };
 }
@@ -284,6 +287,7 @@ router.post('/api/register', upload.single('profileImage'), async (req, res) => 
       instagram = '',
       threads = '',
       website = '',
+      websiteLabel = '',
       aliases = '',
       profileImagePosition = 'center',
       force = 'false'

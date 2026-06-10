@@ -204,7 +204,8 @@ function setMode(mode) {
   idInput.readOnly = isEdit;
   imageInput.required = !isEdit;
   imageLabel.firstChild.textContent = isEdit ? 'プロフィール画像（変更する場合のみ選択）' : 'プロフィール画像';
-  submitButton.textContent = isEdit ? '保存' : '登録';
+  submitButton.textContent = isEdit ? '上書き保存' : '登録';
+  confirmButton.textContent = isEdit ? '警告を確認して上書き保存' : '警告を確認して登録';
   confirmButton.hidden = true;
   warnings.innerHTML = '';
   result.textContent = '';
@@ -238,6 +239,7 @@ function fillForm(model) {
   form.elements.instagram.value = links.instagram || '';
   form.elements.threads.value = links.threads || '';
   form.elements.website.value = links.website || '';
+  form.elements.websiteLabel.value = links.websiteLabel || '';
   form.elements.aliases.value = Array.isArray(model.aliases) ? model.aliases.join('\n') : '';
   imageInput.value = '';
   setPositionInput(model.profileImagePosition || 'center');
@@ -260,11 +262,12 @@ function renderWarnings(items) {
       </ul>
     </div>
   `;
+  confirmButton.textContent = currentMode === 'edit' ? '警告を確認して上書き保存' : '警告を確認して登録';
   confirmButton.hidden = false;
 }
 
 async function submit(force = false) {
-  result.textContent = '登録中...';
+  result.textContent = currentMode === 'edit' ? '保存中...' : '登録中...';
   warnings.innerHTML = '';
   confirmButton.hidden = true;
 
