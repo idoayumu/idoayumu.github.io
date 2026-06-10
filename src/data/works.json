@@ -182,5 +182,57 @@
     ],
     "image": "/images/works/large/260610marin_manacolle_0001.webp",
     "thumbnail": "/images/works/thumbs/260610marin_manacolle_0001.webp"
+  },
+  {
+    "id": "260610caho_0001",
+    "title": "Cahoピクミン",
+    "date": "2025-11-30",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "破顔",
+    "modelIds": [
+      "caho"
+    ],
+    "image": "/images/works/large/260610caho_0001.webp",
+    "thumbnail": "/images/works/thumbs/260610caho_0001.webp"
+  },
+  {
+    "id": "260610momoseyuuri_0001",
+    "title": "秘めた想い",
+    "date": "2026-02-13",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "想いを込めた手",
+    "modelIds": [
+      "momoseyuuri"
+    ],
+    "image": "/images/works/large/260610momoseyuuri_0001.webp",
+    "thumbnail": "/images/works/thumbs/260610momoseyuuri_0001.webp"
+  },
+  {
+    "id": "260610momo_osakabimage_0001",
+    "title": "光の河",
+    "date": "2026-03-08",
+    "location": "大阪",
+    "production": "大阪美マージュ",
+    "caption": "光る河",
+    "modelIds": [
+      "momo_osakabimage"
+    ],
+    "image": "/images/works/large/260610momo_osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260610momo_osakabimage_0001.webp"
+  },
+  {
+    "id": "260610marin_manacolle_0002",
+    "title": "最高の笑顔ください",
+    "date": "2025-09-13",
+    "location": "滋賀",
+    "production": "マナコレ撮影会",
+    "caption": "最後に撮ってる、最高の笑顔シリーズ",
+    "modelIds": [
+      "marin_manacolle"
+    ],
+    "image": "/images/works/large/260610marin_manacolle_0002.webp",
+    "thumbnail": "/images/works/thumbs/260610marin_manacolle_0002.webp"
   }
 ]
