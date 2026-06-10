@@ -14,10 +14,37 @@ const idInput = form.elements.id;
 const nameKanaInput = form.elements.nameKana;
 const nameKanaWarning = document.getElementById('nameKanaWarning');
 const imageLabel = imageInput.closest('label');
+const DEV_SITE_BASE_URL = 'http://localhost:4321';
+const PROD_SITE_BASE_URL = 'https://idoayumu.github.io';
 
 let pendingFormData = null;
 let models = [];
 let currentMode = 'create';
+
+function buildSiteUrl(baseUrl, path) {
+  return `${baseUrl.replace(/\/$/, '')}${path}`;
+}
+
+function renderConfirmLinks(type, id) {
+  const detailPath = type === 'model' ? `/models/${id}/` : `/works/${id}/`;
+  const listPath = type === 'model' ? '/models/' : '/works/';
+  const detailLabel = type === 'model' ? 'モデルページ' : '作品ページ';
+  const listLabel = type === 'model' ? 'Models一覧' : 'Works一覧';
+
+  return `
+    <div class="confirm-links">
+      <p>反映確認</p>
+      <div class="confirm-link-group">
+        <a href="${buildSiteUrl(DEV_SITE_BASE_URL, detailPath)}" target="_blank" rel="noopener noreferrer">${detailLabel}を開く（Dev）</a>
+        <a href="${buildSiteUrl(PROD_SITE_BASE_URL, detailPath)}" target="_blank" rel="noopener noreferrer">${detailLabel}を開く（本番）</a>
+      </div>
+      <div class="confirm-link-group">
+        <a href="${buildSiteUrl(DEV_SITE_BASE_URL, listPath)}" target="_blank" rel="noopener noreferrer">${listLabel}を開く（Dev）</a>
+        <a href="${buildSiteUrl(PROD_SITE_BASE_URL, listPath)}" target="_blank" rel="noopener noreferrer">${listLabel}を開く（本番）</a>
+      </div>
+    </div>
+  `;
+}
 
 function normalizeText(value) {
   return String(value || '')
@@ -316,7 +343,8 @@ async function submit(force = false) {
     pendingFormData = null;
     renderWarnings(json.warnings);
     result.innerHTML = `
-      <div class="success">${currentMode === 'edit' ? '保存成功' : '登録成功'}</div>
+      <div class="success">${currentMode === 'edit' ? '上書き保存しました。' : '登録しました。'}</div>
+      ${renderConfirmLinks('model', json.entry.id)}
       <pre>${JSON.stringify(json.entry, null, 2)}</pre>
     `;
     await loadModels();

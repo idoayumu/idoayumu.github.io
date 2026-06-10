@@ -227,6 +227,43 @@ pre {
   font-weight: 700;
 }
 
+.confirm-links {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid #d8d8d0;
+  border-radius: 4px;
+  background: #fbfbf8;
+}
+
+.confirm-links p {
+  margin: 0;
+  color: #555;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.confirm-link-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.confirm-link-group a {
+  display: inline-flex;
+  padding: 8px 10px;
+  border: 1px solid #d8d8d0;
+  border-radius: 4px;
+  color: #111;
+  background: #fff;
+  text-decoration: none;
+}
+
+.confirm-link-group a:hover {
+  border-color: #111;
+}
+
 .error {
   color: #b00020;
   font-weight: 700;
