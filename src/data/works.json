@@ -234,5 +234,31 @@
     ],
     "image": "/images/works/large/260610marin_manacolle_0002.webp",
     "thumbnail": "/images/works/thumbs/260610marin_manacolle_0002.webp"
+  },
+  {
+    "id": "260611misaki_0001",
+    "title": "境界",
+    "date": "2025-11-01",
+    "location": "大阪",
+    "production": "シロクロ撮影会",
+    "caption": "境界線というタイトルと悩んだが、境界にした。",
+    "modelIds": [
+      "misaki"
+    ],
+    "image": "/images/works/large/260611misaki_0001.webp",
+    "thumbnail": "/images/works/thumbs/260611misaki_0001.webp"
+  },
+  {
+    "id": "260611misaki_0002",
+    "title": "空と海の祝福",
+    "date": "2025-06-18",
+    "location": "大阪",
+    "production": "シロクロ撮影会",
+    "caption": "空と海に祝福されたような背景。",
+    "modelIds": [
+      "misaki"
+    ],
+    "image": "/images/works/large/260611misaki_0002.webp",
+    "thumbnail": "/images/works/thumbs/260611misaki_0002.webp"
   }
 ]

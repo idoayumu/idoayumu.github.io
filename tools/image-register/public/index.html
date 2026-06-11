@@ -57,23 +57,25 @@
 
         <div class="image-layout">
           <div class="image-controls">
-            <label class="checkbox-label">
-              <input type="checkbox" id="useSourcePath">
-              画像の絶対パスを直接指定する
-            </label>
-
             <div id="fileMode">
               <label>ファイル選択
                 <input type="file" id="imageFile" accept="image/*" />
               </label>
             </div>
 
-            <div id="pathMode" class="path-mode" hidden>
-              <label>画像の絶対パス
-                <input type="text" id="sourcePath" placeholder="/Volumes/外付けHDD/2026/0102ももさん/ex/IMG_0001.jpg" />
+            <details class="advanced-image-options">
+              <summary>PC向け詳細オプション</summary>
+              <label class="checkbox-label">
+                <input type="checkbox" id="useSourcePath">
+                画像の絶対パスを指定する
               </label>
-              <p class="note">このパスは読み取りのみ。元画像は変更・移動・削除しません。</p>
-            </div>
+              <div id="pathMode" class="path-mode" hidden>
+                <label>画像の絶対パス
+                  <input type="text" id="sourcePath" placeholder="/Volumes/外付けHDD/2026/0102ももさん/ex/IMG_0001.jpg" />
+                </label>
+                <p class="note">Macでローカル画像パスを直接指定する場合のみ使います。元画像は変更・移動・削除しません。</p>
+              </div>
+            </details>
 
             <div id="imageInfo" class="image-info"></div>
             <p id="editImageNote" class="note" hidden>画像を選択しない場合、既存画像とサムネイルを維持します。</p>
@@ -184,9 +186,28 @@
               <option value="overwrite">上書きする</option>
             </select>
           </label>
-          <div class="button-row">
-            <button type="button" id="clearForm" class="secondary-button">一括クリア</button>
-            <button type="submit" class="primary-button">決定（登録）</button>
+          <div class="save-actions">
+            <div class="draft-actions" aria-label="下書き操作">
+              <button type="button" id="saveDraft" class="secondary-button">下書き保存</button>
+              <button type="button" id="restoreDraft" class="secondary-button">下書き復元</button>
+              <button type="button" id="deleteDraft" class="secondary-button danger-button">下書き削除</button>
+            </div>
+            <div class="button-row">
+              <button type="button" id="clearForm" class="secondary-button">一括クリア</button>
+              <button type="submit" class="primary-button">内容を確認</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="saveConfirmPanel" class="confirm-panel" hidden>
+          <div class="confirm-panel-heading">
+            <p class="field-title">保存前確認</p>
+            <p class="note">内容を確認してから保存を実行します。</p>
+          </div>
+          <dl id="saveConfirmList" class="confirm-list"></dl>
+          <div class="button-row confirm-button-row">
+            <button type="button" id="cancelSaveConfirm" class="secondary-button">修正する</button>
+            <button type="button" id="executeSave" class="primary-button">保存実行</button>
           </div>
         </div>
       </section>

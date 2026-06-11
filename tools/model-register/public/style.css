@@ -56,6 +56,24 @@ h1 {
   font-size: 1.8rem;
 }
 
+form {
+  display: grid;
+  gap: 16px;
+}
+
+.form-section {
+  padding: 16px;
+  border: 1px solid #d8d8d0;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.form-section h2 {
+  margin: 0 0 14px;
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
 label {
   display: grid;
   gap: 6px;
@@ -111,12 +129,19 @@ select {
   background: #fff;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: #aaa9a1;
+  opacity: 1;
+}
+
 input[readonly] {
   color: #555;
   background: #f2f2ee;
 }
 
 button {
+  min-height: 44px;
   padding: 10px 16px;
   border: 0;
   border-radius: 4px;
@@ -281,7 +306,28 @@ pre {
     padding: 16px;
   }
 
+  h1 {
+    font-size: 1.55rem;
+  }
+
+  .form-section {
+    padding: 14px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .field-full {
+    grid-column: auto;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .row button {
+    width: 100%;
   }
 }

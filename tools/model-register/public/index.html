@@ -44,39 +44,52 @@
     </div>
 
     <form id="modelForm">
-      <div class="grid">
-        <label class="field-full">モデルID
-          <input name="id" required placeholder="momo_osakabimage" autocomplete="off" />
-          <span class="field-help">小文字英数字・ハイフン・アンダースコアで固定。例: marin_manacolle, minaseaoi</span>
-        </label>
-        <label>表示名
-          <input name="name" required placeholder="水瀬あおい" autocomplete="off" />
-        </label>
-        <label>短縮表示名
-          <input name="displayName" placeholder="あおい" autocomplete="off" />
-        </label>
-        <label>読み仮名（カナ）
-          <input name="nameKana" placeholder="ミナセアオイ" autocomplete="off" />
-          <span id="nameKanaWarning" class="field-warning"></span>
-        </label>
-        <label>所属・撮影会名
-          <input name="agency" placeholder="任意。未入力なら表示されません" autocomplete="off" />
-        </label>
-        <label>X
-          <input name="x" placeholder="@example または https://x.com/example" autocomplete="off" />
-        </label>
-        <label>Instagram
-          <input name="instagram" placeholder="@example または https://instagram.com/example/" autocomplete="off" />
-        </label>
-        <label class="field-full">Threads
-          <input name="threads" placeholder="@example または https://www.threads.net/@example" autocomplete="off" />
-        </label>
-        <label class="field-full">Other URL
-          <input name="website" placeholder="https://example.com/" autocomplete="off" />
-        </label>
-        <label class="field-full">Other表示名
-          <input name="websiteLabel" placeholder="lit.link / 公式サイト / 撮影会名" autocomplete="off" />
-        </label>
+      <section class="form-section" aria-labelledby="model-basic-title">
+        <h2 id="model-basic-title">基本情報</h2>
+        <div class="grid">
+          <label class="field-full">モデルID
+            <input name="id" required placeholder="momo_osakabimage" autocomplete="off" />
+            <span class="field-help">小文字英数字・ハイフン・アンダースコアで固定。例: marin_manacolle, minaseaoi</span>
+          </label>
+          <label>表示名
+            <input name="name" required placeholder="水瀬あおい" autocomplete="off" />
+          </label>
+          <label>短縮表示名
+            <input name="displayName" placeholder="あおい" autocomplete="off" />
+          </label>
+          <label>読み仮名（カナ）
+            <input name="nameKana" placeholder="ミナセアオイ" autocomplete="off" />
+            <span id="nameKanaWarning" class="field-warning"></span>
+          </label>
+          <label>所属・撮影会名
+            <input name="agency" placeholder="任意。未入力なら表示されません" autocomplete="off" />
+          </label>
+        </div>
+      </section>
+
+      <section class="form-section" aria-labelledby="model-links-title">
+        <h2 id="model-links-title">リンク</h2>
+        <div class="grid">
+          <label>X
+            <input name="x" placeholder="@example または https://x.com/example" autocomplete="off" />
+          </label>
+          <label>Instagram
+            <input name="instagram" placeholder="@example または https://instagram.com/example/" autocomplete="off" />
+          </label>
+          <label class="field-full">Threads
+            <input name="threads" placeholder="@example または https://www.threads.net/@example" autocomplete="off" />
+          </label>
+          <label class="field-full">Other URL
+            <input name="website" placeholder="https://example.com/" autocomplete="off" />
+          </label>
+          <label class="field-full">Other表示名
+            <input name="websiteLabel" placeholder="lit.link / 公式サイト / 撮影会名" autocomplete="off" />
+          </label>
+        </div>
+      </section>
+
+      <section class="form-section" aria-labelledby="model-image-title">
+        <h2 id="model-image-title">プロフィール画像</h2>
         <label class="field-full">プロフィール画像
           <input type="file" id="profileImage" name="profileImage" accept="image/*" />
         </label>
@@ -95,11 +108,14 @@
             右
           </label>
         </fieldset>
-      </div>
+      </section>
 
-      <label class="field-full">aliases（別名・任意 / 1行1別名）
-        <textarea name="aliases" rows="3" placeholder="MOMO&#10;ももちゃん"></textarea>
-      </label>
+      <section class="form-section" aria-labelledby="model-aliases-title">
+        <h2 id="model-aliases-title">別名</h2>
+        <label class="field-full">aliases（別名・任意 / 1行1別名）
+          <textarea name="aliases" rows="3" placeholder="MOMO&#10;ももちゃん"></textarea>
+        </label>
+      </section>
 
       <div id="preview"></div>
       <div id="warnings"></div>

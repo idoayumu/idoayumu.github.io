@@ -118,6 +118,12 @@ button {
   font: inherit;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: #aaa9a1;
+  opacity: 1;
+}
+
 textarea {
   resize: vertical;
 }
