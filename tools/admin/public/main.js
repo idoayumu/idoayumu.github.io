@@ -1,3 +1,4 @@
+const isSummaryPage = Boolean(document.getElementById('workCount'));
 const workCount = document.getElementById('workCount');
 const modelCount = document.getElementById('modelCount');
 const aboutImage = document.getElementById('aboutImage');
@@ -100,6 +101,13 @@ function activateStaticMode() {
   document.body.classList.add('is-static-mode');
   document.querySelector('.admin-nav-title')?.setAttribute('href', './');
   document.querySelectorAll('.tool-card, .admin-nav-links a').forEach((link) => {
+    const href = link.getAttribute('href') || '';
+    const canBrowseStatic = href === '/admin/works/' || href === '/admin/models/';
+    if (canBrowseStatic) {
+      link.classList.add('is-static-readable');
+      return;
+    }
+
     link.setAttribute('aria-disabled', 'true');
     link.addEventListener('click', (event) => {
       event.preventDefault();
@@ -135,4 +143,6 @@ async function loadSummary() {
   }
 }
 
-loadSummary();
+if (isSummaryPage) {
+  loadSummary();
+}
