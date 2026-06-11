@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Works一覧 | Cloudflare静的表示</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body class="is-static-mode static-list-page" data-static-list="works">
+  <main>
+    <nav class="admin-nav" aria-label="管理ツールナビゲーション">
+      <a class="admin-nav-title" href="/">光景ノオト管理ツール</a>
+      <div class="admin-nav-links">
+        <a class="is-active is-static-readable" href="/admin/works/">作品一覧</a>
+        <a class="is-static-readable" href="/admin/models/">モデル一覧</a>
+      </div>
+    </nav>
+
+    <header class="page-header">
+      <p class="eyebrow">Cloudflare Static Mode</p>
+      <h1>Works一覧</h1>
+      <p>Cloudflare公開版では閲覧のみ可能です。登録・編集・保存はローカル管理ツールを使用してください。</p>
+    </header>
+
+    <section class="dashboard" aria-labelledby="works-title">
+      <div class="section-heading">
+        <p>Read only</p>
+        <h2 id="works-title">作品一覧</h2>
+      </div>
+      <label class="static-search">検索
+        <input id="staticSearch" type="search" placeholder="タイトル・モデル・撮影地・日付で検索" autocomplete="off" />
+      </label>
+      <div id="staticList" class="static-list" aria-live="polite"></div>
+      <p class="note" id="staticMessage"></p>
+    </section>
+  </main>
+
+  <script src="/main.js"></script>
+  <script src="/admin/static-list.js"></script>
+</body>
+
+</html>

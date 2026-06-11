@@ -251,6 +251,86 @@ h2 {
   color: #b00035;
 }
 
+.static-search {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+  color: #555;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.static-search input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e4ddec;
+  background: #fff;
+  color: #111;
+  font: inherit;
+}
+
+.static-search input::placeholder {
+  color: #aaa9a1;
+  opacity: 1;
+}
+
+.static-list {
+  display: grid;
+  gap: 12px;
+}
+
+.static-list-card {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid #e4ddec;
+  background: #fff;
+}
+
+.static-list-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f1eef7;
+}
+
+.static-list-profile {
+  aspect-ratio: 1 / 1;
+}
+
+.static-list-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.static-list-body {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.static-list-body h3,
+.static-list-body p {
+  margin: 0;
+}
+
+.static-list-body h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.static-list-body p,
+.static-list-body small {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
 @media (min-width: 720px) {
   main {
     padding-top: 56px;
@@ -262,5 +342,15 @@ h2 {
 
   .tool-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .static-list-card {
+    grid-template-columns: 1fr;
+  }
+
+  .static-list-thumb {
+    aspect-ratio: 3 / 2;
   }
 }
