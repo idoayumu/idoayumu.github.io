@@ -1,4 +1,5 @@
 const useSourcePathChk = document.getElementById('useSourcePath');
+const advancedImageOptions = document.querySelector('.advanced-image-options');
 const fileMode = document.getElementById('fileMode');
 const pathMode = document.getElementById('pathMode');
 const imageFile = document.getElementById('imageFile');
@@ -7,6 +8,13 @@ const imageInfo = document.getElementById('imageInfo');
 const form = document.getElementById('metaForm');
 const result = document.getElementById('result');
 const clearFormButton = document.getElementById('clearForm');
+const saveDraftButton = document.getElementById('saveDraft');
+const restoreDraftButton = document.getElementById('restoreDraft');
+const deleteDraftButton = document.getElementById('deleteDraft');
+const saveConfirmPanel = document.getElementById('saveConfirmPanel');
+const saveConfirmList = document.getElementById('saveConfirmList');
+const executeSaveButton = document.getElementById('executeSave');
+const cancelSaveConfirmButton = document.getElementById('cancelSaveConfirm');
 const modelIdsInput = document.getElementById('modelIds');
 const modelSearch = document.getElementById('modelSearch');
 const modelSuggestions = document.getElementById('modelSuggestions');
@@ -33,12 +41,18 @@ const productionInput = form.elements.production;
 const submitButton = form.querySelector('button[type="submit"]');
 const DEV_SITE_BASE_URL = 'http://localhost:4321';
 const PROD_SITE_BASE_URL = 'https://idoayumu.github.io';
+const DRAFT_STORAGE_KEY = 'kokei-note.work-register.draft.v1';
 
 let modelCandidates = [];
 let works = [];
 let existingWorkTitles = [];
 let currentMode = 'create';
 let currentEditWork = null;
+
+function hideSaveConfirmation() {
+  saveConfirmPanel.hidden = true;
+  saveConfirmList.innerHTML = '';
+}
 
 function buildSiteUrl(baseUrl, path) {
   return `${baseUrl.replace(/\/$/, '')}${path}`;
@@ -61,6 +75,17 @@ function renderConfirmLinks(type, id) {
         <a href="${buildSiteUrl(DEV_SITE_BASE_URL, listPath)}" target="_blank" rel="noopener noreferrer">${listLabel}を開く（Dev）</a>
         <a href="${buildSiteUrl(PROD_SITE_BASE_URL, listPath)}" target="_blank" rel="noopener noreferrer">${listLabel}を開く（本番）</a>
       </div>
+    </div>
+  `;
+}
+
+function renderPostSaveActions(entry) {
+  const workUrl = buildSiteUrl(PROD_SITE_BASE_URL, `/works/${entry.id}/`);
+  return `
+    <div class="post-save-actions" data-saved-work-id="${entry.id}">
+      <a class="primary-button action-link" href="${workUrl}" target="_blank" rel="noopener noreferrer">登録作品を開く</a>
+      <button type="button" class="secondary-button" data-next-action="same-model">同じモデルで次を登録</button>
+      <button type="button" class="secondary-button" data-next-action="blank">空にして次を登録</button>
     </div>
   `;
 }
@@ -129,6 +154,7 @@ useSourcePathChk.addEventListener('change', () => {
   }
   imageFile.value = '';
   renderImageInfo();
+  hideSaveConfirmation();
 });
 
 imageFile.addEventListener('change', () => {
@@ -142,6 +168,7 @@ imageFile.addEventListener('change', () => {
   img.onload = () => URL.revokeObjectURL(url);
   preview.appendChild(img);
   renderImageInfo();
+  hideSaveConfirmation();
 });
 
 function normalizeText(value) {
@@ -300,8 +327,175 @@ function renderImageInfo() {
   imageInfo.appendChild(list);
 }
 
+function selectedModelLabels() {
+  return getSelectedModelIds().map((id) => {
+    const model = modelCandidates.find((candidate) => candidate.id === id);
+    return model ? getModelLabel(model) : id;
+  });
+}
+
+function getImageSummary() {
+  const usePath = useSourcePathChk.checked;
+  const sourcePath = document.getElementById('sourcePath').value.trim();
+  const file = imageFile.files && imageFile.files[0];
+
+  if (usePath) return sourcePath ? `絶対パス: ${sourcePath}` : '絶対パス未入力';
+  if (file) return `${file.name} (${Math.round(file.size / 1024).toLocaleString()} KB)`;
+  if (currentMode === 'edit' && currentEditWork) return '未選択（既存画像を維持）';
+  return '未選択';
+}
+
+function collectDraft() {
+  return {
+    savedAt: new Date().toISOString(),
+    mode: currentMode,
+    editWorkId: currentEditWork?.id || editWorkSelect.value || '',
+    title: form.elements.title.value,
+    date: form.elements.date.value,
+    location: form.elements.location.value,
+    production: form.elements.production.value,
+    caption: form.elements.caption.value,
+    modelIds: modelIdsInput.value,
+    workIdModelName: workIdModelName.value,
+    workIdSequence: workIdSequence.value,
+    overwrite: form.elements.overwrite?.value || 'skip',
+    useSourcePath: useSourcePathChk.checked,
+    sourcePath: document.getElementById('sourcePath').value
+  };
+}
+
+function applyDraft(draft) {
+  if (!draft || typeof draft !== 'object') return false;
+
+  setMode(draft.mode === 'edit' ? 'edit' : 'create');
+
+  if (draft.mode === 'edit' && draft.editWorkId) {
+    editWorkSelect.value = draft.editWorkId;
+    fillFormFromWork(works.find((work) => work.id === draft.editWorkId));
+  }
+
+  form.elements.title.value = draft.title || '';
+  form.elements.date.value = draft.date || '';
+  form.elements.location.value = draft.location || '';
+  form.elements.production.value = draft.production || '';
+  form.elements.caption.value = draft.caption || '';
+  if (form.elements.overwrite) form.elements.overwrite.value = draft.overwrite || 'skip';
+  setSelectedModelIds(String(draft.modelIds || '').split(',').map((id) => id.trim()).filter(Boolean));
+  workIdModelName.value = draft.workIdModelName || '';
+  workIdSequence.value = draft.workIdSequence || '';
+  useSourcePathChk.checked = Boolean(draft.useSourcePath);
+  pathMode.hidden = !useSourcePathChk.checked;
+  fileMode.hidden = useSourcePathChk.checked;
+  if (advancedImageOptions) advancedImageOptions.open = useSourcePathChk.checked;
+  document.getElementById('sourcePath').value = draft.sourcePath || '';
+  imageFile.value = '';
+  preview.innerHTML = '';
+
+  if (currentMode === 'edit' && currentEditWork && !useSourcePathChk.checked) {
+    renderExistingWorkPreview(currentEditWork);
+  }
+
+  updateWorkIdPreview();
+  renderSelectedModels();
+  renderModelSuggestions();
+  renderTitleDuplicateWarning();
+  hideSaveConfirmation();
+  return true;
+}
+
+function saveDraft() {
+  localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(collectDraft()));
+  result.innerHTML = '<div class="success">下書きを保存しました。画像ファイル自体は保存されません。</div>';
+  hideSaveConfirmation();
+}
+
+function restoreDraft() {
+  const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+  if (!raw) {
+    result.innerHTML = '<span class="error">復元できる下書きがありません。</span>';
+    return;
+  }
+
+  try {
+    const draft = JSON.parse(raw);
+    if (!applyDraft(draft)) throw new Error('invalid draft');
+    result.innerHTML = '<div class="success">下書きを復元しました。画像は必要に応じて選び直してください。</div>';
+  } catch (err) {
+    console.error(err);
+    result.innerHTML = '<span class="error">下書きを復元できませんでした。</span>';
+  }
+}
+
+function deleteDraft() {
+  if (!localStorage.getItem(DRAFT_STORAGE_KEY)) {
+    result.innerHTML = '<span class="error">削除できる下書きがありません。</span>';
+    return;
+  }
+  if (!window.confirm('保存済みの下書きを削除します。よろしいですか？')) return;
+  localStorage.removeItem(DRAFT_STORAGE_KEY);
+  result.innerHTML = '<div class="success">下書きを削除しました。</div>';
+  hideSaveConfirmation();
+}
+
+function clearWorkSpecificFields() {
+  form.elements.title.value = '';
+  form.elements.caption.value = '';
+  workIdInput.value = '';
+  workIdModelName.value = '';
+  workIdSequence.value = '';
+  workIdPreview.textContent = '未入力';
+  workIdPreview.classList.add('is-empty');
+  workIdDuplicateWarning.textContent = '';
+  titleDuplicateWarning.textContent = '';
+  resetImageInput();
+}
+
+function startNextWithSameModel() {
+  localStorage.removeItem(DRAFT_STORAGE_KEY);
+  const keep = {
+    date: form.elements.date.value,
+    location: form.elements.location.value,
+    production: form.elements.production.value,
+    modelIds: getSelectedModelIds(),
+    workIdModelName: workIdModelName.value
+  };
+
+  setMode('create');
+  form.elements.date.value = keep.date;
+  form.elements.location.value = keep.location;
+  form.elements.production.value = keep.production;
+  setSelectedModelIds(keep.modelIds);
+  clearWorkSpecificFields();
+  workIdModelName.value = keep.workIdModelName;
+  updateWorkIdPreview();
+  renderSelectedModels();
+  renderModelSuggestions();
+  renderImageInfo();
+  hideSaveConfirmation();
+  result.textContent = '同じモデルで次の登録を開始できます。画像を選択してください。';
+  imageFile.focus();
+}
+
+function startNextBlank() {
+  localStorage.removeItem(DRAFT_STORAGE_KEY);
+  setMode('create');
+  form.reset();
+  resetImageInput();
+  modelSearch.value = '';
+  setSelectedModelIds([]);
+  setRegistrationDate();
+  updateWorkIdPreview();
+  renderSelectedModels();
+  renderModelSuggestions();
+  renderTitleDuplicateWarning();
+  hideSaveConfirmation();
+  result.textContent = '新しい登録を開始できます。画像を選択してください。';
+  imageFile.focus();
+}
+
 function resetImageInput() {
   useSourcePathChk.checked = false;
+  if (advancedImageOptions) advancedImageOptions.open = false;
   pathMode.hidden = true;
   fileMode.hidden = false;
   preview.innerHTML = '';
@@ -348,6 +542,7 @@ function setMode(mode) {
   editWorkSelect.value = '';
   editWorkSearch.value = '';
   result.textContent = '';
+  hideSaveConfirmation();
   modelSearch.value = '';
   form.reset();
   modeInputs.forEach((input) => {
@@ -451,6 +646,7 @@ function clearForm() {
     if (!window.confirm('編集中の入力を選択時の内容へ戻します。よろしいですか？')) return;
     fillFormFromWork(currentEditWork);
     result.textContent = '';
+    hideSaveConfirmation();
     return;
   }
 
@@ -460,6 +656,7 @@ function clearForm() {
   resetImageInput();
   modelSearch.value = '';
   result.textContent = '';
+  hideSaveConfirmation();
   setRegistrationDate();
   updateWorkIdPreview();
   renderSelectedModels();
@@ -558,7 +755,12 @@ setRegistrationDate();
 updateWorkIdPreview();
 workIdModelName.addEventListener('input', updateWorkIdPreview);
 workIdSequence.addEventListener('input', updateWorkIdPreview);
-titleInput.addEventListener('input', renderTitleDuplicateWarning);
+workIdModelName.addEventListener('input', hideSaveConfirmation);
+workIdSequence.addEventListener('input', hideSaveConfirmation);
+titleInput.addEventListener('input', () => {
+  renderTitleDuplicateWarning();
+  hideSaveConfirmation();
+});
 clearFormButton.addEventListener('click', clearForm);
 modelSearch.addEventListener('input', renderModelSuggestions);
 editWorkSearch.addEventListener('input', fillWorkSelect);
@@ -566,6 +768,7 @@ modelIdsInput.addEventListener('input', () => {
   syncWorkIdModelNameFromSelection();
   renderSelectedModels();
   renderModelSuggestions();
+  hideSaveConfirmation();
 });
 loadSuggestions();
 loadWorks();
@@ -590,8 +793,70 @@ async function readApiResponse(resp) {
   };
 }
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+function validateBeforeConfirmation() {
+  const workId = getGeneratedWorkId();
+  if (currentMode === 'create' && !workId) {
+    result.innerHTML = '<span class="error">モデル名は半角英数字または _、通し番号は4桁数字で入力してください。</span>';
+    return false;
+  }
+
+  if (currentMode === 'edit' && !currentEditWork) {
+    result.innerHTML = '<span class="error">編集する作品を選択してください。</span>';
+    return false;
+  }
+
+  if (isGeneratedWorkIdDuplicate()) {
+    renderWorkIdDuplicateWarning();
+    result.innerHTML = '<span class="error">この作品IDはすでに使用されています。通し番号などを変更してください。</span>';
+    return false;
+  }
+
+  if (useSourcePathChk.checked) {
+    const p = document.getElementById('sourcePath').value.trim();
+    if (!p) {
+      result.textContent = 'sourcePath を入力してください。';
+      return false;
+    }
+  } else if (currentMode === 'create' && (!imageFile.files || !imageFile.files[0])) {
+    result.textContent = '画像ファイルを選択してください。';
+    return false;
+  }
+
+  return true;
+}
+
+function appendConfirmRow(label, value) {
+  const row = document.createElement('div');
+  const term = document.createElement('dt');
+  const description = document.createElement('dd');
+  term.textContent = label;
+  description.textContent = value || '未設定';
+  row.append(term, description);
+  saveConfirmList.appendChild(row);
+}
+
+function showSaveConfirmation() {
+  if (!validateBeforeConfirmation()) {
+    hideSaveConfirmation();
+    return;
+  }
+
+  saveConfirmList.innerHTML = '';
+  appendConfirmRow('保存モード', currentMode === 'edit' ? '既存作品を編集' : '新規登録');
+  appendConfirmRow('作品ID', currentMode === 'edit' ? currentEditWork.id : getGeneratedWorkId());
+  appendConfirmRow('タイトル', form.elements.title.value.trim());
+  appendConfirmRow('撮影日', form.elements.date.value);
+  appendConfirmRow('撮影場所', form.elements.location.value.trim());
+  appendConfirmRow('Production', form.elements.production.value.trim());
+  appendConfirmRow('モデル', selectedModelLabels().join(' / '));
+  appendConfirmRow('画像', getImageSummary());
+  saveConfirmPanel.hidden = false;
+  result.textContent = '';
+  saveConfirmPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function executeSave() {
+  if (!form.reportValidity() || !validateBeforeConfirmation()) return;
   result.textContent = currentMode === 'edit' ? '保存中...' : '登録中...';
 
   const fd = new FormData(form);
@@ -650,10 +915,15 @@ form.addEventListener('submit', async (e) => {
       const e = json.entry;
       result.innerHTML = `
         <div class="success">${currentMode === 'edit' ? '上書き保存しました。' : '登録しました。'}</div>
+        ${renderPostSaveActions(e)}
         ${renderConfirmLinks('work', e.id)}
-        <pre>${JSON.stringify(e, null, 2)}</pre>
+        <details class="saved-json-details">
+          <summary>詳細を表示</summary>
+          <pre>${JSON.stringify(e, null, 2)}</pre>
+        </details>
       `;
       await Promise.all([loadSuggestions(), loadWorks()]);
+      hideSaveConfirmation();
       if (currentMode === 'edit') {
         editWorkSelect.value = e.id;
         fillFormFromWork(e);
@@ -663,6 +933,32 @@ form.addEventListener('submit', async (e) => {
     console.error(err);
     const message = err instanceof Error ? err.message : String(err);
     result.innerHTML = `<span class="error">通信エラー: ${message}</span>`;
+  }
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  showSaveConfirmation();
+});
+
+executeSaveButton.addEventListener('click', executeSave);
+cancelSaveConfirmButton.addEventListener('click', () => {
+  hideSaveConfirmation();
+  result.textContent = '保存前確認を閉じました。内容を修正できます。';
+});
+saveDraftButton.addEventListener('click', saveDraft);
+restoreDraftButton.addEventListener('click', restoreDraft);
+deleteDraftButton.addEventListener('click', deleteDraft);
+
+result.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-next-action]');
+  if (!button) return;
+
+  const action = button.getAttribute('data-next-action');
+  if (action === 'same-model') {
+    startNextWithSameModel();
+  } else if (action === 'blank') {
+    startNextBlank();
   }
 });
 
