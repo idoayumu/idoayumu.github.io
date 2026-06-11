@@ -1,0 +1,57 @@
+---
+import "../../styles/admin-static.css";
+import worksData from "../../data/works.json";
+import modelsData from "../../data/models.json";
+
+const works = worksData;
+const models = modelsData;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>静的admin | 光景ノオト</title>
+  </head>
+  <body class="admin-static-body">
+    <main class="admin-static-shell">
+      <nav class="admin-static-nav" aria-label="静的adminナビゲーション">
+        <a class="admin-static-title" href="/admin-static/">光景ノオト 静的admin</a>
+        <div class="admin-static-links">
+          <a class="is-active" href="/admin-static/">Top</a>
+          <a href="/admin-static/works/">Works</a>
+          <a href="/admin-static/models/">Models</a>
+          <a href="/admin-static/register/">Register Preview</a>
+        </div>
+      </nav>
+
+      <header class="admin-static-header">
+        <h1>静的admin</h1>
+        <p>GitHub Pages上で安全に開ける、閲覧・入力確認専用の管理画面です。</p>
+      </header>
+
+      <p class="admin-static-notice">
+        現在はプレビュー専用です。保存、画像変換、JSON更新、GitHub認証、GitHub API連携は行いません。
+      </p>
+
+      <section class="admin-static-grid" aria-label="概要">
+        <a class="admin-static-card" href="/admin-static/works/">
+          <span>Works</span>
+          <strong>{works.length}作品</strong>
+          <small>作品一覧を開く</small>
+        </a>
+        <a class="admin-static-card" href="/admin-static/models/">
+          <span>Models</span>
+          <strong>{models.length}モデル</strong>
+          <small>モデル一覧を開く</small>
+        </a>
+        <a class="admin-static-card" href="/admin-static/register/">
+          <span>Preview</span>
+          <strong>保存なし作品登録</strong>
+          <small>iPhone入力体験を確認する</small>
+        </a>
+      </section>
+    </main>
+  </body>
+</html>
