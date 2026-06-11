@@ -1,0 +1,124 @@
+[
+  {
+    "id": "minaseaoi",
+    "name": "水瀬あおい",
+    "nameKana": "ミナセアオイ",
+    "nameEn": "Aoi Minase",
+    "aliases": [],
+    "agency": "マナコレ撮影会",
+    "bio": "",
+    "thumbnail": "minaseaoi_thumb.jpg",
+    "links": {
+      "instagram": "https://www.instagram.com/minase_aoi1/",
+      "twitter": "https://x.com/minase__aoi",
+      "website": ""
+    },
+    "featured": true
+  },
+  {
+    "id": "momoseyuuri",
+    "name": "百瀬結梨",
+    "nameKana": "モモセユウリ",
+    "nameEn": "Yuuri Momose",
+    "aliases": [
+      "ゆうり"
+    ],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "momoseyuuri_thumb.jpg",
+    "links": {
+      "instagram": "https://instagram.com/yuuri_momomo/",
+      "x": "https://x.com/yuuri_momomo",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true,
+    "displayName": "百瀬結梨",
+    "profileImagePosition": "center"
+  },
+  {
+    "id": "momo_osakabimage",
+    "name": "もも",
+    "nameKana": "モモ",
+    "nameEn": "Momo",
+    "aliases": [],
+    "agency": "大阪美マージュ",
+    "bio": "",
+    "thumbnail": "momo_osakabimage_thumb.jpg",
+    "links": {
+      "instagram": "https://www.instagram.com/m_omodesu/",
+      "x": "https://twitter.com/m_mdesu_",
+      "threads": "",
+      "website": "https://bimage.site/",
+      "websiteLabel": "大阪美マージュ"
+    },
+    "featured": true,
+    "displayName": "もも",
+    "profileImagePosition": "right center"
+  },
+  {
+    "id": "marin_manacolle",
+    "name": "Marin",
+    "nameKana": "マリン",
+    "nameEn": "",
+    "aliases": [
+      "Marin"
+    ],
+    "agency": "マナコレ撮影会",
+    "bio": "",
+    "thumbnail": "marin_manacolle_profile.webp",
+    "links": {
+      "instagram": "https://www.instagram.com/niram1030/",
+      "x": "https://x.com/niram1030",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true,
+    "displayName": "Marin",
+    "profileImagePosition": "center"
+  },
+  {
+    "id": "caho",
+    "name": "Caho",
+    "displayName": "Caho",
+    "nameKana": "かほ",
+    "nameEn": "",
+    "aliases": [
+      "Caho"
+    ],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "caho_profile.webp",
+    "links": {
+      "instagram": "https://www.instagram.com/caho_portrait/",
+      "x": "https://x.com/caho_portrait",
+      "threads": "",
+      "website": "https://lit.link/2fed73b5-8287-43fa-8dd8-d756f22b6926",
+      "websiteLabel": "lit.link"
+    },
+    "featured": true,
+    "profileImagePosition": "center"
+  },
+  {
+    "id": "misaki",
+    "name": "美咲",
+    "displayName": "美咲",
+    "nameKana": "ミサキ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "シロクロ撮影会",
+    "bio": "",
+    "thumbnail": "misaki_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/michagram2002/",
+      "x": "https://x.com/micha20020108",
+      "threads": "",
+      "website": "https://lit.link/micha0108",
+      "websiteLabel": ""
+    },
+    "featured": true
+  }
+]
