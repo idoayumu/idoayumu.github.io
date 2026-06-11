@@ -1,0 +1,139 @@
+---
+import "../../styles/admin-static.css";
+import worksData from "../../data/works.json";
+import modelsData from "../../data/models.json";
+
+const payload = JSON.stringify({
+  works: worksData,
+  models: modelsData,
+}).replace(/</g, "\\u003c");
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>保存なし作品登録プレビュー | 静的admin</title>
+  </head>
+  <body class="admin-static-body" data-admin-static-page="register">
+    <main class="admin-static-shell">
+      <nav class="admin-static-nav" aria-label="静的adminナビゲーション">
+        <a class="admin-static-title" href="/admin-static/">光景ノオト 静的admin</a>
+        <div class="admin-static-links">
+          <a href="/admin-static/">Top</a>
+          <a href="/admin-static/works/">Works</a>
+          <a href="/admin-static/models/">Models</a>
+          <a class="is-active" href="/admin-static/register/">Register Preview</a>
+        </div>
+      </nav>
+
+      <header class="admin-static-header">
+        <h1>保存なし作品登録プレビュー</h1>
+        <p>iPhone Safariでの入力体験を確認するための静的フォームです。</p>
+      </header>
+
+      <p class="admin-static-notice">
+        現在はプレビュー専用です。保存はPhase2-Dで対応予定です。画像変換、JSON更新、GitHub API連携は行いません。
+      </p>
+
+      <form id="adminStaticRegisterForm" class="admin-static-form">
+        <section class="admin-static-section" aria-labelledby="preview-image-title">
+          <h2 id="preview-image-title">画像</h2>
+          <label>
+            画像を選択
+            <input id="staticImageFile" type="file" accept="image/*" />
+          </label>
+          <div id="staticImagePreview" class="admin-static-preview"></div>
+          <p id="staticImageInfo" class="admin-static-small"></p>
+        </section>
+
+        <section class="admin-static-section" aria-labelledby="preview-details-title">
+          <h2 id="preview-details-title">作品情報</h2>
+          <div class="admin-static-fields">
+            <label>
+              タイトル
+              <input name="title" required autocomplete="off" />
+            </label>
+            <label>
+              撮影日
+              <input name="date" type="date" required />
+            </label>
+            <label>
+              撮影地
+              <input name="location" required autocomplete="off" />
+            </label>
+            <label>
+              Production
+              <input name="production" required placeholder="マナコレ撮影会 / 大阪美マージュ / リク撮" autocomplete="off" />
+            </label>
+            <label class="admin-static-field-full">
+              caption
+              <textarea name="caption" rows="4" placeholder="光に触れるような一枚。"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="admin-static-section" aria-labelledby="preview-models-title">
+          <h2 id="preview-models-title">モデル</h2>
+          <div class="admin-static-picker">
+            <label>
+              モデル検索
+              <input id="staticModelSearch" type="search" placeholder="表示名・モデルID・所属で検索" autocomplete="off" />
+            </label>
+            <div id="staticModelSuggestions" class="admin-static-suggestions" aria-live="polite"></div>
+            <div>
+              <p class="admin-static-small">選択済みモデル</p>
+              <div id="staticSelectedModels" class="admin-static-selected"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-static-section" aria-labelledby="preview-id-title">
+          <h2 id="preview-id-title">作品ID</h2>
+          <div class="admin-static-fields">
+            <label>
+              登録日YYMMDD
+              <span id="staticDatePrefix" class="admin-static-readonly"></span>
+            </label>
+            <label>
+              作品ID用モデル名
+              <input id="staticWorkIdModelName" required pattern="[A-Za-z0-9_]+" placeholder="minaseaoi" autocomplete="off" />
+            </label>
+            <label>
+              通し番号4桁
+              <input id="staticWorkIdSequence" required inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="0001" autocomplete="off" />
+            </label>
+            <label class="admin-static-field-full">
+              作品IDプレビュー
+              <span id="staticWorkIdPreview" class="admin-static-readonly">未入力</span>
+              <span id="staticWorkIdWarning" class="admin-static-warning" aria-live="polite"></span>
+            </label>
+          </div>
+        </section>
+
+        <section class="admin-static-section" aria-labelledby="preview-actions-title">
+          <h2 id="preview-actions-title">確認</h2>
+          <div class="admin-static-actions">
+            <button type="button" id="staticSaveDraft" class="admin-static-secondary">下書き保存</button>
+            <button type="button" id="staticRestoreDraft" class="admin-static-secondary">下書き復元</button>
+            <button type="button" id="staticDeleteDraft" class="admin-static-secondary">下書き削除</button>
+            <button type="submit" class="admin-static-button">保存前確認</button>
+          </div>
+          <button type="button" class="admin-static-disabled-button" disabled>保存はPhase2-Dで対応予定</button>
+          <div id="staticConfirmPanel" class="admin-static-confirm" hidden>
+            <dl id="staticConfirmList"></dl>
+            <details>
+              <summary>生成予定JSONを表示</summary>
+              <pre id="staticGeneratedJson" class="admin-static-json"></pre>
+            </details>
+          </div>
+          <p id="staticRegisterResult" class="admin-static-small" aria-live="polite"></p>
+        </section>
+      </form>
+    </main>
+
+    <script id="adminStaticData" type="application/json" set:html={payload}></script>
+    <script src="/admin-static/admin-static.js" defer></script>
+  </body>
+</html>
