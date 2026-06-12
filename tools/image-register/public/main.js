@@ -112,7 +112,7 @@ function getGeneratedWorkId() {
   const modelName = workIdModelName.value.trim();
   const sequence = workIdSequence.value.trim();
 
-  if (!/^[A-Za-z0-9_]+$/.test(modelName) || !/^\d{4}$/.test(sequence)) return '';
+  if (!/^[A-Za-z0-9_-]+$/.test(modelName) || !/^\d{4}$/.test(sequence)) return '';
   return `${registrationDatePrefix.textContent}${modelName}_${sequence}`;
 }
 
@@ -515,7 +515,7 @@ function renderExistingWorkPreview(work) {
 }
 
 function parseWorkIdParts(id) {
-  const match = String(id || '').match(/^(\d{2})(\d{2})(\d{2})([A-Za-z0-9][A-Za-z0-9_]*)_(\d{4})$/);
+  const match = String(id || '').match(/^(\d{2})(\d{2})(\d{2})([A-Za-z0-9][A-Za-z0-9_-]*)_(\d{4})$/);
   if (!match) return null;
 
   const [, year, month, day, modelName, sequence] = match;

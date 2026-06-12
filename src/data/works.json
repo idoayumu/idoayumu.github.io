@@ -26,7 +26,7 @@
     "thumbnail": "/images/works/thumbs/260328minaseaoi_0001.webp"
   },
   {
-    "id": "260226momo_0001",
+    "id": "260226momo-osakabimage_0001",
     "title": "委ねる",
     "date": "2026-01-25",
     "location": "滋賀",
@@ -35,8 +35,8 @@
     "modelIds": [
       "momo_osakabimage"
     ],
-    "image": "/images/works/large/260226momo_0001.webp",
-    "thumbnail": "/images/works/thumbs/260226momo_0001.webp"
+    "image": "/images/works/large/260226momo-osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260226momo-osakabimage_0001.webp"
   },
   {
     "id": "260226momoseyuuri_0001",
@@ -78,7 +78,7 @@
     "thumbnail": "/images/works/thumbs/260527minaseaoi_0002.webp"
   },
   {
-    "id": "260601momo_0001",
+    "id": "260601momo-osakabimage_0001",
     "title": "夏に触れる",
     "date": "2025-07-15",
     "location": "大阪",
@@ -87,8 +87,8 @@
     "modelIds": [
       "momo_osakabimage"
     ],
-    "image": "/images/works/large/260601momo_0001.webp",
-    "thumbnail": "/images/works/thumbs/260601momo_0001.webp"
+    "image": "/images/works/large/260601momo-osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260601momo-osakabimage_0001.webp"
   },
   {
     "id": "260601marin_minaseaoi_0001",
@@ -105,7 +105,7 @@
     "thumbnail": "/images/works/thumbs/260601marin_minaseaoi_0001.webp"
   },
   {
-    "id": "260602momo_0001",
+    "id": "260602momo-osakabimage_0001",
     "title": "広い海",
     "date": "2025-07-15",
     "location": "大阪",
@@ -114,8 +114,8 @@
     "modelIds": [
       "momo_osakabimage"
     ],
-    "image": "/images/works/large/260602momo_0001.webp",
-    "thumbnail": "/images/works/thumbs/260602momo_0001.webp"
+    "image": "/images/works/large/260602momo-osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260602momo-osakabimage_0001.webp"
   },
   {
     "id": "260602marin_minaseaoi_0001",

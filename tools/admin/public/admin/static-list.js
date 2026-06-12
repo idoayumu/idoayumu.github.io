@@ -156,7 +156,7 @@
   }
 
   function parseWorkId(workId) {
-    const match = String(workId || '').match(/^(\d{6})([A-Za-z0-9][A-Za-z0-9_]*)_(\d{4})$/);
+    const match = String(workId || '').match(/^(\d{6})([A-Za-z0-9][A-Za-z0-9_-]*)_(\d{4})$/);
     if (!match) return null;
     return {
       prefix: match[1],
