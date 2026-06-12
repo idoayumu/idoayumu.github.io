@@ -19,9 +19,11 @@ const authStatusTitle = document.getElementById('authStatusTitle');
 const authStatusDetail = document.getElementById('authStatusDetail');
 const worksPostTestButton = document.getElementById('worksPostTestButton');
 const worksEditTestButton = document.getElementById('worksEditTestButton');
+const worksEditResetButton = document.getElementById('worksEditResetButton');
 const worksDeleteTestButton = document.getElementById('worksDeleteTestButton');
 const worksPostTestResult = document.getElementById('worksPostTestResult');
 const testEditWorkId = '260328minaseaoi_0002';
+const testEditOriginalTitle = 'ひだまりの笑顔';
 const testDeleteWorkId = '260612cloudflaretest_1099';
 
 function fileNameFromPath(value) {
@@ -388,10 +390,87 @@ async function editWorksTest() {
   }
 }
 
+async function resetEditWorksTest() {
+  if (!worksEditResetButton) return;
+  const ok = window.confirm(`作品 ${testEditWorkId} のtitleを「${testEditOriginalTitle}」へ戻してGitHubへcommitします。実行しますか？`);
+  if (!ok) return;
+
+  worksEditResetButton.disabled = true;
+  renderWorksPostTestResult('PUT中です...');
+
+  try {
+    const works = await fetchJson('/data/works.json');
+    const current = Array.isArray(works)
+      ? works.find((work) => work?.id === testEditWorkId)
+      : null;
+
+    if (!current) {
+      renderWorksPostTestResult({
+        success: false,
+        error: {
+          code: 'work_not_found_in_static_json',
+          message: `/data/works.jsonで作品が見つかりません: ${testEditWorkId}`
+        }
+      });
+      return;
+    }
+
+    const resp = await fetch('/api/admin/works', {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: testEditWorkId,
+        work: {
+          title: testEditOriginalTitle,
+          date: current.date,
+          location: current.location,
+          production: current.production,
+          caption: current.caption,
+          modelIds: current.modelIds,
+          image: current.image,
+          thumbnail: current.thumbnail
+        }
+      })
+    });
+    const text = await resp.text();
+    let json;
+    try {
+      json = text ? JSON.parse(text) : {};
+    } catch {
+      json = { raw: text };
+    }
+
+    if (resp.ok && json.commitUrl) {
+      renderWorksPostTestResult({
+        success: true,
+        commitUrl: json.commitUrl,
+        updatedFile: json.updatedFile,
+        updatedWorkId: json.updatedWorkId,
+        title: testEditOriginalTitle
+      });
+      return;
+    }
+
+    renderWorksPostTestResult(json);
+  } catch (err) {
+    renderWorksPostTestResult({
+      success: false,
+      error: {
+        message: err.message
+      }
+    });
+  } finally {
+    worksEditResetButton.disabled = false;
+  }
+}
+
 if (isSummaryPage) {
   loadSummary();
 }
 
 worksPostTestButton?.addEventListener('click', postWorksTest);
 worksEditTestButton?.addEventListener('click', editWorksTest);
+worksEditResetButton?.addEventListener('click', resetEditWorksTest);
 worksDeleteTestButton?.addEventListener('click', deleteWorksTest);
