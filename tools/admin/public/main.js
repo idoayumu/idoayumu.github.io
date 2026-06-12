@@ -22,9 +22,14 @@ const worksEditTestButton = document.getElementById('worksEditTestButton');
 const worksEditResetButton = document.getElementById('worksEditResetButton');
 const worksDeleteTestButton = document.getElementById('worksDeleteTestButton');
 const worksPostTestResult = document.getElementById('worksPostTestResult');
+const modelsPostTestButton = document.getElementById('modelsPostTestButton');
+const modelsEditTestButton = document.getElementById('modelsEditTestButton');
+const modelsDeleteTestButton = document.getElementById('modelsDeleteTestButton');
+const modelsTestResult = document.getElementById('modelsTestResult');
 const testEditWorkId = '260328minaseaoi_0002';
 const testEditOriginalTitle = 'ひだまりの笑顔';
 const testDeleteWorkId = '260612cloudflaretest_1099';
+const testModelId = 'cloudflare-test-model';
 
 function fileNameFromPath(value) {
   const text = String(value || '').trim();
@@ -214,6 +219,38 @@ function renderWorksPostTestResult(value) {
   worksPostTestResult.textContent = typeof value === 'string'
     ? value
     : JSON.stringify(value, null, 2);
+}
+
+function renderModelsTestResult(value) {
+  if (!modelsTestResult) return;
+  modelsTestResult.hidden = false;
+  modelsTestResult.textContent = typeof value === 'string'
+    ? value
+    : JSON.stringify(value, null, 2);
+}
+
+function buildModelTestPayload(overrides = {}) {
+  return {
+    id: testModelId,
+    name: 'Cloudflareテストモデル',
+    displayName: 'Cloudflareテストモデル',
+    nameKana: 'クラウドフレアテストモデル',
+    nameEn: 'Cloudflare Test Model',
+    aliases: [],
+    agency: 'Cloudflare API Test',
+    bio: 'Models APIのテスト用モデルです。',
+    thumbnail: 'minaseaoi_thumb.jpg',
+    links: {
+      instagram: '',
+      x: '',
+      threads: '',
+      website: '',
+      websiteLabel: ''
+    },
+    featured: false,
+    profileImagePosition: 'center',
+    ...overrides
+  };
 }
 
 async function postWorksTest() {
@@ -466,6 +503,138 @@ async function resetEditWorksTest() {
   }
 }
 
+async function requestModelTest(method, payload) {
+  const resp = await fetch('/api/admin/models', {
+    method,
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+  const text = await resp.text();
+  try {
+    return { ok: resp.ok, json: text ? JSON.parse(text) : {} };
+  } catch {
+    return { ok: resp.ok, json: { raw: text } };
+  }
+}
+
+async function postModelTest() {
+  if (!modelsPostTestButton) return;
+  const ok = window.confirm(`テストモデル ${testModelId} をmodels.jsonへ追加してGitHubへcommitします。実行しますか？`);
+  if (!ok) return;
+
+  modelsPostTestButton.disabled = true;
+  renderModelsTestResult('POST中です...');
+
+  try {
+    const { ok: succeeded, json } = await requestModelTest('POST', buildModelTestPayload());
+    if (succeeded && json.commitUrl) {
+      renderModelsTestResult({
+        success: true,
+        commitUrl: json.commitUrl,
+        updatedFile: json.updatedFile,
+        modelId: json.modelId
+      });
+      return;
+    }
+    renderModelsTestResult(json);
+  } catch (err) {
+    renderModelsTestResult({
+      success: false,
+      error: { message: err.message }
+    });
+  } finally {
+    modelsPostTestButton.disabled = false;
+  }
+}
+
+async function editModelTest() {
+  if (!modelsEditTestButton) return;
+  const ok = window.confirm(`テストモデル ${testModelId} のdisplayName末尾に【編集テスト】を付けてGitHubへcommitします。実行しますか？`);
+  if (!ok) return;
+
+  modelsEditTestButton.disabled = true;
+  renderModelsTestResult('PUT中です...');
+
+  try {
+    const models = await fetchJson('/data/models.json');
+    const current = Array.isArray(models)
+      ? models.find((model) => model?.id === testModelId)
+      : null;
+
+    if (!current) {
+      renderModelsTestResult({
+        success: false,
+        error: {
+          code: 'model_not_found_in_static_json',
+          message: `/data/models.jsonでモデルが見つかりません: ${testModelId}`
+        }
+      });
+      return;
+    }
+
+    const displayName = String(current.displayName || current.name || '').endsWith('【編集テスト】')
+      ? current.displayName || current.name
+      : `${current.displayName || current.name || ''}【編集テスト】`;
+    const { ok: succeeded, json } = await requestModelTest('PUT', {
+      id: testModelId,
+      model: {
+        ...current,
+        displayName
+      }
+    });
+
+    if (succeeded && json.commitUrl) {
+      renderModelsTestResult({
+        success: true,
+        commitUrl: json.commitUrl,
+        updatedFile: json.updatedFile,
+        updatedModelId: json.updatedModelId
+      });
+      return;
+    }
+    renderModelsTestResult(json);
+  } catch (err) {
+    renderModelsTestResult({
+      success: false,
+      error: { message: err.message }
+    });
+  } finally {
+    modelsEditTestButton.disabled = false;
+  }
+}
+
+async function deleteModelTest() {
+  if (!modelsDeleteTestButton) return;
+  const ok = window.confirm(`テストモデル ${testModelId} をmodels.jsonから削除してGitHubへcommitします。実行しますか？`);
+  if (!ok) return;
+
+  modelsDeleteTestButton.disabled = true;
+  renderModelsTestResult('DELETE中です...');
+
+  try {
+    const { ok: succeeded, json } = await requestModelTest('DELETE', { id: testModelId });
+    if (succeeded && json.commitUrl) {
+      renderModelsTestResult({
+        success: true,
+        commitUrl: json.commitUrl,
+        updatedFile: json.updatedFile,
+        deletedModelId: json.deletedModelId
+      });
+      return;
+    }
+    renderModelsTestResult(json);
+  } catch (err) {
+    renderModelsTestResult({
+      success: false,
+      error: { message: err.message }
+    });
+  } finally {
+    modelsDeleteTestButton.disabled = false;
+  }
+}
+
 if (isSummaryPage) {
   loadSummary();
 }
@@ -474,3 +643,6 @@ worksPostTestButton?.addEventListener('click', postWorksTest);
 worksEditTestButton?.addEventListener('click', editWorksTest);
 worksEditResetButton?.addEventListener('click', resetEditWorksTest);
 worksDeleteTestButton?.addEventListener('click', deleteWorksTest);
+modelsPostTestButton?.addEventListener('click', postModelTest);
+modelsEditTestButton?.addEventListener('click', editModelTest);
+modelsDeleteTestButton?.addEventListener('click', deleteModelTest);

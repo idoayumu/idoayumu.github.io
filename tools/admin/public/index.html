@@ -121,6 +121,20 @@
       <button class="test-button test-button-danger" id="worksDeleteTestButton" type="button">テスト作品を削除</button>
       <pre class="test-result" id="worksPostTestResult" hidden></pre>
     </section>
+
+    <section class="api-test" aria-labelledby="models-api-test-title">
+      <div class="section-heading">
+        <p>Cloudflare Models Test</p>
+        <h2 id="models-api-test-title">Models APIテスト</h2>
+      </div>
+      <p>
+        Cloudflare Access Cookie付きで <code>/api/admin/models</code> へテストモデルを保存します。
+      </p>
+      <button class="test-button" id="modelsPostTestButton" type="button">モデル追加テスト</button>
+      <button class="test-button" id="modelsEditTestButton" type="button">モデル編集テスト</button>
+      <button class="test-button test-button-danger" id="modelsDeleteTestButton" type="button">モデル削除テスト</button>
+      <pre class="test-result" id="modelsTestResult" hidden></pre>
+    </section>
   </main>
 
   <script src="./main.js"></script>
