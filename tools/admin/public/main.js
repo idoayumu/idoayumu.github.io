@@ -14,6 +14,9 @@ const fallbackHeroSeason = 'spring';
 const fallbackHeroYear = 2026;
 const fallbackHeroMemo = '管理ツール導入前';
 const staticModeMessage = 'Cloudflare静的表示モードです。保存・編集はできません。ローカル管理ツールを使用してください。';
+const authStatus = document.getElementById('authStatus');
+const authStatusTitle = document.getElementById('authStatusTitle');
+const authStatusDetail = document.getElementById('authStatusDetail');
 
 function fileNameFromPath(value) {
   const text = String(value || '').trim();
@@ -117,6 +120,37 @@ function activateStaticMode() {
   });
 }
 
+function renderAuthStatus(kind, title, detail) {
+  if (!authStatus || !authStatusTitle || !authStatusDetail) return;
+  authStatus.hidden = false;
+  authStatus.classList.remove('is-ok', 'is-warn', 'is-error');
+  authStatus.classList.add(`is-${kind}`);
+  authStatusTitle.textContent = title;
+  authStatusDetail.textContent = detail;
+}
+
+async function loadCloudflareSession() {
+  if (!isSummaryPage) return;
+
+  try {
+    const resp = await fetchJson('/api/admin/session');
+    if (resp.authenticated && resp.canSave) {
+      renderAuthStatus('ok', 'Cloudflare Access認証済み：保存準備OK', '保存機能は次フェーズです');
+      return;
+    }
+
+    if (resp.authenticated) {
+      renderAuthStatus('warn', 'Cloudflare Access認証済み：保存権限なし', '許可メールの設定を確認してください。');
+      return;
+    }
+
+    renderAuthStatus('warn', 'Cloudflare Access認証を確認できません', '保存機能は次フェーズです');
+  } catch (err) {
+    console.info('Cloudflare Access session API is unavailable.', err);
+    renderAuthStatus('warn', 'Cloudflare Access認証を確認できません', '保存機能は次フェーズです');
+  }
+}
+
 async function loadSummary() {
   try {
     const summary = await loadLocalSummary();
@@ -127,6 +161,7 @@ async function loadSummary() {
     try {
       const summary = await loadStaticSummary();
       renderSummary(summary, 'static');
+      await loadCloudflareSession();
     } catch (staticErr) {
       console.error(staticErr);
       renderSummary({
@@ -139,6 +174,7 @@ async function loadSummary() {
         heroImageSeason: '未取得',
         heroImageYear: '未取得'
       }, 'static');
+      await loadCloudflareSession();
     }
   }
 }
