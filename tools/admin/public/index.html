@@ -106,6 +106,18 @@
         作品管理・モデル管理・サイト設定を統合し、About画像とTOPヒーロー画像の管理に対応しました。
       </p>
     </section>
+
+    <section class="api-test" aria-labelledby="api-test-title">
+      <div class="section-heading">
+        <p>Cloudflare Save Test</p>
+        <h2 id="api-test-title">作品保存APIテスト</h2>
+      </div>
+      <p>
+        Cloudflare Access Cookie付きで <code>/api/admin/works</code> へテスト作品をPOSTします。
+      </p>
+      <button class="test-button" id="worksPostTestButton" type="button">テスト作品をPOST</button>
+      <pre class="test-result" id="worksPostTestResult" hidden></pre>
+    </section>
   </main>
 
   <script src="./main.js"></script>

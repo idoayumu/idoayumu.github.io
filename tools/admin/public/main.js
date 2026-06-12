@@ -17,6 +17,8 @@ const staticModeMessage = 'Cloudflare静的表示モードです。保存・編�
 const authStatus = document.getElementById('authStatus');
 const authStatusTitle = document.getElementById('authStatusTitle');
 const authStatusDetail = document.getElementById('authStatusDetail');
+const worksPostTestButton = document.getElementById('worksPostTestButton');
+const worksPostTestResult = document.getElementById('worksPostTestResult');
 
 function fileNameFromPath(value) {
   const text = String(value || '').trim();
@@ -179,6 +181,85 @@ async function loadSummary() {
   }
 }
 
+function buildWorksPostTestPayload() {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const sequence = String((now.getHours() * 60 + now.getMinutes()) % 10000).padStart(4, '0');
+  const id = `${yy}${mm}${dd}cloudflaretest_${sequence}`;
+
+  return {
+    id,
+    title: 'Cloudflare保存テスト',
+    date: `${now.getFullYear()}-${mm}-${dd}`,
+    location: 'テスト',
+    production: 'Cloudflare API Test',
+    caption: 'Cloudflare Pages Functionsからworks.jsonへPOSTするテストです。',
+    modelIds: ['minaseaoi'],
+    image: '/images/works/large/260328minaseaoi_0001.webp',
+    thumbnail: '/images/works/thumbs/260328minaseaoi_0001.webp'
+  };
+}
+
+function renderWorksPostTestResult(value) {
+  if (!worksPostTestResult) return;
+  worksPostTestResult.hidden = false;
+  worksPostTestResult.textContent = typeof value === 'string'
+    ? value
+    : JSON.stringify(value, null, 2);
+}
+
+async function postWorksTest() {
+  if (!worksPostTestButton) return;
+  const payload = buildWorksPostTestPayload();
+  const ok = window.confirm(`テスト作品 ${payload.id} をGitHubへcommitします。実行しますか？`);
+  if (!ok) return;
+
+  worksPostTestButton.disabled = true;
+  renderWorksPostTestResult('POST中です...');
+
+  try {
+    const resp = await fetch('/api/admin/works', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    const text = await resp.text();
+    let json;
+    try {
+      json = text ? JSON.parse(text) : {};
+    } catch {
+      json = { raw: text };
+    }
+
+    if (resp.ok && json.commitUrl) {
+      renderWorksPostTestResult({
+        success: true,
+        commitUrl: json.commitUrl,
+        updatedFile: json.updatedFile,
+        workId: json.workId
+      });
+      return;
+    }
+
+    renderWorksPostTestResult(json);
+  } catch (err) {
+    renderWorksPostTestResult({
+      success: false,
+      error: {
+        message: err.message
+      }
+    });
+  } finally {
+    worksPostTestButton.disabled = false;
+  }
+}
+
 if (isSummaryPage) {
   loadSummary();
 }
+
+worksPostTestButton?.addEventListener('click', postWorksTest);
