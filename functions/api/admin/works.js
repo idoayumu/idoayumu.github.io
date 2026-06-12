@@ -101,6 +101,97 @@ export async function onRequestPost({ request, env }) {
   }
 }
 
+export async function onRequestDelete({ request, env }) {
+  const session = await requireAdminSession(request, env);
+  if (!session.ok) return jsonResponse(session.body, session.status);
+
+  const config = readGitHubConfig(env);
+  if (!config.ok) {
+    return jsonResponse({
+      success: false,
+      ...session.body,
+      error: config.error
+    }, 500);
+  }
+
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return jsonResponse({
+      success: false,
+      ...session.body,
+      error: {
+        code: 'invalid_json',
+        message: 'リクエストJSONを解析できませんでした。'
+      }
+    }, 400);
+  }
+
+  const workId = trim(payload?.id);
+  if (!workId) {
+    return jsonResponse({
+      success: false,
+      ...session.body,
+      error: {
+        code: 'missing_work_id',
+        message: '削除対象の作品IDが不足しています。'
+      }
+    }, 400);
+  }
+
+  try {
+    const installationToken = await createGitHubInstallationToken(config.value);
+    const worksFile = await getContentFile(config.value, installationToken, worksJsonPath);
+    const works = parseJsonContent(worksFile, worksJsonPath);
+
+    if (!Array.isArray(works)) {
+      return jsonResponse({
+        success: false,
+        ...session.body,
+        error: {
+          code: 'invalid_works_json',
+          message: '現在のworks.jsonが配列ではありません。'
+        }
+      }, 500);
+    }
+
+    const targetIndex = works.findIndex((work) => work?.id === workId);
+    if (targetIndex === -1) {
+      return jsonResponse({
+        success: false,
+        ...session.body,
+        error: {
+          code: 'work_not_found',
+          message: `作品が見つかりません: ${workId}`
+        }
+      }, 404);
+    }
+
+    const nextWorks = works.filter((work) => work?.id !== workId);
+    const update = await updateContentFile(config.value, installationToken, {
+      filePath: worksJsonPath,
+      content: formatJson(nextWorks),
+      sha: worksFile.sha,
+      message: `Delete work ${workId}`
+    });
+
+    return jsonResponse({
+      success: true,
+      commitUrl: update.commit?.html_url,
+      updatedFile: worksJsonPath,
+      deletedWorkId: workId
+    });
+  } catch (err) {
+    console.error('Works JSON delete failed', err);
+    return jsonResponse({
+      success: false,
+      ...session.body,
+      error: publicError(err, 'works_delete_failed')
+    }, err.status || 500);
+  }
+}
+
 export async function onRequestGet() {
   return jsonResponse({
     success: false,

@@ -18,7 +18,9 @@ const authStatus = document.getElementById('authStatus');
 const authStatusTitle = document.getElementById('authStatusTitle');
 const authStatusDetail = document.getElementById('authStatusDetail');
 const worksPostTestButton = document.getElementById('worksPostTestButton');
+const worksDeleteTestButton = document.getElementById('worksDeleteTestButton');
 const worksPostTestResult = document.getElementById('worksPostTestResult');
+const testDeleteWorkId = '260612cloudflaretest_1099';
 
 function fileNameFromPath(value) {
   const text = String(value || '').trim();
@@ -258,8 +260,56 @@ async function postWorksTest() {
   }
 }
 
+async function deleteWorksTest() {
+  if (!worksDeleteTestButton) return;
+  const ok = window.confirm(`テスト作品 ${testDeleteWorkId} をworks.jsonから削除してGitHubへcommitします。実行しますか？`);
+  if (!ok) return;
+
+  worksDeleteTestButton.disabled = true;
+  renderWorksPostTestResult('DELETE中です...');
+
+  try {
+    const resp = await fetch('/api/admin/works', {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ id: testDeleteWorkId })
+    });
+    const text = await resp.text();
+    let json;
+    try {
+      json = text ? JSON.parse(text) : {};
+    } catch {
+      json = { raw: text };
+    }
+
+    if (resp.ok && json.commitUrl) {
+      renderWorksPostTestResult({
+        success: true,
+        commitUrl: json.commitUrl,
+        updatedFile: json.updatedFile,
+        deletedWorkId: json.deletedWorkId
+      });
+      return;
+    }
+
+    renderWorksPostTestResult(json);
+  } catch (err) {
+    renderWorksPostTestResult({
+      success: false,
+      error: {
+        message: err.message
+      }
+    });
+  } finally {
+    worksDeleteTestButton.disabled = false;
+  }
+}
+
 if (isSummaryPage) {
   loadSummary();
 }
 
 worksPostTestButton?.addEventListener('click', postWorksTest);
+worksDeleteTestButton?.addEventListener('click', deleteWorksTest);
