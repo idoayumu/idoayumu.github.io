@@ -123,8 +123,8 @@
   },
   {
     "id": "cloudflare-test-model",
-    "name": "Cloudflareテストモデル",
-    "displayName": "Cloudflareテストモデル【編集テスト】",
+    "name": "Cloudflareテストモデル【編集テスト1】",
+    "displayName": "Cloudflareテストモデル【編集テスト2】",
     "nameKana": "クラウドフレアテストモデル",
     "nameEn": "Cloudflare Test Model",
     "aliases": [],
