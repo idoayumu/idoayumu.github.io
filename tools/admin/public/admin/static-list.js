@@ -1,4 +1,5 @@
 (function () {
+  const siteImageBaseUrl = 'https://idoayumu.github.io';
   const page = document.body.dataset.staticList || '';
   const list = document.getElementById('staticList');
   const search = document.getElementById('staticSearch');
@@ -32,10 +33,12 @@
     return Array.isArray(work?.modelIds) ? work.modelIds : work?.models || [];
   }
 
-  function modelImageUrl(model) {
-    const imageName = model?.thumbnail || model?.profileImage || '';
-    if (!imageName) return '';
-    return imageName.startsWith('/images/') ? imageName : `/images/models/${imageName}`;
+  function toSiteImageUrl(path) {
+    const value = String(path || '').trim();
+    if (!value) return '';
+    if (/^https?:\/\//i.test(value)) return value;
+    if (value.startsWith('/images/')) return `${siteImageBaseUrl}${value}`;
+    return `${siteImageBaseUrl}/images/models/${value}`;
   }
 
   function socialLinks(model) {
@@ -71,7 +74,7 @@
       });
 
       list.innerHTML = visible.map((work) => {
-        const thumb = work.thumbnail || work.image || '';
+        const thumb = toSiteImageUrl(work.thumbnail || work.image || '');
         const names = namesFor(work).join('・') || 'モデル未設定';
         return `
           <article class="static-list-card">
@@ -117,7 +120,7 @@
       });
 
       list.innerHTML = visible.map((model) => {
-        const image = modelImageUrl(model);
+        const image = toSiteImageUrl(model.thumbnail || model.profileImage || '');
         const links = socialLinks(model).map(([label, url]) => (
           `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`
         )).join(' / ') || 'SNS未設定';
