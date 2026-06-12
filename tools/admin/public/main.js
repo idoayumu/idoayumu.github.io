@@ -561,7 +561,8 @@ async function editModelTest() {
     const { ok: succeeded, json } = await requestModelTest('PUT', {
       id: testModelId,
       model: buildModelTestPayload({
-        displayName: 'Cloudflareテストモデル【編集テスト】'
+        name: 'Cloudflareテストモデル【編集テスト1】',
+        displayName: 'Cloudflareテストモデル【編集テスト2】'
       })
     });
 
