@@ -120,25 +120,5 @@
       "websiteLabel": ""
     },
     "featured": true
-  },
-  {
-    "id": "cloudflare-test-model",
-    "name": "Cloudflareテストモデル【編集テスト1】",
-    "displayName": "Cloudflareテストモデル【編集テスト2】",
-    "nameKana": "クラウドフレアテストモデル",
-    "nameEn": "Cloudflare Test Model",
-    "aliases": [],
-    "agency": "Cloudflare API Test",
-    "bio": "Models APIのテスト用モデルです。",
-    "thumbnail": "minaseaoi_thumb.jpg",
-    "links": {
-      "instagram": "",
-      "x": "",
-      "threads": "",
-      "website": "",
-      "websiteLabel": ""
-    },
-    "featured": false,
-    "profileImagePosition": "center"
   }
 ]
