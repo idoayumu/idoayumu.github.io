@@ -21,8 +21,106 @@
     <header class="page-header">
       <p class="eyebrow">Cloudflare Static Mode</p>
       <h1>Works一覧</h1>
-      <p>Cloudflare公開版では閲覧のみ可能です。登録・編集・保存はローカル管理ツールを使用してください。</p>
+      <p>Cloudflare公開版では、画像選択とlarge/thumb生成の確認まで可能です。保存はまだ行いません。</p>
     </header>
+
+    <section class="image-preview-tool" aria-labelledby="image-preview-title">
+      <div class="section-heading">
+        <p>Phase A/B</p>
+        <h2 id="image-preview-title">作品画像プレビュー</h2>
+      </div>
+
+      <div class="preview-form-grid">
+        <label>作品ID
+          <input id="previewWorkId" type="text" placeholder="例: 260612minaseaoi_0001" autocomplete="off" />
+        </label>
+        <label>タイトル
+          <input id="previewTitle" type="text" placeholder="作品タイトル" autocomplete="off" />
+        </label>
+        <fieldset class="preview-model-field">
+          <legend>モデル</legend>
+          <div class="preview-model-list" id="previewModelIds"></div>
+        </fieldset>
+        <label>画像選択
+          <input id="previewImageInput" type="file" accept="image/*" />
+        </label>
+      </div>
+
+      <p class="preview-note">この画面ではGitHub保存・JSON更新・commitは行いません。</p>
+      <p class="note" id="previewMessage">画像を選択してください。</p>
+
+      <div class="preview-meta-grid" id="previewMeta" hidden>
+        <div>
+          <span>ファイル名</span>
+          <strong id="previewFileName">-</strong>
+        </div>
+        <div>
+          <span>MIME Type</span>
+          <strong id="previewMimeType">-</strong>
+        </div>
+        <div>
+          <span>サイズ</span>
+          <strong id="previewFileSize">-</strong>
+        </div>
+        <div>
+          <span>元画像サイズ</span>
+          <strong id="previewImageSize">-</strong>
+        </div>
+      </div>
+
+      <div class="generated-preview-grid" id="previewImages" hidden>
+        <article>
+          <h3>元画像</h3>
+          <div class="generated-preview-frame generated-preview-original">
+            <img id="previewOriginalImage" alt="選択した元画像のプレビュー" />
+          </div>
+        </article>
+        <article>
+          <h3>large</h3>
+          <div class="generated-preview-frame">
+            <img id="previewLargeImage" alt="生成したlarge画像のプレビュー" />
+          </div>
+          <p id="previewLargeMeta">-</p>
+        </article>
+        <article>
+          <h3>thumb</h3>
+          <div class="generated-preview-frame generated-preview-thumb">
+            <img id="previewThumbImage" alt="生成したthumb画像のプレビュー" />
+          </div>
+          <p id="previewThumbMeta">-</p>
+        </article>
+      </div>
+
+      <section class="save-preview-summary" id="savePreviewSummary" hidden aria-labelledby="save-preview-title">
+        <div class="section-heading">
+          <p>Confirm</p>
+          <h2 id="save-preview-title">保存前確認</h2>
+        </div>
+        <dl>
+          <div>
+            <dt>作品ID</dt>
+            <dd id="confirmWorkId">未入力</dd>
+          </div>
+          <div>
+            <dt>タイトル</dt>
+            <dd id="confirmTitle">未入力</dd>
+          </div>
+          <div>
+            <dt>モデル</dt>
+            <dd id="confirmModels">未選択</dd>
+          </div>
+          <div>
+            <dt>保存予定largeパス</dt>
+            <dd id="confirmLargePath">未入力</dd>
+          </div>
+          <div>
+            <dt>保存予定thumbパス</dt>
+            <dd id="confirmThumbPath">未入力</dd>
+          </div>
+        </dl>
+        <p class="preview-note">保存ボタンは未実装です。次フェーズでGitHubへの保存APIを追加します。</p>
+      </section>
+    </section>
 
     <section class="dashboard" aria-labelledby="works-title">
       <div class="section-heading">
