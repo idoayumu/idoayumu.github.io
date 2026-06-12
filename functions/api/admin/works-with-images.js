@@ -61,12 +61,48 @@ export async function onRequestPost({ request, env }) {
   }
 }
 
+export async function onRequestDelete({ request, env }) {
+  const session = await requireAdminSession(request, env);
+  if (!session.ok) return jsonResponse(session.body, session.status);
+
+  const config = readGitHubConfig(env);
+  if (!config.ok) {
+    return jsonResponse({
+      success: false,
+      ...session.body,
+      error: config.error
+    }, 500);
+  }
+
+  try {
+    const workId = await parseDeleteWorkId(request);
+    const installationToken = await createGitHubInstallationToken(config.value);
+    const result = await deleteWorkWithImages(config.value, installationToken, workId);
+    return jsonResponse({
+      success: true,
+      ...session.body,
+      commitSha: result.commitSha,
+      commitUrl: result.commitUrl,
+      deletedWorkId: workId,
+      deletedFiles: result.deletedFiles,
+      updatedFiles: result.updatedFiles
+    });
+  } catch (err) {
+    console.error('Works with images delete failed', err);
+    return jsonResponse({
+      success: false,
+      ...session.body,
+      error: publicErrorWithDetails(err, 'works_with_images_delete_failed')
+    }, err.status || 500);
+  }
+}
+
 export async function onRequestGet() {
   return jsonResponse({
     success: false,
     error: {
       code: 'method_not_allowed',
-      message: '画像付き作品登録はPOSTで実行してください。'
+      message: '画像付き作品登録はPOST、削除はDELETEで実行してください。'
     }
   }, 405);
 }
@@ -146,6 +182,100 @@ async function addWorkWithImages(config, installationToken, { work, large, thumb
   };
 }
 
+async function deleteWorkWithImages(config, installationToken, workId) {
+  const ref = await getBranchRef(config, installationToken);
+  const sourceHeadSha = ref?.object?.sha;
+  if (!sourceHeadSha) {
+    const err = new Error(`${config.branch} の最新refを取得できませんでした。`);
+    err.code = 'github_ref_missing';
+    throw err;
+  }
+
+  const headCommit = await getGitCommit(config, installationToken, sourceHeadSha);
+  const baseTreeSha = headCommit?.tree?.sha;
+  if (!baseTreeSha) {
+    const err = new Error('最新commitのtreeを取得できませんでした。');
+    err.code = 'github_tree_missing';
+    throw err;
+  }
+
+  const tree = await getRecursiveTree(config, installationToken, baseTreeSha);
+  const srcEntry = findTreeBlob(tree, worksJsonPath);
+  if (!srcEntry?.sha) {
+    const err = new Error(`${worksJsonPath} がGitHub上で見つかりません。`);
+    err.code = 'works_json_not_found';
+    err.status = 404;
+    throw err;
+  }
+
+  const adminEntry = findTreeBlob(tree, adminWorksJsonPath);
+  if (!adminEntry?.sha) {
+    const err = new Error(`${adminWorksJsonPath} がGitHub上で見つかりません。`);
+    err.code = 'admin_works_json_not_found';
+    err.status = 404;
+    throw err;
+  }
+
+  const imagePaths = buildWorkImagePaths(workId);
+  const missingImageFiles = [
+    imagePaths.largeRepoPath,
+    imagePaths.thumbRepoPath
+  ].filter((filePath) => !findTreeBlob(tree, filePath));
+  if (missingImageFiles.length) {
+    const err = new Error('削除対象の画像ファイルが見つかりません。');
+    err.status = 404;
+    err.code = 'image_file_not_found';
+    err.details = { missingFiles: missingImageFiles };
+    throw err;
+  }
+
+  const [srcText, adminText] = await Promise.all([
+    getBlobText(config, installationToken, srcEntry.sha, worksJsonPath),
+    getBlobText(config, installationToken, adminEntry.sha, adminWorksJsonPath)
+  ]);
+  const srcWorks = parseWorksJson(srcText, worksJsonPath);
+  const adminWorks = parseWorksJson(adminText, adminWorksJsonPath);
+  assertWorkExists(srcWorks, workId);
+
+  const nextSrcWorksJson = formatJson(srcWorks.filter((work) => work?.id !== workId));
+  const nextAdminWorksJson = formatJson(adminWorks.filter((work) => work?.id !== workId));
+  const [srcBlob, adminBlob] = await Promise.all([
+    createTextBlob(config, installationToken, nextSrcWorksJson),
+    createTextBlob(config, installationToken, nextAdminWorksJson)
+  ]);
+
+  const deletedFiles = [
+    imagePaths.largeRepoPath,
+    imagePaths.thumbRepoPath
+  ];
+  const updatedFiles = [
+    worksJsonPath,
+    adminWorksJsonPath
+  ];
+  const nextTree = await createTree(config, installationToken, {
+    baseTreeSha,
+    entries: [
+      { path: worksJsonPath, sha: srcBlob.sha },
+      { path: adminWorksJsonPath, sha: adminBlob.sha },
+      { path: imagePaths.largeRepoPath, sha: null },
+      { path: imagePaths.thumbRepoPath, sha: null }
+    ]
+  });
+  const nextCommit = await createCommit(config, installationToken, {
+    message: `Delete work ${workId} with images`,
+    treeSha: nextTree.sha,
+    parentSha: sourceHeadSha
+  });
+  await updateBranchRef(config, installationToken, nextCommit.sha);
+
+  return {
+    commitSha: nextCommit.sha,
+    commitUrl: nextCommit.html_url || `https://github.com/${config.owner}/${config.repo}/commit/${nextCommit.sha}`,
+    deletedFiles,
+    updatedFiles
+  };
+}
+
 function assertImagePathsAvailable(tree, paths) {
   const existing = paths.filter((filePath) => findTreeBlob(tree, filePath));
   if (existing.length) {
@@ -162,6 +292,15 @@ function assertWorkIdAvailable(works, workId) {
     const err = new Error(`既存IDです: ${workId}`);
     err.status = 409;
     err.code = 'duplicate_work_id';
+    throw err;
+  }
+}
+
+function assertWorkExists(works, workId) {
+  if (!works.some((item) => item?.id === workId)) {
+    const err = new Error(`作品が見つかりません: ${workId}`);
+    err.status = 404;
+    err.code = 'work_not_found';
     throw err;
   }
 }
@@ -183,6 +322,36 @@ function parseWorksJson(text, label) {
   }
 
   return value;
+}
+
+async function parseDeleteWorkId(request) {
+  let payload;
+  try {
+    const text = await request.text();
+    payload = text ? JSON.parse(text) : {};
+  } catch {
+    const err = new Error('リクエストJSONを解析できませんでした。');
+    err.status = 400;
+    err.code = 'invalid_json';
+    throw err;
+  }
+
+  const workId = String(payload.id || payload.workId || '').trim();
+  if (!workId) {
+    const err = new Error('削除対象の作品IDが不足しています。');
+    err.status = 400;
+    err.code = 'missing_work_id';
+    throw err;
+  }
+
+  if (!/^\d{6}[A-Za-z0-9][A-Za-z0-9_-]*_\d{4}$/.test(workId)) {
+    const err = new Error('作品IDの形式が不正です。');
+    err.status = 400;
+    err.code = 'invalid_work_id';
+    throw err;
+  }
+
+  return workId;
 }
 
 function publicErrorWithDetails(err, fallbackCode) {
