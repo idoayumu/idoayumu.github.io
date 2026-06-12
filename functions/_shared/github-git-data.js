@@ -47,6 +47,16 @@ export async function createTextBlob(config, installationToken, content) {
   });
 }
 
+export async function createBase64Blob(config, installationToken, base64Content) {
+  return githubFetch(config, installationToken, '/git/blobs', {
+    method: 'POST',
+    body: JSON.stringify({
+      content: base64Content,
+      encoding: 'base64'
+    })
+  });
+}
+
 export async function createTree(config, installationToken, { baseTreeSha, entries }) {
   return githubFetch(config, installationToken, '/git/trees', {
     method: 'POST',
