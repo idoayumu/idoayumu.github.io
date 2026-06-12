@@ -335,6 +335,16 @@ button:disabled {
     overflow-wrap: anywhere;
 }
 
+.image-warning {
+    margin: 10px 0 0;
+    padding: 10px 12px;
+    border: 1px solid #d9a441;
+    border-radius: 4px;
+    background: #fff8e6;
+    color: #8a5a00;
+    font-weight: 700;
+}
+
 .readonly-value {
     display: block;
     min-height: 1.45em;
@@ -623,6 +633,46 @@ pre {
     font-weight: 700;
 }
 
+.save-result-list {
+    display: grid;
+    gap: 8px;
+    margin: 12px 0 14px;
+}
+
+.save-result-list div {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid #d7e7d8;
+    border-radius: 4px;
+    background: #f5fbf5;
+}
+
+.save-result-list dt {
+    color: #35633c;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.save-result-list dd {
+    margin: 0;
+    color: #111;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    overflow-wrap: anywhere;
+}
+
+.saved-file-list {
+    margin: 10px 0 0;
+    padding: 10px 12px 10px 28px;
+    border: 1px solid #f0c6cf;
+    border-radius: 4px;
+    background: #fff7f8;
+    color: #681123;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    overflow-wrap: anywhere;
+}
+
 .confirm-links {
     display: grid;
     gap: 10px;
@@ -713,6 +763,11 @@ pre {
     }
 
     .confirm-list div {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .save-result-list div {
         grid-template-columns: 1fr;
         gap: 2px;
     }

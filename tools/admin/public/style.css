@@ -131,6 +131,7 @@ h1 {
 
 .dashboard,
 .tools,
+.local-check,
 .phase-note {
   margin-top: 28px;
   padding-top: 26px;
@@ -163,6 +164,27 @@ h1 {
 
 .section-heading {
   margin-bottom: 18px;
+}
+
+.local-check ol {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 16px 16px 16px 42px;
+  border: 1px solid #e4ddec;
+  background: #fff;
+  line-height: 1.7;
+}
+
+.local-check li {
+  padding-left: 4px;
+}
+
+.local-check code {
+  padding: 2px 6px;
+  background: #f1eef7;
+  color: #111;
+  font-size: 0.95em;
 }
 
 h2 {
