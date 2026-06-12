@@ -131,7 +131,8 @@ h1 {
 
 .dashboard,
 .tools,
-.phase-note {
+.phase-note,
+.api-test {
   margin-top: 28px;
   padding-top: 26px;
   border-top: 1px solid #e4ddec;
@@ -284,6 +285,47 @@ h2 {
   min-height: 1.8em;
   margin-top: 12px;
   color: #b00035;
+}
+
+.api-test p {
+  color: #666;
+  line-height: 1.8;
+}
+
+.api-test code {
+  padding: 2px 5px;
+  background: #f1eef7;
+  font-size: 0.92em;
+}
+
+.test-button {
+  min-height: 44px;
+  margin-top: 14px;
+  padding: 10px 16px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.test-button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.test-result {
+  max-height: 360px;
+  margin: 16px 0 0;
+  padding: 14px;
+  overflow: auto;
+  border: 1px solid #e4ddec;
+  background: #fff;
+  color: #111;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
 }
 
 .static-search {
