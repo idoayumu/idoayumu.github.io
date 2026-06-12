@@ -558,31 +558,11 @@ async function editModelTest() {
   renderModelsTestResult('PUT中です...');
 
   try {
-    const models = await fetchJson('/data/models.json');
-    const current = Array.isArray(models)
-      ? models.find((model) => model?.id === testModelId)
-      : null;
-
-    if (!current) {
-      renderModelsTestResult({
-        success: false,
-        error: {
-          code: 'model_not_found_in_static_json',
-          message: `/data/models.jsonでモデルが見つかりません: ${testModelId}`
-        }
-      });
-      return;
-    }
-
-    const displayName = String(current.displayName || current.name || '').endsWith('【編集テスト】')
-      ? current.displayName || current.name
-      : `${current.displayName || current.name || ''}【編集テスト】`;
     const { ok: succeeded, json } = await requestModelTest('PUT', {
       id: testModelId,
-      model: {
-        ...current,
-        displayName
-      }
+      model: buildModelTestPayload({
+        displayName: 'Cloudflareテストモデル【編集テスト】'
+      })
     });
 
     if (succeeded && json.commitUrl) {
