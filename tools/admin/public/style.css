@@ -131,11 +131,34 @@ h1 {
 
 .dashboard,
 .tools,
-.phase-note,
-.api-test {
+.phase-note {
   margin-top: 28px;
   padding-top: 26px;
   border-top: 1px solid #e4ddec;
+}
+
+.developer-menu {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e4ddec;
+}
+
+.developer-menu > summary {
+  min-height: 44px;
+  width: fit-content;
+  padding: 10px 14px;
+  border: 1px solid #e4ddec;
+  background: #fff;
+  color: #555;
+  font-weight: 700;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.developer-menu-body {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
 }
 
 .section-heading {
@@ -300,7 +323,6 @@ h2 {
 
 .test-button {
   min-height: 44px;
-  margin-top: 14px;
   padding: 10px 16px;
   border: 1px solid #111;
   background: #111;
@@ -315,13 +337,29 @@ h2 {
   opacity: 0.55;
 }
 
-.test-button + .test-button {
-  margin-left: 8px;
+.test-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 .test-button-danger {
   border-color: #b00035;
   background: #b00035;
+}
+
+.danger-zone {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #e2a0ad;
+  background: #fff5f7;
+}
+
+.danger-note {
+  margin: 0 0 12px;
+  color: #8a0027;
+  font-weight: 700;
 }
 
 .test-result {
