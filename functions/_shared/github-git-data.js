@@ -66,7 +66,7 @@ export async function createTree(config, installationToken, { baseTreeSha, entri
         path: entry.path,
         mode: gitObjectModeFile,
         type: gitObjectTypeBlob,
-        sha: entry.sha
+        sha: entry.sha ?? null
       }))
     })
   });
