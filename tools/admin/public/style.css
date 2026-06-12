@@ -447,7 +447,8 @@ h2 {
 }
 
 .preview-form-grid input,
-.preview-form-grid select {
+.preview-form-grid select,
+.preview-form-grid textarea {
   width: 100%;
   min-height: 44px;
   padding: 10px 12px;
@@ -457,7 +458,13 @@ h2 {
   font: inherit;
 }
 
-.preview-form-grid input::placeholder {
+.preview-form-grid textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.preview-form-grid input::placeholder,
+.preview-form-grid textarea::placeholder {
   color: #aaa9a1;
   opacity: 1;
 }
@@ -659,6 +666,46 @@ h2 {
   background: #f8f7fb;
 }
 
+.save-action-row {
+  margin-top: 16px;
+}
+
+.save-action-row button {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.save-action-row button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.api-result-box {
+  margin-top: 14px;
+  padding: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border: 1px solid #d8eadc;
+  background: #f3fbf5;
+  color: #12321b;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.api-result-box.is-error {
+  border-color: #f0c7c7;
+  background: #fff6f6;
+  color: #5f1717;
+}
+
 .static-list {
   display: grid;
   gap: 12px;
@@ -732,6 +779,10 @@ h2 {
   .preview-meta-grid,
   .save-preview-summary dl {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .preview-form-wide {
+    grid-column: 1 / -1;
   }
 
   .generated-preview-grid {
