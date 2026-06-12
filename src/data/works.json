@@ -260,5 +260,18 @@
     ],
     "image": "/images/works/large/260611misaki_0002.webp",
     "thumbnail": "/images/works/thumbs/260611misaki_0002.webp"
+  },
+  {
+    "id": "260612cloudflaretest_1099",
+    "title": "Cloudflare保存テスト",
+    "date": "2026-06-12",
+    "location": "テスト",
+    "production": "Cloudflare API Test",
+    "caption": "Cloudflare Pages Functionsからworks.jsonへPOSTするテストです。",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/260328minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/260328minaseaoi_0001.webp"
   }
 ]
