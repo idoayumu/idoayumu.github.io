@@ -42,12 +42,18 @@ const submitButton = form.querySelector('button[type="submit"]');
 const DEV_SITE_BASE_URL = 'http://localhost:4321';
 const PROD_SITE_BASE_URL = 'https://idoayumu.github.io';
 const DRAFT_STORAGE_KEY = 'kokei-note.work-register.draft.v1';
+const IMAGE_SPECS = {
+  large: '長辺2000px / WebP quality 85',
+  thumb: '長辺700px / WebP quality 80'
+};
+const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 let modelCandidates = [];
 let works = [];
 let existingWorkTitles = [];
 let currentMode = 'create';
 let currentEditWork = null;
+let selectedImageMeta = null;
 
 function hideSaveConfirmation() {
   saveConfirmPanel.hidden = true;
@@ -88,6 +94,41 @@ function renderPostSaveActions(entry) {
       <button type="button" class="secondary-button" data-next-action="blank">空にして次を登録</button>
     </div>
   `;
+}
+
+function formatBytes(bytes) {
+  if (!Number.isFinite(bytes)) return '未取得';
+  if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+  if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${bytes} B`;
+}
+
+function plannedImagePaths(workId) {
+  if (!workId) return { large: '', thumb: '' };
+  return {
+    large: `/images/works/large/${workId}.webp`,
+    thumb: `/images/works/thumbs/${workId}.webp`
+  };
+}
+
+function isHeicFile(file) {
+  if (!file) return false;
+  const name = String(file.name || '').toLowerCase();
+  const type = String(file.type || '').toLowerCase();
+  return type.includes('heic') || type.includes('heif') || /\.(heic|heif)$/i.test(name);
+}
+
+function isAllowedImageFile(file) {
+  if (!file) return true;
+  if (isHeicFile(file)) return false;
+  return ALLOWED_IMAGE_TYPES.has(String(file.type || '').toLowerCase());
+}
+
+function imageFileWarning(file) {
+  if (!file) return '';
+  if (isHeicFile(file)) return 'HEIC/HEIF画像は現在非対応です。JPEG、PNG、WebPに変換してから選択してください。';
+  if (!isAllowedImageFile(file)) return '対応している画像形式はJPEG、PNG、WebPです。';
+  return '';
 }
 
 function todayParts() {
@@ -157,15 +198,32 @@ useSourcePathChk.addEventListener('change', () => {
   hideSaveConfirmation();
 });
 
-imageFile.addEventListener('change', () => {
+imageFile.addEventListener('change', async () => {
   preview.innerHTML = '';
-  renderImageInfo();
+  selectedImageMeta = null;
   const f = imageFile.files && imageFile.files[0];
+  renderImageInfo();
   if (!f) return;
+
+  const warning = imageFileWarning(f);
+  if (warning) {
+    result.innerHTML = `<span class="error">${warning}</span>`;
+    renderImageInfo();
+    hideSaveConfirmation();
+    return;
+  }
+
   const url = URL.createObjectURL(f);
   const img = new Image();
   img.src = url;
-  img.onload = () => URL.revokeObjectURL(url);
+  img.onload = () => {
+    selectedImageMeta = {
+      width: img.naturalWidth,
+      height: img.naturalHeight
+    };
+    URL.revokeObjectURL(url);
+    renderImageInfo();
+  };
   preview.appendChild(img);
   renderImageInfo();
   hideSaveConfirmation();
@@ -295,6 +353,7 @@ function renderSelectedModels() {
 function renderImageInfo() {
   const file = imageFile.files && imageFile.files[0];
   const workId = getGeneratedWorkId();
+  const paths = plannedImagePaths(currentMode === 'edit' && currentEditWork ? currentEditWork.id : workId);
   const existingImage = currentMode === 'edit' && currentEditWork
     ? currentEditWork.image || currentEditWork.thumbnail || ''
     : '';
@@ -305,13 +364,23 @@ function renderImageInfo() {
   }
 
   const fileName = file ? file.name : currentMode === 'edit' ? '未選択（既存画像を維持）' : '未選択';
+  const warning = imageFileWarning(file);
   imageInfo.innerHTML = '';
 
   const list = document.createElement('dl');
 
   [
     ['選択画像', fileName],
+    ...(file ? [
+      ['画像形式', file.type || '未取得'],
+      ['入力画像サイズ', formatBytes(file.size)],
+      ['入力画像の幅/高さ', selectedImageMeta ? `${selectedImageMeta.width} x ${selectedImageMeta.height}px` : '読み込み中'],
+    ] : []),
     ['生成予定ID', workId || '未入力'],
+    ['large保存予定', paths.large || '未入力'],
+    ['thumb保存予定', paths.thumb || '未入力'],
+    ['large生成仕様', IMAGE_SPECS.large],
+    ['thumb生成仕様', IMAGE_SPECS.thumb],
     ...(existingImage ? [['既存画像', existingImage]] : [])
   ].forEach(([label, value]) => {
     const row = document.createElement('div');
@@ -325,6 +394,12 @@ function renderImageInfo() {
   });
 
   imageInfo.appendChild(list);
+  if (warning) {
+    const warningEl = document.createElement('p');
+    warningEl.className = 'image-warning';
+    warningEl.textContent = warning;
+    imageInfo.appendChild(warningEl);
+  }
 }
 
 function selectedModelLabels() {
@@ -340,7 +415,7 @@ function getImageSummary() {
   const file = imageFile.files && imageFile.files[0];
 
   if (usePath) return sourcePath ? `絶対パス: ${sourcePath}` : '絶対パス未入力';
-  if (file) return `${file.name} (${Math.round(file.size / 1024).toLocaleString()} KB)`;
+  if (file) return `${file.name} / ${file.type || '形式未取得'} / ${formatBytes(file.size)}`;
   if (currentMode === 'edit' && currentEditWork) return '未選択（既存画像を維持）';
   return '未選択';
 }
@@ -501,6 +576,7 @@ function resetImageInput() {
   preview.innerHTML = '';
   imageInfo.innerHTML = '';
   imageFile.value = '';
+  selectedImageMeta = null;
   document.getElementById('sourcePath').value = '';
 }
 
@@ -796,7 +872,7 @@ async function readApiResponse(resp) {
 function validateBeforeConfirmation() {
   const workId = getGeneratedWorkId();
   if (currentMode === 'create' && !workId) {
-    result.innerHTML = '<span class="error">モデル名は半角英数字または _、通し番号は4桁数字で入力してください。</span>';
+    result.innerHTML = '<span class="error">モデル名は半角英数字、ハイフン、_、通し番号は4桁数字で入力してください。</span>';
     return false;
   }
 
@@ -817,6 +893,9 @@ function validateBeforeConfirmation() {
       result.textContent = 'sourcePath を入力してください。';
       return false;
     }
+  } else if (imageFile.files && imageFile.files[0] && imageFileWarning(imageFile.files[0])) {
+    result.innerHTML = `<span class="error">${imageFileWarning(imageFile.files[0])}</span>`;
+    return false;
   } else if (currentMode === 'create' && (!imageFile.files || !imageFile.files[0])) {
     result.textContent = '画像ファイルを選択してください。';
     return false;
@@ -849,7 +928,25 @@ function showSaveConfirmation() {
   appendConfirmRow('撮影場所', form.elements.location.value.trim());
   appendConfirmRow('Production', form.elements.production.value.trim());
   appendConfirmRow('モデル', selectedModelLabels().join(' / '));
+  const confirmWorkId = currentMode === 'edit' ? currentEditWork.id : getGeneratedWorkId();
+  const paths = plannedImagePaths(confirmWorkId);
+  const selectedFile = imageFile.files && imageFile.files[0];
   appendConfirmRow('画像', getImageSummary());
+  if (selectedFile) {
+    appendConfirmRow('入力画像ファイル名', selectedFile.name);
+    appendConfirmRow('入力画像形式', selectedFile.type || '未取得');
+    appendConfirmRow('入力画像サイズ', formatBytes(selectedFile.size));
+    appendConfirmRow('入力画像の幅/高さ', selectedImageMeta ? `${selectedImageMeta.width} x ${selectedImageMeta.height}px` : '未取得');
+  }
+  appendConfirmRow('large保存予定パス', paths.large);
+  appendConfirmRow('thumb保存予定パス', paths.thumb);
+  appendConfirmRow('large生成仕様', IMAGE_SPECS.large);
+  appendConfirmRow('thumb生成仕様', IMAGE_SPECS.thumb);
+  if (currentMode === 'create' && form.elements.overwrite?.value !== 'overwrite') {
+    appendConfirmRow('同名ファイル確認', '同名画像が存在する場合、保存は停止されます。');
+  } else if (currentMode === 'create') {
+    appendConfirmRow('同名ファイル確認', '上書き設定が有効です。同名画像が存在すると置き換わります。');
+  }
   saveConfirmPanel.hidden = false;
   result.textContent = '';
   saveConfirmPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -862,7 +959,7 @@ async function executeSave() {
   const fd = new FormData(form);
   const workId = getGeneratedWorkId();
   if (currentMode === 'create' && !workId) {
-    result.innerHTML = '<span class="error">モデル名は半角英数字または _、通し番号は4桁数字で入力してください。</span>';
+    result.innerHTML = '<span class="error">モデル名は半角英数字、ハイフン、_、通し番号は4桁数字で入力してください。</span>';
     return;
   }
 
@@ -901,8 +998,16 @@ async function executeSave() {
       result.textContent = '画像ファイルを選択してください。';
       return;
     }
+    if (imageFileWarning(imageFile.files[0])) {
+      result.innerHTML = `<span class="error">${imageFileWarning(imageFile.files[0])}</span>`;
+      return;
+    }
     fd.set('imageFile', imageFile.files[0]);
   } else if (imageFile.files && imageFile.files[0]) {
+    if (imageFileWarning(imageFile.files[0])) {
+      result.innerHTML = `<span class="error">${imageFileWarning(imageFile.files[0])}</span>`;
+      return;
+    }
     fd.set('imageFile', imageFile.files[0]);
   }
 
@@ -910,11 +1015,26 @@ async function executeSave() {
     const resp = await fetch('api/register', { method: 'POST', body: fd });
     const { data: json } = await readApiResponse(resp);
     if (!resp.ok || !json.ok) {
-      result.innerHTML = `<span class="error">失敗: HTTP ${resp.status} ${json.message || resp.statusText}</span>`;
+      const detail = json.code ? ` (${json.code})` : '';
+      const files = json.details?.files
+        ? `<ul class="saved-file-list"><li>large: ${json.details.files.large}</li><li>thumb: ${json.details.files.thumb}</li></ul>`
+        : '';
+      result.innerHTML = `<div class="error">保存できませんでした${detail}: ${json.message || resp.statusText}</div>${files}`;
     } else {
       const e = json.entry;
+      const savedFiles = json.savedFiles || {
+        large: e.image,
+        thumb: e.thumbnail,
+        worksJson: 'src/data/works.json'
+      };
       result.innerHTML = `
         <div class="success">${currentMode === 'edit' ? '上書き保存しました。' : '登録しました。'}</div>
+        <dl class="save-result-list">
+          <div><dt>登録した作品ID</dt><dd>${e.id}</dd></div>
+          <div><dt>保存したlarge画像</dt><dd>${savedFiles.large || e.image || '未更新'}</dd></div>
+          <div><dt>保存したthumb画像</dt><dd>${savedFiles.thumb || e.thumbnail || '未更新'}</dd></div>
+          <div><dt>works.json</dt><dd>${savedFiles.worksJson || 'src/data/works.json'} 更新完了</dd></div>
+        </dl>
         ${renderPostSaveActions(e)}
         ${renderConfirmLinks('work', e.id)}
         <details class="saved-json-details">

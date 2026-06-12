@@ -12,11 +12,40 @@ const WORKS_JSON_PATH = path.join(ROOT, 'src', 'data', 'works.json');
 const MODELS_JSON_PATH = path.join(ROOT, 'src', 'data', 'models.json');
 const LARGE_DIR = path.join(ROOT, 'public', 'images', 'works', 'large');
 const THUMBS_DIR = path.join(ROOT, 'public', 'images', 'works', 'thumbs');
+const LARGE_SPEC = '長辺2000px / WebP quality 85';
+const THUMB_SPEC = '長辺700px / WebP quality 80';
+const ALLOWED_IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 router.use(express.json({ limit: '2mb' }));
 
 // 一時アップロード（アップロードされたコピーのみ使用。元画像は触らない）
-const upload = multer({ dest: path.join(__dirname, '.tmp') });
+const upload = multer({
+  dest: path.join(__dirname, '.tmp'),
+  limits: {
+    fileSize: 30 * 1024 * 1024
+  },
+  fileFilter(_req, file, cb) {
+    const originalName = String(file.originalname || '').toLowerCase();
+    const mime = String(file.mimetype || '').toLowerCase();
+    if (mime.includes('heic') || mime.includes('heif') || /\.(heic|heif)$/i.test(originalName)) {
+      cb(createHttpError(
+        415,
+        'unsupported_heic',
+        'HEIC/HEIF画像は現在非対応です。Lightroomや写真アプリでJPEG、PNG、WebPに変換してから選択してください。'
+      ));
+      return;
+    }
+    if (!ALLOWED_IMAGE_MIME_TYPES.has(mime)) {
+      cb(createHttpError(
+        415,
+        'unsupported_image_type',
+        '対応している画像形式はJPEG、PNG、WebPです。'
+      ));
+      return;
+    }
+    cb(null, true);
+  }
+});
 
 async function ensureDirs() {
   await fsp.mkdir(LARGE_DIR, { recursive: true });
@@ -50,18 +79,54 @@ async function writeWorksAtomically(works) {
   await fsp.writeFile(tmpPath, JSON.stringify(works, null, 2), 'utf-8');
   await fsp.rename(tmpPath, WORKS_JSON_PATH);
 }
-function longEdgeResizeOptions(meta, target) {
-  const w = meta.width || 0;
-  const h = meta.height || 0;
-  return w >= h ? { width: target, withoutEnlargement: true } : { height: target, withoutEnlargement: true };
-}
-
 function uniqueNonEmpty(values) {
   return [...new Set(values.map(value => String(value || '').trim()).filter(Boolean))].sort();
 }
 
 function asTrimmedString(value) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function isHeicPath(value) {
+  return /\.(heic|heif)$/i.test(String(value || '').trim());
+}
+
+function createHttpError(status, code, message, details = {}) {
+  const err = new Error(message);
+  err.status = status;
+  err.code = code;
+  err.details = details;
+  return err;
+}
+
+function sendError(res, err, fallbackCode = 'server_error', fallbackMessage = 'サーバエラーが発生しました。') {
+  const status = Number(err.status || 500);
+  const code = err.code || fallbackCode;
+  const message = err.message || fallbackMessage;
+  return res.status(status).json({
+    ok: false,
+    code,
+    message,
+    details: err.details || undefined
+  });
+}
+
+function uploadWorkImage(req, res, next) {
+  upload.single('imageFile')(req, res, (err) => {
+    if (!err) {
+      next();
+      return;
+    }
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      sendError(res, createHttpError(
+        413,
+        'image_too_large',
+        '画像ファイルが大きすぎます。30MB以下のJPEG、PNG、WebPを選択してください。'
+      ));
+      return;
+    }
+    sendError(res, err);
+  });
 }
 
 function normalizeModelIds(value) {
@@ -110,17 +175,26 @@ function buildWorkFields(body) {
 }
 
 async function writeWorkImages(sourcePath, largeAbs, thumbAbs) {
-  const meta = await sharp(sourcePath, { failOn: 'none', unlimited: true }).metadata();
+  try {
+    await sharp(sourcePath, { failOn: 'none', unlimited: true })
+      .rotate()
+      .resize({ width: 2000, height: 2000, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 85 })
+      .toFile(largeAbs);
 
-  await sharp(sourcePath, { failOn: 'none', unlimited: true })
-    .resize(longEdgeResizeOptions(meta, 2000))
-    .webp({ quality: 85 })
-    .toFile(largeAbs);
-
-  await sharp(sourcePath, { failOn: 'none', unlimited: true })
-    .resize(longEdgeResizeOptions(meta, 700))
-    .webp({ quality: 80 })
-    .toFile(thumbAbs);
+    await sharp(sourcePath, { failOn: 'none', unlimited: true })
+      .rotate()
+      .resize({ width: 700, height: 700, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toFile(thumbAbs);
+  } catch (err) {
+    throw createHttpError(
+      500,
+      'image_conversion_failed',
+      '画像変換に失敗しました。JPEG、PNG、WebPのいずれかに変換してから再度試してください。',
+      { cause: err.message, large: largeAbs, thumb: thumbAbs }
+    );
+  }
 }
 
 async function backupExistingWorkImages(largeAbs, thumbAbs) {
@@ -246,13 +320,16 @@ async function handleUpdateWork(req, res) {
     if (useSourcePath === 'true') {
       const requestedSourcePath = asTrimmedString(bodySourcePath);
       if (!requestedSourcePath) {
-        return res.status(400).json({ ok: false, message: 'sourcePath が未指定です。' });
+        return sendError(res, createHttpError(400, 'missing_source_path', 'sourcePath が未指定です。'));
+      }
+      if (isHeicPath(requestedSourcePath)) {
+        return sendError(res, createHttpError(415, 'unsupported_heic', 'HEIC/HEIF画像は現在非対応です。JPEG、PNG、WebPに変換してから指定してください。'));
       }
       sourcePath = requestedSourcePath;
       try {
         await fsp.access(sourcePath, fs.constants.R_OK);
       } catch {
-        return res.status(400).json({ ok: false, message: 'sourcePath の画像が見つからないか読み取り不可です。' });
+        return sendError(res, createHttpError(400, 'source_path_unreadable', 'sourcePath の画像が見つからないか読み取り不可です。'));
       }
     } else if (req.file) {
       sourcePath = req.file.path;
@@ -280,18 +357,39 @@ async function handleUpdateWork(req, res) {
 
     const next = [...works];
     next[index] = entry;
-    await writeWorksAtomically(next);
+    try {
+      await writeWorksAtomically(next);
+    } catch (err) {
+      throw createHttpError(
+        500,
+        'works_json_update_failed',
+        'works.json の更新に失敗しました。画像を更新している場合は .bak 退避ファイルを確認してください。',
+        { cause: err.message }
+      );
+    }
 
-    return res.json({ ok: true, entry });
+    return res.json({
+      ok: true,
+      entry,
+      savedFiles: {
+        large: sourcePath ? largeRel : '',
+        thumb: sourcePath ? thumbRel : '',
+        worksJson: 'src/data/works.json'
+      },
+      specs: {
+        large: LARGE_SPEC,
+        thumb: THUMB_SPEC
+      }
+    });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ ok: false, message: 'サーバエラーが発生しました。' });
+    return sendError(res, err);
   } finally {
     if (cleanupTemp) await cleanupTemp();
   }
 }
 
-router.post('/api/register', upload.single('imageFile'), async (req, res) => {
+router.post('/api/register', uploadWorkImage, async (req, res) => {
   let cleanupTemp = null;
 
   if (req.file) {
@@ -325,37 +423,31 @@ router.post('/api/register', upload.single('imageFile'), async (req, res) => {
     const workCaption = asTrimmedString(caption);
 
     if (!workId || !workTitle || !workDate || !workLocation || !modelIds) {
-      return res.status(400).json({ ok: false, message: '必須項目が不足しています。' });
+      return sendError(res, createHttpError(400, 'missing_required_fields', '必須項目が不足しています。タイトル、撮影日、撮影場所、モデル、作品IDを確認してください。'));
     }
 
     if (!/^\d{6}[A-Za-z0-9][A-Za-z0-9_-]*_\d{4}$/.test(workId)) {
-      return res.status(400).json({
-        ok: false,
-        message: '作品IDは YYMMDD + モデル名 + _ + 4桁通し番号 の形式で入力してください。'
-      });
+      return sendError(res, createHttpError(400, 'invalid_work_id', '作品IDは YYMMDD + モデル名 + _ + 4桁通し番号 の形式で入力してください。'));
     }
 
     let modelIdsArray;
     try {
       modelIdsArray = normalizeModelIds(modelIds);
     } catch {
-      return res.status(400).json({ ok: false, message: 'modelIds を配列に解釈できません。' });
+      return sendError(res, createHttpError(400, 'invalid_model_ids', 'modelIds を配列に解釈できません。モデル選択を確認してください。'));
     }
     if (!modelIdsArray.length) {
-      return res.status(400).json({ ok: false, message: 'modelIds は1件以上が必要です。' });
+      return sendError(res, createHttpError(400, 'missing_model_ids', 'モデルを1件以上選択してください。'));
     }
 
     const works = await readWorks();
     if (works.some(w => w.id === workId)) {
-      return res.status(409).json({ ok: false, message: `既存IDです: ${workId}` });
+      return sendError(res, createHttpError(409, 'duplicate_work_id', `既存IDです: ${workId}。通し番号を変更してください。`));
     }
 
     const unknownModelIds = await validateModelIds(modelIdsArray);
     if (unknownModelIds.length) {
-      return res.status(400).json({
-        ok: false,
-        message: `models.json に存在しないモデルIDです: ${unknownModelIds.join(', ')}`
-      });
+      return sendError(res, createHttpError(400, 'unknown_model_ids', `models.json に存在しないモデルIDです: ${unknownModelIds.join(', ')}`));
     }
 
     // 画像入力の解決
@@ -364,17 +456,20 @@ router.post('/api/register', upload.single('imageFile'), async (req, res) => {
     if (useSourcePath === 'true') {
       const requestedSourcePath = asTrimmedString(bodySourcePath);
       if (!requestedSourcePath) {
-        return res.status(400).json({ ok: false, message: 'sourcePath が未指定です。' });
+        return sendError(res, createHttpError(400, 'missing_source_path', 'sourcePath が未指定です。'));
+      }
+      if (isHeicPath(requestedSourcePath)) {
+        return sendError(res, createHttpError(415, 'unsupported_heic', 'HEIC/HEIF画像は現在非対応です。JPEG、PNG、WebPに変換してから指定してください。'));
       }
       sourcePath = requestedSourcePath;
       try {
         await fsp.access(sourcePath, fs.constants.R_OK);
       } catch {
-        return res.status(400).json({ ok: false, message: 'sourcePath の画像が見つからないか読み取り不可です。' });
+        return sendError(res, createHttpError(400, 'source_path_unreadable', 'sourcePath の画像が見つからないか読み取り不可です。'));
       }
     } else {
       if (!req.file) {
-        return res.status(400).json({ ok: false, message: '画像ファイルが未選択です。' });
+        return sendError(res, createHttpError(400, 'missing_image_file', '画像ファイルを選択してください。'));
       }
       sourcePath = req.file.path;
     }
@@ -388,11 +483,12 @@ router.post('/api/register', upload.single('imageFile'), async (req, res) => {
     const largeExists = fs.existsSync(largeAbs);
     const thumbExists = fs.existsSync(thumbAbs);
     if ((largeExists || thumbExists) && overwrite !== 'overwrite') {
-      return res.status(409).json({
-        ok: false,
-        message: '生成済みファイルが存在します（安全のためスキップ）。上書きするには overwrite=overwrite を指定してください。',
-        files: { large: largeRel, thumb: thumbRel }
-      });
+      return sendError(res, createHttpError(
+        409,
+        'image_files_already_exist',
+        '同名の生成済み画像ファイルが存在します。作品IDまたは通し番号を確認してください。上書きする場合のみ上書き設定を変更してください。',
+        { files: { large: largeRel, thumb: thumbRel }, specs: { large: LARGE_SPEC, thumb: THUMB_SPEC } }
+      ));
     }
 
     // 画像生成
@@ -413,17 +509,43 @@ router.post('/api/register', upload.single('imageFile'), async (req, res) => {
 
     // 追記（アトミック）
     const next = [...works, entry];
-    await writeWorksAtomically(next);
+    try {
+      await writeWorksAtomically(next);
+    } catch (err) {
+      await Promise.all([largeAbs, thumbAbs].map(async (filePath) => {
+        try {
+          await fsp.unlink(filePath);
+        } catch { }
+      }));
+      throw createHttpError(
+        500,
+        'works_json_update_failed',
+        'works.json の更新に失敗しました。生成済み画像は削除しました。もう一度実行してください。',
+        { cause: err.message }
+      );
+    }
 
-    return res.json({ ok: true, entry });
+    return res.json({
+      ok: true,
+      entry,
+      savedFiles: {
+        large: largeRel,
+        thumb: thumbRel,
+        worksJson: 'src/data/works.json'
+      },
+      specs: {
+        large: LARGE_SPEC,
+        thumb: THUMB_SPEC
+      }
+    });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ ok: false, message: 'サーバエラーが発生しました。' });
+    return sendError(res, err);
   } finally {
     if (cleanupTemp) await cleanupTemp();
   }
 });
 
-router.post('/api/update', upload.single('imageFile'), handleUpdateWork);
+router.post('/api/update', uploadWorkImage, handleUpdateWork);
 
 module.exports = router;
