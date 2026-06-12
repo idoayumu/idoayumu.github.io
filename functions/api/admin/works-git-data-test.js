@@ -20,6 +20,7 @@ import {
 
 const adminWorksJsonPath = 'tools/admin/public/data/works.json';
 const commitMessage = 'Test git data update works json';
+const targetBranch = 'dev';
 
 export async function onRequestPost({ request, env }) {
   const session = await requireAdminSession(request, env);
@@ -35,15 +36,16 @@ export async function onRequestPost({ request, env }) {
   }
 
   try {
-    const installationToken = await createGitHubInstallationToken(config.value);
-    const result = await syncWorksJsonPair(config.value, installationToken);
+    const targetConfig = withTargetBranch(config.value);
+    const installationToken = await createGitHubInstallationToken(targetConfig);
+    const result = await syncWorksJsonPair(targetConfig, installationToken);
     return jsonResponse({
       success: true,
       ...session.body,
       commitSha: result.commitSha,
       commitUrl: result.commitUrl,
       updatedFiles: result.updatedFiles,
-      branch: config.value.branch,
+      branch: targetConfig.branch,
       sourceHeadSha: result.sourceHeadSha,
       adminWorksJsonExisted: result.adminWorksJsonExisted,
       adminWorksJsonWasDifferent: result.adminWorksJsonWasDifferent
@@ -66,6 +68,13 @@ export async function onRequestGet() {
       message: 'Git Data APIの実験更新はPOSTで実行してください。'
     }
   }, 405);
+}
+
+function withTargetBranch(config) {
+  return {
+    ...config,
+    branch: targetBranch
+  };
 }
 
 async function syncWorksJsonPair(config, installationToken) {
