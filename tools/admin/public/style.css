@@ -444,6 +444,60 @@ h2 {
   padding: 9px;
 }
 
+.generated-id-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #e4ddec;
+  background: #f8f7fb;
+}
+
+.generated-id-panel span {
+  grid-column: 1 / -1;
+  color: #555;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.generated-id-panel strong {
+  min-width: 0;
+  color: #111;
+  font-size: 1.02rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.generated-id-panel strong.is-empty {
+  color: #777;
+  font-weight: 500;
+}
+
+.generated-id-panel button {
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.generated-id-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.generated-id-panel small {
+  grid-column: 1 / -1;
+  color: #666;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
 .preview-model-field legend {
   padding: 0;
 }

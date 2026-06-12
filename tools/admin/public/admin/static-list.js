@@ -4,7 +4,9 @@
   const list = document.getElementById('staticList');
   const search = document.getElementById('staticSearch');
   const message = document.getElementById('staticMessage');
-  const previewWorkId = document.getElementById('previewWorkId');
+  const previewGeneratedWorkId = document.getElementById('previewGeneratedWorkId');
+  const copyGeneratedWorkId = document.getElementById('copyGeneratedWorkId');
+  const registrationDateNote = document.getElementById('registrationDateNote');
   const previewTitle = document.getElementById('previewTitle');
   const previewModelIds = document.getElementById('previewModelIds');
   const previewImageInput = document.getElementById('previewImageInput');
@@ -32,6 +34,8 @@
   let largePreviewUrl = '';
   let thumbPreviewUrl = '';
   let generatedExtension = 'webp';
+  let generatedWorkId = '';
+  let previewWorks = [];
   let previewModels = [];
 
   function normalizeText(value) {
@@ -116,23 +120,120 @@
     return { blob, ...size, extension: 'webp', type: blob.type };
   }
 
-  function selectedModelNames() {
-    const selected = Array.from(previewModelIds?.querySelectorAll('input[type="checkbox"]:checked') || [])
+  function selectedModelIds() {
+    return Array.from(previewModelIds?.querySelectorAll('input[type="checkbox"]:checked') || [])
       .map((input) => input.value);
+  }
+
+  function selectedModelNames() {
+    const selected = selectedModelIds();
     return selected.map((id) => previewModels.find((model) => model.id === id)?.name || id).filter(Boolean);
+  }
+
+  function todayRegistrationDate() {
+    const now = new Date();
+    const year = String(now.getFullYear());
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return {
+      display: `${year}-${month}-${day}`,
+      prefix: `${year.slice(-2)}${month}${day}`
+    };
+  }
+
+  function getModelSortValue(model, id) {
+    return normalizeText(model?.nameKana || model?.name || id);
+  }
+
+  function sortedModelIdsForWorkId(modelIds) {
+    return [...modelIds].sort((a, b) => {
+      const modelA = previewModels.find((model) => model.id === a);
+      const modelB = previewModels.find((model) => model.id === b);
+      const sortByName = getModelSortValue(modelA, a).localeCompare(getModelSortValue(modelB, b), 'ja');
+      if (sortByName !== 0) return sortByName;
+      return a.localeCompare(b);
+    });
+  }
+
+  function parseWorkId(workId) {
+    const match = String(workId || '').match(/^(\d{6})([A-Za-z0-9][A-Za-z0-9_]*)_(\d{4})$/);
+    if (!match) return null;
+    return {
+      prefix: match[1],
+      modelSlug: match[2],
+      sequence: Number(match[3])
+    };
+  }
+
+  function sameModelSet(a, b) {
+    if (a.length !== b.length) return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((id, index) => id === sortedB[index]);
+  }
+
+  function preferredModelSlug(modelIds) {
+    const existing = previewWorks
+      .map((work) => ({
+        id: work.id,
+        modelIds: getWorkModelIds(work),
+        parts: parseWorkId(work.id)
+      }))
+      .filter((work) => work.parts && sameModelSet(work.modelIds, modelIds))
+      .sort((a, b) => {
+        const keyA = `${a.parts.prefix}${String(a.parts.sequence).padStart(4, '0')}`;
+        const keyB = `${b.parts.prefix}${String(b.parts.sequence).padStart(4, '0')}`;
+        return keyB.localeCompare(keyA);
+      });
+
+    if (existing.length) return existing[0].parts.modelSlug;
+    return sortedModelIdsForWorkId(modelIds).join('_');
+  }
+
+  function nextSequence(prefix, modelSlug) {
+    const max = previewWorks.reduce((currentMax, work) => {
+      const parts = parseWorkId(work.id);
+      if (!parts || parts.prefix !== prefix || parts.modelSlug !== modelSlug) return currentMax;
+      return Math.max(currentMax, parts.sequence);
+    }, 0);
+    return String(max + 1).padStart(4, '0');
+  }
+
+  function generateWorkId() {
+    const modelIds = selectedModelIds();
+    if (!modelIds.length) return '';
+
+    const registrationDate = todayRegistrationDate();
+    const modelSlug = preferredModelSlug(modelIds);
+    const sequence = nextSequence(registrationDate.prefix, modelSlug);
+    return `${registrationDate.prefix}${modelSlug}_${sequence}`;
+  }
+
+  function updateGeneratedWorkId() {
+    generatedWorkId = generateWorkId();
+    if (registrationDateNote) {
+      registrationDateNote.textContent = `先頭YYMMDDは登録日 ${todayRegistrationDate().display} です。撮影日ではありません。`;
+    }
+    if (previewGeneratedWorkId) {
+      previewGeneratedWorkId.textContent = generatedWorkId || 'モデル選択で自動生成';
+      previewGeneratedWorkId.classList.toggle('is-empty', !generatedWorkId);
+    }
+    if (copyGeneratedWorkId) {
+      copyGeneratedWorkId.disabled = !generatedWorkId;
+    }
+    updateSavePreview();
   }
 
   function updateSavePreview() {
     if (!savePreviewSummary) return;
-    const workId = String(previewWorkId?.value || '').trim();
     const title = String(previewTitle?.value || '').trim();
     const modelNames = selectedModelNames();
 
-    confirmWorkId.textContent = workId || '未入力';
+    confirmWorkId.textContent = generatedWorkId || '未生成';
     confirmTitle.textContent = title || '未入力';
     confirmModels.textContent = modelNames.join('・') || '未選択';
-    confirmLargePath.textContent = workId ? `/images/works/large/${workId}.${generatedExtension}` : '未入力';
-    confirmThumbPath.textContent = workId ? `/images/works/thumbs/${workId}.${generatedExtension}` : '未入力';
+    confirmLargePath.textContent = generatedWorkId ? `/images/works/large/${generatedWorkId}.${generatedExtension}` : '未生成';
+    confirmThumbPath.textContent = generatedWorkId ? `/images/works/thumbs/${generatedWorkId}.${generatedExtension}` : '未生成';
   }
 
   function populatePreviewModels(models) {
@@ -201,14 +302,26 @@
     }
   }
 
-  function initImagePreviewTool(models) {
+  async function copyWorkId() {
+    if (!generatedWorkId) return;
+    try {
+      await navigator.clipboard.writeText(generatedWorkId);
+      previewMessage.textContent = '作品IDをコピーしました。';
+    } catch {
+      previewMessage.textContent = 'コピーできませんでした。作品IDを長押ししてコピーしてください。';
+    }
+  }
+
+  function initImagePreviewTool(models, works) {
     if (!previewImageInput) return;
+    // Phase A/Bでは静的JSONを参照します。保存実装時はGitHub正本API参照へ切り替える予定です。
+    previewWorks = works;
     populatePreviewModels(models);
     previewImageInput.addEventListener('change', handlePreviewImageChange);
-    previewWorkId?.addEventListener('input', updateSavePreview);
     previewTitle?.addEventListener('input', updateSavePreview);
-    previewModelIds?.addEventListener('change', updateSavePreview);
-    updateSavePreview();
+    previewModelIds?.addEventListener('change', updateGeneratedWorkId);
+    copyGeneratedWorkId?.addEventListener('click', copyWorkId);
+    updateGeneratedWorkId();
   }
 
   function socialLinks(model) {
@@ -322,7 +435,7 @@
 
       if (page === 'works') renderWorks(Array.isArray(works) ? works : [], Array.isArray(models) ? models : []);
       if (page === 'models') renderModels(Array.isArray(models) ? models : [], Array.isArray(works) ? works : []);
-      if (page === 'works') initImagePreviewTool(Array.isArray(models) ? models : []);
+      if (page === 'works') initImagePreviewTool(Array.isArray(models) ? models : [], Array.isArray(works) ? works : []);
     } catch (err) {
       console.error(err);
       message.textContent = '静的JSONを読み込めませんでした。Cloudflareの再デプロイで /data/*.json が公開されているか確認してください。';

@@ -31,9 +31,12 @@
       </div>
 
       <div class="preview-form-grid">
-        <label>作品ID
-          <input id="previewWorkId" type="text" placeholder="例: 260612minaseaoi_0001" autocomplete="off" />
-        </label>
+        <div class="generated-id-panel">
+          <span>作品ID</span>
+          <strong id="previewGeneratedWorkId">モデル選択で自動生成</strong>
+          <button id="copyGeneratedWorkId" type="button" disabled>コピー</button>
+          <small id="registrationDateNote">先頭YYMMDDは登録日（今日）です。撮影日ではありません。</small>
+        </div>
         <label>タイトル
           <input id="previewTitle" type="text" placeholder="作品タイトル" autocomplete="off" />
         </label>
