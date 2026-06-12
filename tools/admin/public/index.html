@@ -97,57 +97,65 @@
       </div>
     </section>
 
-    <section class="phase-note" aria-labelledby="phase-title">
-      <div class="section-heading">
-        <p>Phase 5</p>
-        <h2 id="phase-title">現在の対応範囲</h2>
-      </div>
-      <p>
-        作品管理・モデル管理・サイト設定を統合し、About画像とTOPヒーロー画像の管理に対応しました。
-      </p>
-    </section>
+    <details class="developer-menu">
+      <summary>開発者メニューを開く</summary>
 
-    <section class="api-test" aria-labelledby="api-test-title">
-      <div class="section-heading">
-        <p>Cloudflare Save Test</p>
-        <h2 id="api-test-title">作品保存APIテスト</h2>
-      </div>
-      <p>
-        Cloudflare Access Cookie付きで <code>/api/admin/works</code> へテスト作品をPOSTします。
-      </p>
-      <button class="test-button" id="worksPostTestButton" type="button">テスト作品をPOST</button>
-      <button class="test-button" id="worksEditTestButton" type="button">作品編集APIテスト</button>
-      <button class="test-button" id="worksEditResetButton" type="button">編集テストを元に戻す</button>
-      <button class="test-button test-button-danger" id="worksDeleteTestButton" type="button">テスト作品を削除</button>
-      <pre class="test-result" id="worksPostTestResult" hidden></pre>
-    </section>
+      <div class="developer-menu-body">
+        <section class="api-test" aria-labelledby="api-test-title">
+          <div class="section-heading">
+            <p>Cloudflare Save Test</p>
+            <h2 id="api-test-title">Works APIテスト</h2>
+          </div>
+          <p>
+            Cloudflare Access Cookie付きで <code>/api/admin/works</code> へテストリクエストを送信します。
+          </p>
+          <div class="test-button-group">
+            <button class="test-button" id="worksPostTestButton" type="button">テスト作品をPOST</button>
+            <button class="test-button" id="worksEditTestButton" type="button">作品編集APIテスト</button>
+            <button class="test-button" id="worksEditResetButton" type="button">編集テストを元に戻す</button>
+          </div>
+          <div class="danger-zone">
+            <p class="danger-note">危険操作です。本番JSONを更新し、GitHub commitが発生します。</p>
+            <button class="test-button test-button-danger" id="worksDeleteTestButton" type="button">テスト作品を削除</button>
+          </div>
+          <pre class="test-result" id="worksPostTestResult" hidden></pre>
+        </section>
 
-    <section class="api-test" aria-labelledby="models-api-test-title">
-      <div class="section-heading">
-        <p>Cloudflare Models Test</p>
-        <h2 id="models-api-test-title">Models APIテスト</h2>
-      </div>
-      <p>
-        Cloudflare Access Cookie付きで <code>/api/admin/models</code> へテストモデルを保存します。
-      </p>
-      <button class="test-button" id="modelsPostTestButton" type="button">モデル追加テスト</button>
-      <button class="test-button" id="modelsEditTestButton" type="button">モデル編集テスト</button>
-      <button class="test-button test-button-danger" id="modelsDeleteTestButton" type="button">モデル削除テスト</button>
-      <pre class="test-result" id="modelsTestResult" hidden></pre>
-    </section>
+        <section class="api-test" aria-labelledby="models-api-test-title">
+          <div class="section-heading">
+            <p>Cloudflare Models Test</p>
+            <h2 id="models-api-test-title">Models APIテスト</h2>
+          </div>
+          <p>
+            Cloudflare Access Cookie付きで <code>/api/admin/models</code> へテストリクエストを送信します。
+          </p>
+          <div class="test-button-group">
+            <button class="test-button" id="modelsPostTestButton" type="button">モデル追加テスト</button>
+            <button class="test-button" id="modelsEditTestButton" type="button">モデル編集テスト</button>
+          </div>
+          <div class="danger-zone">
+            <p class="danger-note">危険操作です。本番JSONを更新し、GitHub commitが発生します。</p>
+            <button class="test-button test-button-danger" id="modelsDeleteTestButton" type="button">モデル削除テスト</button>
+          </div>
+          <pre class="test-result" id="modelsTestResult" hidden></pre>
+        </section>
 
-    <section class="api-test" aria-labelledby="settings-api-test-title">
-      <div class="section-heading">
-        <p>Cloudflare Settings Test</p>
-        <h2 id="settings-api-test-title">Settings APIテスト</h2>
+        <section class="api-test" aria-labelledby="settings-api-test-title">
+          <div class="section-heading">
+            <p>Cloudflare Settings Test</p>
+            <h2 id="settings-api-test-title">Settings APIテスト</h2>
+          </div>
+          <p>
+            Cloudflare Access Cookie付きで <code>/api/admin/settings</code> からGitHub上の最新設定を取得・更新します。
+          </p>
+          <div class="test-button-group">
+            <button class="test-button" id="settingsGetTestButton" type="button">設定取得テスト</button>
+            <button class="test-button" id="settingsPutTestButton" type="button">設定更新テスト</button>
+          </div>
+          <pre class="test-result" id="settingsTestResult" hidden></pre>
+        </section>
       </div>
-      <p>
-        Cloudflare Access Cookie付きで <code>/api/admin/settings</code> からGitHub上の最新設定を取得・更新します。
-      </p>
-      <button class="test-button" id="settingsGetTestButton" type="button">設定取得テスト</button>
-      <button class="test-button" id="settingsPutTestButton" type="button">設定更新テスト</button>
-      <pre class="test-result" id="settingsTestResult" hidden></pre>
-    </section>
+    </details>
   </main>
 
   <script src="./main.js"></script>
