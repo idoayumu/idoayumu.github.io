@@ -328,7 +328,7 @@ router.post('/api/register', upload.single('imageFile'), async (req, res) => {
       return res.status(400).json({ ok: false, message: '必須項目が不足しています。' });
     }
 
-    if (!/^\d{6}[A-Za-z0-9][A-Za-z0-9_]*_\d{4}$/.test(workId)) {
+    if (!/^\d{6}[A-Za-z0-9][A-Za-z0-9_-]*_\d{4}$/.test(workId)) {
       return res.status(400).json({
         ok: false,
         message: '作品IDは YYMMDD + モデル名 + _ + 4桁通し番号 の形式で入力してください。'

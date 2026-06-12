@@ -126,7 +126,7 @@ function validateWork(work, works, models, { requireUniqueId = false, currentId 
     return validationError('missing_required_fields', '必須項目が不足しています。', { missing });
   }
 
-  if (!/^\d{6}[A-Za-z0-9][A-Za-z0-9_]*_\d{4}$/.test(work.id)) {
+  if (!/^\d{6}[A-Za-z0-9][A-Za-z0-9_-]*_\d{4}$/.test(work.id)) {
     return validationError(
       'invalid_work_id',
       '作品IDは YYMMDD + モデル名 + _ + 4桁通し番号 の形式で入力してください。'
