@@ -18,8 +18,10 @@ const authStatus = document.getElementById('authStatus');
 const authStatusTitle = document.getElementById('authStatusTitle');
 const authStatusDetail = document.getElementById('authStatusDetail');
 const worksPostTestButton = document.getElementById('worksPostTestButton');
+const worksEditTestButton = document.getElementById('worksEditTestButton');
 const worksDeleteTestButton = document.getElementById('worksDeleteTestButton');
 const worksPostTestResult = document.getElementById('worksPostTestResult');
+const testEditWorkId = '260328minaseaoi_0002';
 const testDeleteWorkId = '260612cloudflaretest_1099';
 
 function fileNameFromPath(value) {
@@ -307,9 +309,89 @@ async function deleteWorksTest() {
   }
 }
 
+async function editWorksTest() {
+  if (!worksEditTestButton) return;
+  const ok = window.confirm(`作品 ${testEditWorkId} のtitle末尾に【編集テスト】を付けてGitHubへcommitします。実行しますか？`);
+  if (!ok) return;
+
+  worksEditTestButton.disabled = true;
+  renderWorksPostTestResult('PUT中です...');
+
+  try {
+    const works = await fetchJson('/data/works.json');
+    const current = Array.isArray(works)
+      ? works.find((work) => work?.id === testEditWorkId)
+      : null;
+
+    if (!current) {
+      renderWorksPostTestResult({
+        success: false,
+        error: {
+          code: 'work_not_found_in_static_json',
+          message: `/data/works.jsonで作品が見つかりません: ${testEditWorkId}`
+        }
+      });
+      return;
+    }
+
+    const title = String(current.title || '').endsWith('【編集テスト】')
+      ? current.title
+      : `${current.title || ''}【編集テスト】`;
+
+    const resp = await fetch('/api/admin/works', {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: testEditWorkId,
+        work: {
+          title,
+          date: current.date,
+          location: current.location,
+          production: current.production,
+          caption: current.caption,
+          modelIds: current.modelIds,
+          image: current.image,
+          thumbnail: current.thumbnail
+        }
+      })
+    });
+    const text = await resp.text();
+    let json;
+    try {
+      json = text ? JSON.parse(text) : {};
+    } catch {
+      json = { raw: text };
+    }
+
+    if (resp.ok && json.commitUrl) {
+      renderWorksPostTestResult({
+        success: true,
+        commitUrl: json.commitUrl,
+        updatedFile: json.updatedFile,
+        updatedWorkId: json.updatedWorkId
+      });
+      return;
+    }
+
+    renderWorksPostTestResult(json);
+  } catch (err) {
+    renderWorksPostTestResult({
+      success: false,
+      error: {
+        message: err.message
+      }
+    });
+  } finally {
+    worksEditTestButton.disabled = false;
+  }
+}
+
 if (isSummaryPage) {
   loadSummary();
 }
 
 worksPostTestButton?.addEventListener('click', postWorksTest);
+worksEditTestButton?.addEventListener('click', editWorksTest);
 worksDeleteTestButton?.addEventListener('click', deleteWorksTest);
