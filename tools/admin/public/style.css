@@ -315,6 +315,15 @@ h2 {
   opacity: 0.55;
 }
 
+.test-button + .test-button {
+  margin-left: 8px;
+}
+
+.test-button-danger {
+  border-color: #b00035;
+  background: #b00035;
+}
+
 .test-result {
   max-height: 360px;
   margin: 16px 0 0;
