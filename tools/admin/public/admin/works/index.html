@@ -21,7 +21,7 @@
     <header class="page-header">
       <p class="eyebrow">Cloudflare Static Mode</p>
       <h1>Works一覧</h1>
-      <p>Cloudflare公開版では、画像選択とlarge/thumb生成の確認まで可能です。保存はまだ行いません。</p>
+      <p>Cloudflare公開版では、画像選択、large/thumb生成、devブランチへの作品登録ができます。</p>
     </header>
 
     <section class="image-preview-tool" aria-labelledby="image-preview-title">
@@ -40,16 +40,28 @@
         <label>タイトル
           <input id="previewTitle" type="text" placeholder="作品タイトル" autocomplete="off" />
         </label>
+        <label>撮影日
+          <input id="previewDate" type="date" />
+        </label>
+        <label>撮影地
+          <input id="previewLocation" type="text" placeholder="大阪" autocomplete="off" />
+        </label>
+        <label>Production
+          <input id="previewProduction" type="text" placeholder="撮影会名・リク撮など" autocomplete="off" />
+        </label>
+        <label class="preview-form-wide">caption
+          <textarea id="previewCaption" rows="4" placeholder="作品本文"></textarea>
+        </label>
         <fieldset class="preview-model-field">
           <legend>モデル</legend>
           <div class="preview-model-list" id="previewModelIds"></div>
         </fieldset>
         <label>画像選択
-          <input id="previewImageInput" type="file" accept="image/*" />
+          <input id="previewImageInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
         </label>
       </div>
 
-      <p class="preview-note">この画面ではGitHub保存・JSON更新・commitは行いません。</p>
+      <p class="preview-note">Cloudflare保存はdevブランチへ保存されます。mainには保存しません。HEIC/HEIFは非対応です。</p>
       <p class="note" id="previewMessage">画像を選択してください。</p>
 
       <div class="preview-meta-grid" id="previewMeta" hidden>
@@ -109,8 +121,16 @@
             <dd id="confirmTitle">未入力</dd>
           </div>
           <div>
+            <dt>撮影日</dt>
+            <dd id="confirmDate">未入力</dd>
+          </div>
+          <div>
             <dt>モデル</dt>
             <dd id="confirmModels">未選択</dd>
+          </div>
+          <div>
+            <dt>modelIds</dt>
+            <dd id="confirmModelIds">未選択</dd>
           </div>
           <div>
             <dt>保存予定largeパス</dt>
@@ -120,8 +140,16 @@
             <dt>保存予定thumbパス</dt>
             <dd id="confirmThumbPath">未入力</dd>
           </div>
+          <div>
+            <dt>保存先branch</dt>
+            <dd id="confirmBranch">dev</dd>
+          </div>
         </dl>
-        <p class="preview-note">保存ボタンは未実装です。次フェーズでGitHubへの保存APIを追加します。</p>
+        <div class="save-action-row">
+          <button id="saveWorkWithImages" type="button" disabled>devへ保存</button>
+        </div>
+        <p class="preview-note">保存するとGitHubのdevブランチへcommitされます。main公開反映は別工程です。</p>
+        <pre class="api-result-box" id="saveApiResult" hidden></pre>
       </section>
     </section>
 

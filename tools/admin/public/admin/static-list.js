@@ -8,6 +8,10 @@
   const copyGeneratedWorkId = document.getElementById('copyGeneratedWorkId');
   const registrationDateNote = document.getElementById('registrationDateNote');
   const previewTitle = document.getElementById('previewTitle');
+  const previewDate = document.getElementById('previewDate');
+  const previewLocation = document.getElementById('previewLocation');
+  const previewProduction = document.getElementById('previewProduction');
+  const previewCaption = document.getElementById('previewCaption');
   const previewModelIds = document.getElementById('previewModelIds');
   const previewImageInput = document.getElementById('previewImageInput');
   const previewMessage = document.getElementById('previewMessage');
@@ -25,14 +29,22 @@
   const savePreviewSummary = document.getElementById('savePreviewSummary');
   const confirmWorkId = document.getElementById('confirmWorkId');
   const confirmTitle = document.getElementById('confirmTitle');
+  const confirmDate = document.getElementById('confirmDate');
   const confirmModels = document.getElementById('confirmModels');
+  const confirmModelIds = document.getElementById('confirmModelIds');
   const confirmLargePath = document.getElementById('confirmLargePath');
   const confirmThumbPath = document.getElementById('confirmThumbPath');
+  const confirmBranch = document.getElementById('confirmBranch');
+  const saveWorkWithImages = document.getElementById('saveWorkWithImages');
+  const saveApiResult = document.getElementById('saveApiResult');
   const largeMaxEdge = 2000;
   const thumbMaxEdge = 700;
+  const saveBranch = 'dev';
   let originalPreviewUrl = '';
   let largePreviewUrl = '';
   let thumbPreviewUrl = '';
+  let generatedLargeBlob = null;
+  let generatedThumbBlob = null;
   let generatedExtension = 'webp';
   let generatedWorkId = '';
   let previewWorks = [];
@@ -86,6 +98,8 @@
     originalPreviewUrl = '';
     largePreviewUrl = '';
     thumbPreviewUrl = '';
+    generatedLargeBlob = null;
+    generatedThumbBlob = null;
   }
 
   function canvasToBlob(canvas, type, quality) {
@@ -118,6 +132,19 @@
     }
 
     return { blob, ...size, extension: 'webp', type: blob.type };
+  }
+
+  function isHeicFile(file) {
+    const name = String(file?.name || '').toLowerCase();
+    const type = String(file?.type || '').toLowerCase();
+    return type.includes('heic') || type.includes('heif') || /\.(heic|heif)$/.test(name);
+  }
+
+  function isSupportedSourceImage(file) {
+    const name = String(file?.name || '').toLowerCase();
+    const type = String(file?.type || '').toLowerCase();
+    return ['image/jpeg', 'image/png', 'image/webp'].includes(type)
+      || /\.(jpe?g|png|webp)$/.test(name);
   }
 
   function selectedModelIds() {
@@ -227,13 +254,38 @@
   function updateSavePreview() {
     if (!savePreviewSummary) return;
     const title = String(previewTitle?.value || '').trim();
+    const date = String(previewDate?.value || '').trim();
+    const location = String(previewLocation?.value || '').trim();
+    const modelIds = selectedModelIds();
     const modelNames = selectedModelNames();
 
     confirmWorkId.textContent = generatedWorkId || '未生成';
     confirmTitle.textContent = title || '未入力';
+    if (confirmDate) confirmDate.textContent = date || '未入力';
     confirmModels.textContent = modelNames.join('・') || '未選択';
-    confirmLargePath.textContent = generatedWorkId ? `/images/works/large/${generatedWorkId}.${generatedExtension}` : '未生成';
-    confirmThumbPath.textContent = generatedWorkId ? `/images/works/thumbs/${generatedWorkId}.${generatedExtension}` : '未生成';
+    if (confirmModelIds) confirmModelIds.textContent = modelIds.join(', ') || '未選択';
+    confirmLargePath.textContent = generatedWorkId ? `/images/works/large/${generatedWorkId}.webp` : '未生成';
+    confirmThumbPath.textContent = generatedWorkId ? `/images/works/thumbs/${generatedWorkId}.webp` : '未生成';
+    if (confirmBranch) confirmBranch.textContent = saveBranch;
+    updateSaveButtonState();
+  }
+
+  function canSaveWork() {
+    return Boolean(
+      generatedWorkId
+      && String(previewTitle?.value || '').trim()
+      && String(previewDate?.value || '').trim()
+      && String(previewLocation?.value || '').trim()
+      && selectedModelIds().length
+      && generatedLargeBlob
+      && generatedThumbBlob
+      && generatedExtension === 'webp'
+    );
+  }
+
+  function updateSaveButtonState() {
+    if (!saveWorkWithImages) return;
+    saveWorkWithImages.disabled = !canSaveWork();
   }
 
   function populatePreviewModels(models) {
@@ -261,12 +313,21 @@
     const file = previewImageInput.files[0];
 
     revokePreviewUrls();
+    if (saveApiResult) saveApiResult.hidden = true;
     previewMessage.textContent = '画像を生成中です...';
     previewMeta.hidden = true;
     previewImages.hidden = true;
     savePreviewSummary.hidden = true;
+    updateSaveButtonState();
 
     try {
+      if (isHeicFile(file)) {
+        throw new Error('HEIC/HEIFは非対応です。iPhoneの写真をJPEG/PNG/WebPに変換してから選択してください。');
+      }
+      if (!isSupportedSourceImage(file)) {
+        throw new Error('JPEG / PNG / WebP の画像を選択してください。');
+      }
+
       originalPreviewUrl = URL.createObjectURL(file);
       const originalImage = await loadImageFromUrl(originalPreviewUrl);
       const large = await renderToBlob(originalImage, largeMaxEdge, 0.85);
@@ -275,6 +336,8 @@
       if (!large.blob || !thumb.blob) throw new Error('画像生成に失敗しました。');
 
       generatedExtension = large.extension === 'webp' && thumb.extension === 'webp' ? 'webp' : 'jpg';
+      generatedLargeBlob = generatedExtension === 'webp' ? large.blob : null;
+      generatedThumbBlob = generatedExtension === 'webp' ? thumb.blob : null;
       largePreviewUrl = URL.createObjectURL(large.blob);
       thumbPreviewUrl = URL.createObjectURL(thumb.blob);
 
@@ -292,13 +355,109 @@
       previewImages.hidden = false;
       savePreviewSummary.hidden = false;
       previewMessage.textContent = generatedExtension === 'webp'
-        ? 'WebPでlarge/thumbを生成しました。保存はまだ行いません。'
-        : 'WebP生成に対応していないためJPEGでlarge/thumbを生成しました。保存はまだ行いません。';
+        ? 'WebPでlarge/thumbを生成しました。保存前確認を確認してください。'
+        : 'WebP生成に対応していないため、この画面からは保存できません。';
       updateSavePreview();
     } catch (err) {
       console.error(err);
       revokePreviewUrls();
+      updateSaveButtonState();
       previewMessage.textContent = err.message || '画像生成に失敗しました。';
+    }
+  }
+
+  function buildWorkPayload() {
+    return {
+      id: generatedWorkId,
+      title: String(previewTitle?.value || '').trim(),
+      date: String(previewDate?.value || '').trim(),
+      location: String(previewLocation?.value || '').trim(),
+      production: String(previewProduction?.value || '').trim(),
+      caption: String(previewCaption?.value || '').trim(),
+      modelIds: selectedModelIds()
+    };
+  }
+
+  function renderSaveResult(payload, ok) {
+    if (!saveApiResult) return;
+    saveApiResult.hidden = false;
+    saveApiResult.classList.toggle('is-error', !ok);
+    saveApiResult.textContent = JSON.stringify(payload, null, 2);
+  }
+
+  function userMessageForApiError(error) {
+    const code = error?.code || '';
+    const messages = {
+      duplicate_work_id: '同じ作品IDが既に存在します。作品一覧を再読み込みしてIDを確認してください。',
+      image_file_exists: '保存予定の画像ファイルが既に存在します。',
+      unsupported_image_type: '画像形式が対応していません。WebP生成後に保存してください。',
+      invalid_large_image_type: 'large画像はWebPのみ保存できます。',
+      invalid_thumb_image_type: 'thumb画像はWebPのみ保存できます。',
+      branch_conflict: 'GitHub上のdevブランチが更新されています。画面を再読み込みしてから再実行してください。',
+      missing_required_fields: '必須項目が不足しています。タイトル、撮影日、撮影地、モデル、画像を確認してください。',
+      invalid_work_id: '作品IDの形式が不正です。'
+    };
+    return messages[code] || error?.message || '保存に失敗しました。';
+  }
+
+  async function saveWorkWithImagesToGitHub() {
+    if (!saveWorkWithImages || !canSaveWork()) {
+      previewMessage.textContent = '保存に必要な項目が不足しています。';
+      updateSaveButtonState();
+      return;
+    }
+
+    const work = buildWorkPayload();
+    const form = new FormData();
+    form.append('work', JSON.stringify(work));
+    form.append('large', generatedLargeBlob, `${work.id}.webp`);
+    form.append('thumb', generatedThumbBlob, `${work.id}.webp`);
+
+    saveWorkWithImages.disabled = true;
+    saveWorkWithImages.textContent = '保存中...';
+    previewMessage.textContent = 'devブランチへ保存中です...';
+    if (saveApiResult) saveApiResult.hidden = true;
+
+    try {
+      const resp = await fetch('/api/admin/works-with-images', {
+        method: 'POST',
+        body: form
+      });
+      const json = await resp.json().catch(() => ({
+        success: false,
+        error: {
+          code: 'invalid_response',
+          message: 'APIレスポンスを解析できませんでした。'
+        }
+      }));
+
+      renderSaveResult(json, resp.ok && json.success);
+      if (!resp.ok || !json.success) {
+        previewMessage.textContent = userMessageForApiError(json.error);
+        return;
+      }
+
+      previewWorks = [...previewWorks, {
+        ...work,
+        image: `/images/works/large/${work.id}.webp`,
+        thumbnail: `/images/works/thumbs/${work.id}.webp`
+      }];
+      previewMessage.textContent = `保存しました。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
+      updateGeneratedWorkId();
+    } catch (err) {
+      console.error(err);
+      const payload = {
+        success: false,
+        error: {
+          code: 'request_failed',
+          message: err.message || '保存リクエストに失敗しました。'
+        }
+      };
+      renderSaveResult(payload, false);
+      previewMessage.textContent = payload.error.message;
+    } finally {
+      saveWorkWithImages.textContent = 'devへ保存';
+      updateSaveButtonState();
     }
   }
 
@@ -318,9 +477,13 @@
     previewWorks = works;
     populatePreviewModels(models);
     previewImageInput.addEventListener('change', handlePreviewImageChange);
-    previewTitle?.addEventListener('input', updateSavePreview);
+    [previewTitle, previewDate, previewLocation, previewProduction, previewCaption].forEach((input) => {
+      input?.addEventListener('input', updateSavePreview);
+      input?.addEventListener('change', updateSavePreview);
+    });
     previewModelIds?.addEventListener('change', updateGeneratedWorkId);
     copyGeneratedWorkId?.addEventListener('click', copyWorkId);
+    saveWorkWithImages?.addEventListener('click', saveWorkWithImagesToGitHub);
     updateGeneratedWorkId();
   }
 
