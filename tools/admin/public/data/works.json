@@ -260,5 +260,18 @@
     ],
     "image": "/images/works/large/260611misaki_0002.webp",
     "thumbnail": "/images/works/thumbs/260611misaki_0002.webp"
+  },
+  {
+    "id": "260613minaseaoi_9998",
+    "title": "画像付きAPIテスト",
+    "date": "2026-06-13",
+    "location": "大阪",
+    "production": "テスト",
+    "caption": "works-with-images API test",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/260613minaseaoi_9998.webp",
+    "thumbnail": "/images/works/thumbs/260613minaseaoi_9998.webp"
   }
 ]
