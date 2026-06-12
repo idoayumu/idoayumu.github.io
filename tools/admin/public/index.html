@@ -135,6 +135,19 @@
       <button class="test-button test-button-danger" id="modelsDeleteTestButton" type="button">モデル削除テスト</button>
       <pre class="test-result" id="modelsTestResult" hidden></pre>
     </section>
+
+    <section class="api-test" aria-labelledby="settings-api-test-title">
+      <div class="section-heading">
+        <p>Cloudflare Settings Test</p>
+        <h2 id="settings-api-test-title">Settings APIテスト</h2>
+      </div>
+      <p>
+        Cloudflare Access Cookie付きで <code>/api/admin/settings</code> からGitHub上の最新設定を取得・更新します。
+      </p>
+      <button class="test-button" id="settingsGetTestButton" type="button">設定取得テスト</button>
+      <button class="test-button" id="settingsPutTestButton" type="button">設定更新テスト</button>
+      <pre class="test-result" id="settingsTestResult" hidden></pre>
+    </section>
   </main>
 
   <script src="./main.js"></script>

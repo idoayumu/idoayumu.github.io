@@ -1,5 +1,6 @@
 export const worksJsonPath = 'src/data/works.json';
 export const modelsJsonPath = 'src/data/models.json';
+export const settingsJsonPath = 'src/data/site-settings.json';
 
 export function readGitHubConfig(env) {
   const value = {

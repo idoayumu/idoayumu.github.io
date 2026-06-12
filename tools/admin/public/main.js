@@ -26,6 +26,9 @@ const modelsPostTestButton = document.getElementById('modelsPostTestButton');
 const modelsEditTestButton = document.getElementById('modelsEditTestButton');
 const modelsDeleteTestButton = document.getElementById('modelsDeleteTestButton');
 const modelsTestResult = document.getElementById('modelsTestResult');
+const settingsGetTestButton = document.getElementById('settingsGetTestButton');
+const settingsPutTestButton = document.getElementById('settingsPutTestButton');
+const settingsTestResult = document.getElementById('settingsTestResult');
 const testEditWorkId = '260328minaseaoi_0002';
 const testEditOriginalTitle = 'ひだまりの笑顔';
 const testDeleteWorkId = '260612cloudflaretest_1099';
@@ -225,6 +228,14 @@ function renderModelsTestResult(value) {
   if (!modelsTestResult) return;
   modelsTestResult.hidden = false;
   modelsTestResult.textContent = typeof value === 'string'
+    ? value
+    : JSON.stringify(value, null, 2);
+}
+
+function renderSettingsTestResult(value) {
+  if (!settingsTestResult) return;
+  settingsTestResult.hidden = false;
+  settingsTestResult.textContent = typeof value === 'string'
     ? value
     : JSON.stringify(value, null, 2);
 }
@@ -616,6 +627,90 @@ async function deleteModelTest() {
   }
 }
 
+async function requestSettingsTest(method, payload) {
+  const resp = await fetch('/api/admin/settings', {
+    method,
+    headers: payload ? { 'content-type': 'application/json' } : {},
+    body: payload ? JSON.stringify(payload) : undefined
+  });
+  const text = await resp.text();
+  try {
+    return { ok: resp.ok, json: text ? JSON.parse(text) : {} };
+  } catch {
+    return { ok: resp.ok, json: { raw: text } };
+  }
+}
+
+async function getSettingsTest() {
+  if (!settingsGetTestButton) return;
+
+  settingsGetTestButton.disabled = true;
+  renderSettingsTestResult('GET中です...');
+
+  try {
+    const { json } = await requestSettingsTest('GET');
+    renderSettingsTestResult(json);
+  } catch (err) {
+    renderSettingsTestResult({
+      success: false,
+      error: { message: err.message }
+    });
+  } finally {
+    settingsGetTestButton.disabled = false;
+  }
+}
+
+async function putSettingsTest() {
+  if (!settingsPutTestButton) return;
+  const ok = window.confirm('site-settings.jsonのadminTestMemoだけを更新してGitHubへcommitします。実行しますか？');
+  if (!ok) return;
+
+  settingsPutTestButton.disabled = true;
+  renderSettingsTestResult('GET中です...');
+
+  try {
+    const latest = await requestSettingsTest('GET');
+    if (!latest.ok || !latest.json?.settings) {
+      renderSettingsTestResult(latest.json);
+      return;
+    }
+
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const hh = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const adminTestMemo = `Cloudflare Settings API Test ${yyyy}-${mm}-${dd} ${hh}:${min}`;
+
+    renderSettingsTestResult('PUT中です...');
+    const { ok: succeeded, json } = await requestSettingsTest('PUT', {
+      settings: {
+        adminTestMemo
+      }
+    });
+
+    if (succeeded && json.commitUrl) {
+      renderSettingsTestResult({
+        success: true,
+        commitUrl: json.commitUrl,
+        updatedFile: json.updatedFile,
+        adminTestMemo
+      });
+      return;
+    }
+
+    renderSettingsTestResult(json);
+  } catch (err) {
+    renderSettingsTestResult({
+      success: false,
+      error: { message: err.message }
+    });
+  } finally {
+    settingsPutTestButton.disabled = false;
+  }
+}
+
 if (isSummaryPage) {
   loadSummary();
 }
@@ -627,3 +722,5 @@ worksDeleteTestButton?.addEventListener('click', deleteWorksTest);
 modelsPostTestButton?.addEventListener('click', postModelTest);
 modelsEditTestButton?.addEventListener('click', editModelTest);
 modelsDeleteTestButton?.addEventListener('click', deleteModelTest);
+settingsGetTestButton?.addEventListener('click', getSettingsTest);
+settingsPutTestButton?.addEventListener('click', putSettingsTest);
