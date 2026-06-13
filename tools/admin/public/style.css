@@ -444,7 +444,8 @@ h2 {
   opacity: 1;
 }
 
-.image-preview-tool {
+.image-preview-tool,
+.model-register-tool {
   margin-top: 28px;
   padding: 22px;
   max-width: 100%;
@@ -1061,12 +1062,14 @@ h2 {
     margin-bottom: 8px;
   }
 
-  .image-preview-tool {
+  .image-preview-tool,
+  .model-register-tool {
     margin-top: 18px;
     padding: 14px;
   }
 
-  .image-preview-tool .section-heading {
+  .image-preview-tool .section-heading,
+  .model-register-tool .section-heading {
     margin-bottom: 8px;
   }
 
