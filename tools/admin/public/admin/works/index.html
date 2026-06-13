@@ -30,18 +30,6 @@
         <h2 id="image-preview-title">作品画像プレビュー</h2>
       </div>
 
-      <fieldset class="save-mode-field" aria-label="保存モード">
-        <legend>保存モード</legend>
-        <label>
-          <input type="radio" name="workSaveMode" value="pending" checked>
-          <span>pending保存（iPhone Safari向け）</span>
-        </label>
-        <label>
-          <input type="radio" name="workSaveMode" value="webp">
-          <span>WebP直接保存（対応ブラウザ向け）</span>
-        </label>
-      </fieldset>
-
       <div class="preview-form-grid">
         <fieldset class="preview-model-field preview-form-wide">
           <legend>モデル</legend>
@@ -72,6 +60,18 @@
           <input id="previewImageInput" type="file" accept="image/jpeg,image/png,image/heic,image/heif" />
         </label>
       </div>
+
+      <fieldset class="save-mode-field" aria-label="保存モード">
+        <legend>保存モード</legend>
+        <label>
+          <input type="radio" name="workSaveMode" value="pending" checked>
+          <span>pending保存（iPhone Safari向け）</span>
+        </label>
+        <label>
+          <input type="radio" name="workSaveMode" value="webp">
+          <span>WebP直接保存（対応ブラウザ向け）</span>
+        </label>
+      </fieldset>
 
       <p class="preview-note">iPhone Safariではpending保存を使います。WebP変換と作品公開用JSON更新は次フェーズのGitHub Actionsで行います。</p>
       <p class="preview-note">Cloudflare保存はdevブランチへ保存されます。mainには保存しません。HEIC/HEIFは非対応です。</p>
