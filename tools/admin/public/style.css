@@ -544,6 +544,25 @@ h2 {
   font-size: 0.9rem;
 }
 
+.field-help,
+.field-error {
+  display: block;
+  color: #666;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.field-error {
+  color: #8f1d1d;
+  font-weight: 700;
+}
+
+.field-error:empty {
+  display: none;
+}
+
 .generated-id-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

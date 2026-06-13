@@ -255,8 +255,8 @@ function normalizeNewModel(input) {
     err.details = { missing };
     throw err;
   }
-  if (!/^[A-Za-z0-9_][A-Za-z0-9_-]*$/.test(id)) {
-    const err = new Error('モデルIDは英数字、アンダースコア、ハイフンで入力してください。');
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) {
+    const err = new Error('モデルIDは半角英小文字、数字、ハイフンのみで入力してください。先頭/末尾/連続ハイフンとアンダースコアは使えません。');
     err.status = 400;
     err.code = 'invalid_model_id';
     throw err;

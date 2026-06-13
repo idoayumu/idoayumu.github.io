@@ -55,8 +55,11 @@
   const clearNextWork = document.getElementById('clearNextWork');
   const goWorksList = document.getElementById('goWorksList');
   const openGitHubActions = document.getElementById('openGitHubActions');
+  const modelFormIdBase = document.getElementById('modelFormIdBase');
+  const modelFormIdSuffix = document.getElementById('modelFormIdSuffix');
   const modelFormId = document.getElementById('modelFormId');
   const modelFormName = document.getElementById('modelFormName');
+  const modelIdError = document.getElementById('modelIdError');
   const modelFormShortName = document.getElementById('modelFormShortName');
   const modelFormYomi = document.getElementById('modelFormYomi');
   const modelFormAgency = document.getElementById('modelFormAgency');
@@ -98,6 +101,7 @@
   let modelsListRef = [];
   let renderWorksList = null;
   let renderModelsList = null;
+  let modelIdEditedManually = false;
 
   function normalizeText(value) {
     return String(value || '')
@@ -706,6 +710,17 @@
     };
   }
 
+  function generatedModelIdFromParts() {
+    const base = String(modelFormIdBase?.value || '').trim();
+    const suffix = String(modelFormIdSuffix?.value || '').trim();
+    return suffix ? `${base}-${suffix}` : base;
+  }
+
+  function syncGeneratedModelId() {
+    if (!modelFormId || modelIdEditedManually) return;
+    modelFormId.value = generatedModelIdFromParts();
+  }
+
   function modelPayloadToListModel(model) {
     const next = {
       id: model.id,
@@ -730,17 +745,56 @@
 
   function canSaveModel() {
     const model = buildModelPayload();
-    return Boolean(model.id && model.name && !modelsListRef.some((item) => item?.id === model.id));
+    return Boolean(model.id && isValidNewModelId(model.id) && model.name && !modelsListRef.some((item) => item?.id === model.id));
+  }
+
+  function isValidNewModelId(value) {
+    return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(value || ''));
+  }
+
+  function isValidModelIdBase(value) {
+    return /^[a-z0-9]+$/.test(String(value || ''));
+  }
+
+  function isValidModelIdSuffix(value) {
+    return !value || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(value || ''));
+  }
+
+  function modelIdValidationMessage(value) {
+    if (!value) return 'モデルIDを入力してください。';
+    if (/\s/.test(value)) return 'スペースは使えません。';
+    if (/[^a-z0-9-]/.test(value)) return '使える文字は a-z, 0-9, ハイフンのみです。大文字、日本語、アンダースコアは使えません。';
+    if (value.startsWith('-') || value.endsWith('-')) return '先頭と末尾にハイフンは使えません。';
+    if (value.includes('--')) return '連続ハイフンは使えません。';
+    if (!isValidNewModelId(value)) return 'モデルIDの形式が正しくありません。';
+    return '';
   }
 
   function updateModelSaveState() {
     if (!saveModelDev) return;
     const model = buildModelPayload();
+    const base = String(modelFormIdBase?.value || '').trim();
+    const suffix = String(modelFormIdSuffix?.value || '').trim();
     const duplicate = Boolean(model.id && modelsListRef.some((item) => item?.id === model.id));
-    saveModelDev.disabled = !model.id || !model.name || duplicate;
+    const idMessage = modelIdValidationMessage(model.id);
+    const baseMessage = !base
+      ? 'モデルIDベースを入力してください。'
+      : isValidModelIdBase(base)
+        ? ''
+        : 'モデルIDベースは a-z と 0-9 のみです。';
+    const suffixMessage = isValidModelIdSuffix(suffix)
+      ? ''
+      : '補足（所属）は a-z, 0-9, ハイフンのみです。先頭/末尾/連続ハイフンは使えません。';
+    saveModelDev.disabled = Boolean(baseMessage || suffixMessage || idMessage) || !model.name || duplicate;
+    if (modelIdError) {
+      modelIdError.textContent = baseMessage || suffixMessage || idMessage;
+      modelIdError.hidden = !(baseMessage || suffixMessage || idMessage);
+    }
     if (modelFormMessage) {
       if (duplicate) {
         modelFormMessage.textContent = `同じモデルIDが既に存在します: ${model.id}`;
+      } else if (baseMessage || suffixMessage || idMessage) {
+        modelFormMessage.textContent = baseMessage || suffixMessage || idMessage;
       } else if (!model.id || !model.name) {
         modelFormMessage.textContent = 'モデルIDと名前を入力してください。';
       } else {
@@ -780,6 +834,8 @@
   function clearModelRegisterForm({ keepResult = false } = {}) {
     [
       modelFormId,
+      modelFormIdBase,
+      modelFormIdSuffix,
       modelFormName,
       modelFormShortName,
       modelFormYomi,
@@ -795,6 +851,7 @@
     });
     if (!keepResult && modelSaveResult) modelSaveResult.hidden = true;
     if (!keepResult) hideModelPostSaveActions();
+    modelIdEditedManually = false;
     updateModelSaveState();
   }
 
@@ -1359,6 +1416,8 @@
     if (!saveModelDev) return;
     modelsListRef = [...models];
     [
+      modelFormIdBase,
+      modelFormIdSuffix,
       modelFormId,
       modelFormName,
       modelFormShortName,
@@ -1372,6 +1431,12 @@
       modelFormOtherLabel
     ].forEach((input) => {
       input?.addEventListener('input', () => {
+        if (input === modelFormIdBase || input === modelFormIdSuffix) {
+          syncGeneratedModelId();
+        }
+        if (input === modelFormId) {
+          modelIdEditedManually = true;
+        }
         if (modelSaveResult) modelSaveResult.hidden = true;
         hideModelPostSaveActions();
         updateModelSaveState();
@@ -1381,7 +1446,7 @@
     continueModelRegister?.addEventListener('click', () => {
       clearModelRegisterForm();
       if (modelFormMessage) modelFormMessage.textContent = '続けて登録できます。';
-      modelFormId?.focus({ preventScroll: true });
+      modelFormIdBase?.focus({ preventScroll: true });
       document.querySelector('.model-register-tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     clearModelForm?.addEventListener('click', () => {
