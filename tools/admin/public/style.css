@@ -5,12 +5,14 @@
 html,
 body {
   max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
   background: #f8f7fb;
   color: #111;
+  overflow-wrap: anywhere;
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -27,8 +29,17 @@ a {
 main {
   width: min(calc(100% - 32px), 1040px);
   max-width: 100%;
+  min-width: 0;
   margin: 0 auto;
   padding: 40px 0 56px;
+}
+
+section,
+fieldset,
+label,
+div,
+pre {
+  max-width: 100%;
 }
 
 .admin-nav {
@@ -67,6 +78,8 @@ main {
 
 .page-header {
   padding: 18px 0 26px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .eyebrow,
@@ -82,7 +95,9 @@ main {
 h1,
 h2,
 p {
+  max-width: 100%;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 h1 {
@@ -96,8 +111,10 @@ h1 {
 .page-header > p:last-child,
 .phase-note p,
 .note {
+  max-width: 100%;
   color: #666;
   line-height: 1.8;
+  overflow-wrap: anywhere;
 }
 
 .auth-status {
@@ -462,6 +479,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
   min-height: 44px;
   color: #333;
   font-weight: 700;
@@ -470,8 +488,14 @@ h2 {
 
 .save-mode-field input {
   width: 18px;
+  flex: 0 0 auto;
   height: 18px;
   margin: 0;
+}
+
+.save-mode-field span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .preview-form-grid label,
@@ -514,7 +538,9 @@ h2 {
 }
 
 .preview-form-grid input[type="file"] {
+  display: block;
   padding: 9px;
+  font-size: 0.9rem;
 }
 
 .generated-id-panel {
@@ -538,6 +564,7 @@ h2 {
 
 .generated-id-panel strong {
   min-width: 0;
+  max-width: 100%;
   color: #111;
   font-size: 1.02rem;
   line-height: 1.5;
@@ -550,6 +577,8 @@ h2 {
 }
 
 .generated-id-panel button {
+  max-width: 100%;
+  min-width: 0;
   min-height: 44px;
   padding: 9px 12px;
   border: 1px solid #111;
@@ -567,6 +596,7 @@ h2 {
 
 .generated-id-panel small {
   grid-column: 1 / -1;
+  min-width: 0;
   color: #666;
   font-size: 0.82rem;
   line-height: 1.6;
@@ -591,11 +621,13 @@ h2 {
   -webkit-overflow-scrolling: touch;
 }
 
-.preview-model-chip {
-  display: inline-flex;
+.preview-form-grid .preview-model-chip {
+  display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 10px;
   flex: 1 1 148px;
+  width: auto;
   max-width: 100%;
   min-width: 0;
   min-height: 52px;
@@ -608,8 +640,10 @@ h2 {
 }
 
 .preview-model-chip span {
+  flex: 1 1 auto;
   min-width: 0;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .preview-model-chip input {
