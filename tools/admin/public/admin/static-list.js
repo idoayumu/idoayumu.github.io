@@ -70,6 +70,7 @@
   let editingWorkId = '';
   let pendingSaveCompleted = false;
   let pendingSaveInFlight = false;
+  let productionEditedByUser = false;
   let previewWorks = [];
   let previewModels = [];
   let worksListRef = [];
@@ -233,6 +234,22 @@
   function selectedModelNames() {
     const selected = selectedModelIds();
     return selected.map((id) => previewModels.find((model) => model.id === id)?.name || id).filter(Boolean);
+  }
+
+  function productionCandidateForModel(model) {
+    return String(model?.agency || '').trim() || 'リク撮';
+  }
+
+  function applyProductionAutofill() {
+    if (!previewProduction || editingWorkId || productionEditedByUser) return;
+    if (String(previewProduction.value || '').trim()) return;
+
+    const modelIds = selectedModelIds();
+    if (modelIds.length !== 1) return;
+
+    const model = previewModels.find((item) => item.id === modelIds[0]);
+    previewProduction.value = productionCandidateForModel(model);
+    updateSavePreview();
   }
 
   function todayRegistrationDate() {
@@ -591,6 +608,7 @@
     editingWorkId = '';
     generatedWorkId = '';
     pendingSaveCompleted = false;
+    productionEditedByUser = Boolean(keepProduction);
     if (previewTitle) previewTitle.value = '';
     if (previewDate) previewDate.value = keepDate;
     if (previewLocation) previewLocation.value = keepLocation;
@@ -838,6 +856,7 @@
     previewDate.value = work.date || '';
     previewLocation.value = work.location || '';
     previewProduction.value = work.production || '';
+    productionEditedByUser = Boolean(work.production);
     previewCaption.value = work.caption || '';
     setSelectedModelIds(getWorkModelIds(work));
     savePreviewSummary.hidden = false;
@@ -938,7 +957,13 @@
       input?.addEventListener('input', updateSavePreview);
       input?.addEventListener('change', updateSavePreview);
     });
-    previewModelIds?.addEventListener('change', updateGeneratedWorkId);
+    previewProduction?.addEventListener('input', () => {
+      productionEditedByUser = true;
+    });
+    previewModelIds?.addEventListener('change', () => {
+      applyProductionAutofill();
+      updateGeneratedWorkId();
+    });
     copyGeneratedWorkId?.addEventListener('click', copyWorkId);
     saveModeInputs.forEach((input) => {
       input.addEventListener('change', () => {
