@@ -796,6 +796,30 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.static-list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.static-list-actions button {
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.static-list-actions button.is-danger {
+  border-color: #8f1d1d;
+  background: #fff6f6;
+  color: #8f1d1d;
+}
+
 @media (min-width: 720px) {
   main {
     padding-top: 56px;
