@@ -33,7 +33,7 @@
     "production": "大阪美マージュ",
     "caption": "雪の木に身体を委ね",
     "modelIds": [
-      "momo_osakabimage"
+      "momo-osakabimage"
     ],
     "image": "/images/works/large/260226momo-osakabimage_0001.webp",
     "thumbnail": "/images/works/thumbs/260226momo-osakabimage_0001.webp"
@@ -85,7 +85,7 @@
     "production": "大阪美マージュ",
     "caption": "指先が夏に触れた瞬間。",
     "modelIds": [
-      "momo_osakabimage"
+      "momo-osakabimage"
     ],
     "image": "/images/works/large/260601momo-osakabimage_0001.webp",
     "thumbnail": "/images/works/thumbs/260601momo-osakabimage_0001.webp"
@@ -99,7 +99,7 @@
     "caption": "摂津峡でペア撮",
     "modelIds": [
       "minaseaoi",
-      "marin_manacolle"
+      "marin-manacolle"
     ],
     "image": "/images/works/large/260601marin_minaseaoi_0001.webp",
     "thumbnail": "/images/works/thumbs/260601marin_minaseaoi_0001.webp"
@@ -112,7 +112,7 @@
     "production": "大阪美マージュ",
     "caption": "海は広いな大きいな",
     "modelIds": [
-      "momo_osakabimage"
+      "momo-osakabimage"
     ],
     "image": "/images/works/large/260602momo-osakabimage_0001.webp",
     "thumbnail": "/images/works/thumbs/260602momo-osakabimage_0001.webp"
@@ -126,7 +126,7 @@
     "caption": "仲良しコンビ",
     "modelIds": [
       "minaseaoi",
-      "marin_manacolle"
+      "marin-manacolle"
     ],
     "image": "/images/works/large/260602marin_minaseaoi_0001.webp",
     "thumbnail": "/images/works/thumbs/260602marin_minaseaoi_0001.webp"
@@ -171,17 +171,17 @@
     "thumbnail": "/images/works/thumbs/260610misaki_0001.webp"
   },
   {
-    "id": "260610marin_manacolle_0001",
+    "id": "260610marin-manacolle_0001",
     "title": "薄むらさき",
     "date": "2025-05-18",
     "location": "滋賀",
     "production": "マナコレ撮影会",
     "caption": "薄紫色",
     "modelIds": [
-      "marin_manacolle"
+      "marin-manacolle"
     ],
-    "image": "/images/works/large/260610marin_manacolle_0001.webp",
-    "thumbnail": "/images/works/thumbs/260610marin_manacolle_0001.webp"
+    "image": "/images/works/large/260610marin-manacolle_0001.webp",
+    "thumbnail": "/images/works/thumbs/260610marin-manacolle_0001.webp"
   },
   {
     "id": "260610caho_0001",
@@ -210,30 +210,30 @@
     "thumbnail": "/images/works/thumbs/260610momoseyuuri_0001.webp"
   },
   {
-    "id": "260610momo_osakabimage_0001",
+    "id": "260610momo-osakabimage_0001",
     "title": "光の河",
     "date": "2026-03-08",
     "location": "大阪",
     "production": "大阪美マージュ",
     "caption": "光る河",
     "modelIds": [
-      "momo_osakabimage"
+      "momo-osakabimage"
     ],
-    "image": "/images/works/large/260610momo_osakabimage_0001.webp",
-    "thumbnail": "/images/works/thumbs/260610momo_osakabimage_0001.webp"
+    "image": "/images/works/large/260610momo-osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260610momo-osakabimage_0001.webp"
   },
   {
-    "id": "260610marin_manacolle_0002",
+    "id": "260610marin-manacolle_0002",
     "title": "最高の笑顔ください",
     "date": "2025-09-13",
     "location": "滋賀",
     "production": "マナコレ撮影会",
     "caption": "最後に撮ってる、最高の笑顔シリーズ",
     "modelIds": [
-      "marin_manacolle"
+      "marin-manacolle"
     ],
-    "image": "/images/works/large/260610marin_manacolle_0002.webp",
-    "thumbnail": "/images/works/thumbs/260610marin_manacolle_0002.webp"
+    "image": "/images/works/large/260610marin-manacolle_0002.webp",
+    "thumbnail": "/images/works/thumbs/260610marin-manacolle_0002.webp"
   },
   {
     "id": "260611misaki_0001",
@@ -288,29 +288,29 @@
     "thumbnail": "/images/works/thumbs/260613minaseaoi_0002.webp"
   },
   {
-    "id": "260613momo_osakabimage_0001",
+    "id": "260613momo-osakabimage_0001",
     "title": "瞳",
     "date": "2025-10-07",
     "location": "大阪",
     "production": "大阪美マージュ",
     "caption": "力のある瞳",
     "modelIds": [
-      "momo_osakabimage"
+      "momo-osakabimage"
     ],
-    "image": "/images/works/large/260613momo_osakabimage_0001.webp",
-    "thumbnail": "/images/works/thumbs/260613momo_osakabimage_0001.webp"
+    "image": "/images/works/large/260613momo-osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260613momo-osakabimage_0001.webp"
   },
   {
-    "id": "260613marin_manacolle_0001",
+    "id": "260613marin-manacolle_0001",
     "title": "雨模様",
     "date": "2025-10-26",
     "location": "奈良",
     "production": "マナコレ撮影会",
     "caption": "空を見上げて",
     "modelIds": [
-      "marin_manacolle"
+      "marin-manacolle"
     ],
-    "image": "/images/works/large/260613marin_manacolle_0001.webp",
-    "thumbnail": "/images/works/thumbs/260613marin_manacolle_0001.webp"
+    "image": "/images/works/large/260613marin-manacolle_0001.webp",
+    "thumbnail": "/images/works/thumbs/260613marin-manacolle_0001.webp"
   }
 ]
