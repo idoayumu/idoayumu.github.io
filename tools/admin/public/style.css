@@ -544,6 +544,85 @@ h2 {
   font-size: 0.9rem;
 }
 
+.advanced-option {
+  min-width: 0;
+  max-width: 100%;
+  padding: 12px;
+  border: 1px solid #e4ddec;
+  background: #f8f7fb;
+}
+
+.advanced-option summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: #333;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.advanced-option label {
+  margin-top: 10px;
+}
+
+.model-profile-preview {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #e4ddec;
+  background: #f8f7fb;
+}
+
+.model-profile-preview[hidden] {
+  display: none;
+}
+
+.model-profile-preview-image {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 180px;
+  max-height: 360px;
+  background: #ece9ef;
+  overflow: hidden;
+}
+
+.model-profile-preview-image img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+}
+
+.model-profile-preview-meta {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.model-profile-preview-meta div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.model-profile-preview-meta dt {
+  color: #555;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.model-profile-preview-meta dd {
+  min-width: 0;
+  margin: 0;
+  color: #222;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
 .field-help,
 .field-error {
   display: block;

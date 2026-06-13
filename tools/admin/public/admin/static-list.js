@@ -63,6 +63,12 @@
   const modelFormShortName = document.getElementById('modelFormShortName');
   const modelFormYomi = document.getElementById('modelFormYomi');
   const modelFormAgency = document.getElementById('modelFormAgency');
+  const modelProfileImageInput = document.getElementById('modelProfileImageInput');
+  const modelProfilePreview = document.getElementById('modelProfilePreview');
+  const modelProfilePreviewImage = document.getElementById('modelProfilePreviewImage');
+  const modelProfileFileName = document.getElementById('modelProfileFileName');
+  const modelProfileMimeType = document.getElementById('modelProfileMimeType');
+  const modelProfileFileSize = document.getElementById('modelProfileFileSize');
   const modelFormProfileImage = document.getElementById('modelFormProfileImage');
   const modelFormX = document.getElementById('modelFormX');
   const modelFormInstagram = document.getElementById('modelFormInstagram');
@@ -79,10 +85,12 @@
   const continueModelRegister = document.getElementById('continueModelRegister');
   const clearModelForm = document.getElementById('clearModelForm');
   const goModelsList = document.getElementById('goModelsList');
+  const openModelGitHubActions = document.getElementById('openModelGitHubActions');
   const largeMaxEdge = 2000;
   const thumbMaxEdge = 700;
   const saveBranch = 'dev';
   const githubActionsUrl = 'https://github.com/idoayumu/idoayumu.github.io/actions/workflows/process-pending-work.yml';
+  const githubActionsIndexUrl = 'https://github.com/idoayumu/idoayumu.github.io/actions';
   let originalPreviewUrl = '';
   let largePreviewUrl = '';
   let thumbPreviewUrl = '';
@@ -102,6 +110,8 @@
   let renderWorksList = null;
   let renderModelsList = null;
   let modelIdEditedManually = false;
+  let selectedModelProfileImage = null;
+  let modelProfilePreviewUrl = '';
 
   function normalizeText(value) {
     return String(value || '')
@@ -745,7 +755,14 @@
 
   function canSaveModel() {
     const model = buildModelPayload();
-    return Boolean(model.id && isValidNewModelId(model.id) && model.name && !modelsListRef.some((item) => item?.id === model.id));
+    return Boolean(
+      model.id
+      && isValidNewModelId(model.id)
+      && model.name
+      && selectedModelProfileImage
+      && isPendingSourceImage(selectedModelProfileImage)
+      && !modelsListRef.some((item) => item?.id === model.id)
+    );
   }
 
   function isValidNewModelId(value) {
@@ -785,7 +802,14 @@
     const suffixMessage = isValidModelIdSuffix(suffix)
       ? ''
       : '補足（所属）は a-z, 0-9, ハイフンのみです。先頭/末尾/連続ハイフンは使えません。';
-    saveModelDev.disabled = Boolean(baseMessage || suffixMessage || idMessage) || !model.name || duplicate;
+    const imageMessage = selectedModelProfileImage
+      ? isHeicFile(selectedModelProfileImage)
+        ? 'HEIC / HEIFは非対応です。JPEGまたはPNGへ変換してから選択してください。'
+        : isPendingSourceImage(selectedModelProfileImage)
+          ? ''
+          : 'プロフィール画像はJPEGまたはPNGを選択してください。'
+      : 'プロフィール画像を選択してください。';
+    saveModelDev.disabled = Boolean(baseMessage || suffixMessage || idMessage || imageMessage) || !model.name || duplicate;
     if (modelIdError) {
       modelIdError.textContent = baseMessage || suffixMessage || idMessage;
       modelIdError.hidden = !(baseMessage || suffixMessage || idMessage);
@@ -797,8 +821,10 @@
         modelFormMessage.textContent = baseMessage || suffixMessage || idMessage;
       } else if (!model.id || !model.name) {
         modelFormMessage.textContent = 'モデルIDと名前を入力してください。';
+      } else if (imageMessage) {
+        modelFormMessage.textContent = imageMessage;
       } else {
-        modelFormMessage.textContent = 'devブランチへ保存できます。';
+        modelFormMessage.textContent = 'プロフィール画像付きでpending保存できます。';
       }
     }
   }
@@ -808,6 +834,28 @@
     modelSaveResult.hidden = false;
     modelSaveResult.classList.toggle('is-error', !ok);
     modelSaveResult.textContent = JSON.stringify(payload, null, 2);
+  }
+
+  function clearModelProfilePreview() {
+    if (modelProfilePreviewUrl) URL.revokeObjectURL(modelProfilePreviewUrl);
+    modelProfilePreviewUrl = '';
+    if (modelProfilePreview) modelProfilePreview.hidden = true;
+    if (modelProfilePreviewImage) modelProfilePreviewImage.removeAttribute('src');
+    if (modelProfileFileName) modelProfileFileName.textContent = '-';
+    if (modelProfileMimeType) modelProfileMimeType.textContent = '-';
+    if (modelProfileFileSize) modelProfileFileSize.textContent = '-';
+  }
+
+  function renderModelProfilePreview(file) {
+    clearModelProfilePreview();
+    if (!file || !modelProfilePreview || !modelProfilePreviewImage) return;
+
+    modelProfilePreviewUrl = URL.createObjectURL(file);
+    modelProfilePreviewImage.src = modelProfilePreviewUrl;
+    if (modelProfileFileName) modelProfileFileName.textContent = file.name || '-';
+    if (modelProfileMimeType) modelProfileMimeType.textContent = file.type || '-';
+    if (modelProfileFileSize) modelProfileFileSize.textContent = formatBytes(file.size);
+    modelProfilePreview.hidden = false;
   }
 
   function hideModelPostSaveActions() {
@@ -824,7 +872,7 @@
         : '-';
     }
     if (modelPostSaveFiles) {
-      const files = Array.isArray(payload.updatedFiles) ? payload.updatedFiles : [];
+      const files = Array.isArray(payload.pendingFiles) ? payload.pendingFiles : [];
       modelPostSaveFiles.innerHTML = files.length
         ? `<ul>${files.map((filePath) => `<li>${escapeHtml(filePath)}</li>`).join('')}</ul>`
         : '-';
@@ -840,6 +888,7 @@
       modelFormShortName,
       modelFormYomi,
       modelFormAgency,
+      modelProfileImageInput,
       modelFormProfileImage,
       modelFormX,
       modelFormInstagram,
@@ -852,6 +901,8 @@
     if (!keepResult && modelSaveResult) modelSaveResult.hidden = true;
     if (!keepResult) hideModelPostSaveActions();
     modelIdEditedManually = false;
+    selectedModelProfileImage = null;
+    clearModelProfilePreview();
     updateModelSaveState();
   }
 
@@ -859,8 +910,12 @@
     const code = error?.code || '';
     const messages = {
       duplicate_model_id: '同じモデルIDが既に存在します。',
+      pending_model_exists: '同じモデルIDのpendingデータが既にあります。直前の保存が成功している可能性があります。GitHub Actionsを確認してください。',
       missing_required_fields: 'モデルIDと名前を入力してください。',
-      invalid_model_id: 'モデルIDは英数字、アンダースコア、ハイフンで入力してください。',
+      invalid_model_id: 'モデルIDは a-z, 0-9, ハイフンで入力してください。',
+      unsupported_image_type: 'プロフィール画像はJPEGまたはPNGを選択してください。',
+      missing_original_image: 'プロフィール画像を選択してください。',
+      original_image_too_large: 'プロフィール画像のサイズが30MBを超えています。',
       branch_conflict: 'GitHub上のdevブランチが更新されています。画面を再読み込みしてから再実行してください。',
       invalid_response: 'APIレスポンスをJSONとして確認できませんでした。詳細を確認してください。'
     };
@@ -874,19 +929,22 @@
     }
 
     const model = buildModelPayload();
+    const pendingModel = { ...model };
+    delete pendingModel.profileImage;
+    const form = new FormData();
+    form.append('model', JSON.stringify(pendingModel));
+    form.append('original', selectedModelProfileImage, selectedModelProfileImage.name || `original.${pendingExtension(selectedModelProfileImage)}`);
+
     saveModelDev.disabled = true;
     saveModelDev.textContent = '保存中...';
     if (modelSaveResult) modelSaveResult.hidden = true;
     hideModelPostSaveActions();
-    if (modelFormMessage) modelFormMessage.textContent = 'devブランチへモデルを保存中です...';
+    if (modelFormMessage) modelFormMessage.textContent = 'devブランチのpendingへモデルを保存中です...';
 
     try {
-      const resp = await fetch('/api/admin/models', {
+      const resp = await fetch('/api/admin/models-upload-pending', {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify({ model })
+        body: form
       });
       const json = await readApiJsonResponse(resp);
       renderModelSaveResult(json, resp.ok && json.success);
@@ -895,12 +953,10 @@
         return;
       }
 
-      const listModel = modelPayloadToListModel(model);
-      modelsListRef = [...modelsListRef, listModel];
-      previewModels = [...previewModels, listModel];
-      renderModelsList?.();
       renderModelPostSaveActions(json);
-      if (modelFormMessage) modelFormMessage.textContent = `devへモデルを保存しました。modelId: ${json.modelId || model.id}`;
+      if (modelFormMessage) {
+        modelFormMessage.textContent = `登録予約完了。pending保存済みです。branch: ${json.branch || saveBranch} / modelId: ${json.modelId || pendingModel.id}`;
+      }
       modelPostSaveActions?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       console.error(err);
@@ -914,7 +970,7 @@
       renderModelSaveResult(payload, false);
       if (modelFormMessage) modelFormMessage.textContent = payload.error.message;
     } finally {
-      saveModelDev.textContent = 'devへモデル登録';
+      saveModelDev.textContent = 'pendingへモデル保存';
       updateModelSaveState();
     }
   }
@@ -1442,6 +1498,13 @@
         updateModelSaveState();
       });
     });
+    modelProfileImageInput?.addEventListener('change', () => {
+      selectedModelProfileImage = modelProfileImageInput.files?.[0] || null;
+      renderModelProfilePreview(selectedModelProfileImage);
+      if (modelSaveResult) modelSaveResult.hidden = true;
+      hideModelPostSaveActions();
+      updateModelSaveState();
+    });
     saveModelDev.addEventListener('click', saveModelToDev);
     continueModelRegister?.addEventListener('click', () => {
       clearModelRegisterForm();
@@ -1454,6 +1517,9 @@
       if (modelFormMessage) modelFormMessage.textContent = 'フォームを空にしました。';
     });
     goModelsList?.addEventListener('click', scrollToModelsList);
+    openModelGitHubActions?.addEventListener('click', () => {
+      window.open(githubActionsIndexUrl, '_blank', 'noopener,noreferrer');
+    });
     updateModelSaveState();
   }
 

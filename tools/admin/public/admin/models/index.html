@@ -21,7 +21,7 @@
     <header class="page-header">
       <p class="eyebrow">Cloudflare Static Mode</p>
       <h1>Models一覧</h1>
-      <p>Cloudflare公開版では、モデル情報をdevブランチへ登録できます。モデル画像アップロードは未対応です。</p>
+      <p>Cloudflare公開版では、プロフィール画像付きのモデル登録をdevブランチのpendingへ保存できます。</p>
     </header>
 
     <section class="model-register-tool" aria-labelledby="model-register-title">
@@ -29,7 +29,7 @@
         <p>Dev Save</p>
         <h2 id="model-register-title">モデル新規登録</h2>
       </div>
-      <p class="preview-note">保存先はdevブランチです。モデル画像アップロードは今回は扱いません。</p>
+      <p class="preview-note">保存先はdevブランチです。横画像を使用してください。GitHub ActionsでWebP変換後にmodels.jsonへ反映されます。</p>
       <div class="preview-form-grid">
         <label>モデルIDベース
           <input id="modelFormIdBase" type="text" placeholder="momo" autocomplete="off" autocapitalize="none" spellcheck="false" />
@@ -53,14 +53,42 @@
           <input id="modelFormShortName" type="text" placeholder="一覧表示名が必要な場合" autocomplete="off" />
         </label>
         <label>yomi
-          <input id="modelFormYomi" type="text" placeholder="ミナセアオイ" autocomplete="off" />
+          <input id="modelFormYomi" type="text" placeholder="カタカナで入力してください（例：ミナセアオイ）" autocomplete="off" />
+          <small class="field-help">一覧検索・並び替え用。原則カタカナ表記。</small>
         </label>
         <label>agency
           <input id="modelFormAgency" type="text" placeholder="撮影会・所属など" autocomplete="off" />
         </label>
-        <label>profileImage
-          <input id="modelFormProfileImage" type="text" placeholder="existing_profile.webp" autocomplete="off" />
+        <label class="preview-form-wide">プロフィール画像
+          <input id="modelProfileImageInput" type="file" accept="image/jpeg,image/png" />
+          <small class="field-help">JPEG / PNGのみ対応。HEIC / HEIFは非対応です。横画像を使用してください。</small>
         </label>
+        <section class="model-profile-preview preview-form-wide" id="modelProfilePreview" hidden aria-label="選択したプロフィール画像の確認">
+          <div class="model-profile-preview-image">
+            <img id="modelProfilePreviewImage" alt="選択したプロフィール画像プレビュー" />
+          </div>
+          <dl class="model-profile-preview-meta">
+            <div>
+              <dt>ファイル名</dt>
+              <dd id="modelProfileFileName">-</dd>
+            </div>
+            <div>
+              <dt>MIME</dt>
+              <dd id="modelProfileMimeType">-</dd>
+            </div>
+            <div>
+              <dt>サイズ</dt>
+              <dd id="modelProfileFileSize">-</dd>
+            </div>
+          </dl>
+        </section>
+        <details class="advanced-option preview-form-wide">
+          <summary>既存画像パス指定</summary>
+          <label>profileImage
+            <input id="modelFormProfileImage" type="text" placeholder="existing_profile.webp" autocomplete="off" />
+          </label>
+          <small class="field-help">通常は使いません。画像付きpending保存では、Actions側で &lt;modelId&gt;_profile.webp を設定します。</small>
+        </details>
         <label>X
           <input id="modelFormX" type="url" placeholder="https://x.com/..." autocomplete="off" />
         </label>
@@ -78,16 +106,16 @@
         </label>
       </div>
       <div class="save-action-row">
-        <button id="saveModelDev" type="button" disabled>devへモデル登録</button>
+        <button id="saveModelDev" type="button" disabled>pendingへモデル保存</button>
       </div>
       <p class="note" id="modelFormMessage">モデルIDと名前を入力してください。</p>
       <pre class="api-result-box" id="modelSaveResult" hidden></pre>
       <section class="post-save-actions" id="modelPostSaveActions" hidden aria-labelledby="model-post-save-title">
         <div class="section-heading">
           <p>Model Saved</p>
-          <h2 id="model-post-save-title">モデル登録完了</h2>
+          <h2 id="model-post-save-title">登録予約完了</h2>
         </div>
-        <p class="post-save-status">dev保存済み</p>
+        <p class="post-save-status">pending保存済み</p>
         <dl>
           <div>
             <dt>保存先branch</dt>
@@ -98,7 +126,11 @@
             <dd id="modelPostSaveCommitUrl">-</dd>
           </div>
           <div>
-            <dt>updatedFiles</dt>
+            <dt>変換</dt>
+            <dd>GitHub ActionsでWebP変換後にmodels.jsonへ反映されます</dd>
+          </div>
+          <div>
+            <dt>pendingFiles</dt>
             <dd id="modelPostSaveFiles">-</dd>
           </div>
         </dl>
@@ -106,6 +138,7 @@
           <button id="continueModelRegister" type="button">続けて登録</button>
           <button id="clearModelForm" type="button">フォームを空にする</button>
           <button id="goModelsList" type="button">モデル一覧へ移動</button>
+          <button id="openModelGitHubActions" type="button">GitHub Actionsを確認</button>
         </div>
       </section>
     </section>
