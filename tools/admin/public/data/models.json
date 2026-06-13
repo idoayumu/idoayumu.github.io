@@ -38,14 +38,14 @@
     "profileImagePosition": "center"
   },
   {
-    "id": "momo_osakabimage",
+    "id": "momo-osakabimage",
     "name": "もも",
     "nameKana": "モモ",
     "nameEn": "Momo",
     "aliases": [],
     "agency": "大阪美マージュ",
     "bio": "",
-    "thumbnail": "momo_osakabimage_thumb.jpg",
+    "thumbnail": "momo-osakabimage_thumb.jpg",
     "links": {
       "instagram": "https://www.instagram.com/m_omodesu/",
       "x": "https://twitter.com/m_mdesu_",
@@ -58,7 +58,7 @@
     "profileImagePosition": "right center"
   },
   {
-    "id": "marin_manacolle",
+    "id": "marin-manacolle",
     "name": "Marin",
     "nameKana": "マリン",
     "nameEn": "",
@@ -67,7 +67,7 @@
     ],
     "agency": "マナコレ撮影会",
     "bio": "",
-    "thumbnail": "marin_manacolle_profile.webp",
+    "thumbnail": "marin-manacolle_profile.webp",
     "links": {
       "instagram": "https://www.instagram.com/niram1030/",
       "x": "https://x.com/niram1030",
