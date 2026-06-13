@@ -100,6 +100,38 @@
     return resp.json();
   }
 
+  async function fetchWorksForAdmin() {
+    if (page !== 'works') {
+      const works = await fetchJson('/data/works.json');
+      return {
+        works: Array.isArray(works) ? works : [],
+        source: 'static',
+        branch: ''
+      };
+    }
+
+    try {
+      const payload = await fetchJson('/api/admin/works-dev');
+      if (payload?.success && Array.isArray(payload.works)) {
+        return {
+          works: payload.works,
+          source: payload.source || 'github',
+          branch: payload.branch || 'dev'
+        };
+      }
+      throw new Error(payload?.error?.message || 'dev最新JSONを読み込めませんでした。');
+    } catch (err) {
+      console.warn('Falling back to static works JSON', err);
+      const works = await fetchJson('/data/works.json');
+      return {
+        works: Array.isArray(works) ? works : [],
+        source: 'static',
+        branch: '',
+        error: err
+      };
+    }
+  }
+
   async function readApiJsonResponse(resp) {
     const status = resp.status;
     const contentType = resp.headers.get('content-type') || '';
@@ -1005,7 +1037,7 @@
     ].filter(([, url]) => url);
   }
 
-  function renderWorks(works, models) {
+  function renderWorks(works, models, meta = {}) {
     worksListRef = [...works];
     const modelById = new Map(models.map((model) => [model.id, model]));
 
@@ -1066,7 +1098,11 @@
     });
     search.addEventListener('input', render);
     render();
-    message.textContent = `${worksListRef.length}件の作品を静的JSONから表示しています。編集保存はdevブランチへ反映されます。`;
+    if (meta.source === 'github') {
+      message.textContent = `${worksListRef.length}件の作品をdev最新JSONから表示しています。source: github / branch: ${meta.branch || 'dev'}`;
+    } else {
+      message.textContent = `${worksListRef.length}件の作品を静的JSONから表示しています。source: static / dev最新JSONを読めない場合のフォールバックです。`;
+    }
   }
 
   function renderModels(models, works) {
@@ -1119,14 +1155,15 @@
 
   async function init() {
     try {
-      const [works, models] = await Promise.all([
-        fetchJson('/data/works.json'),
+      const [worksResult, models] = await Promise.all([
+        fetchWorksForAdmin(),
         fetchJson('/data/models.json')
       ]);
+      const works = worksResult.works;
 
-      if (page === 'works') renderWorks(Array.isArray(works) ? works : [], Array.isArray(models) ? models : []);
-      if (page === 'models') renderModels(Array.isArray(models) ? models : [], Array.isArray(works) ? works : []);
-      if (page === 'works') initImagePreviewTool(Array.isArray(models) ? models : [], Array.isArray(works) ? works : []);
+      if (page === 'works') renderWorks(works, Array.isArray(models) ? models : [], worksResult);
+      if (page === 'models') renderModels(Array.isArray(models) ? models : [], works);
+      if (page === 'works') initImagePreviewTool(Array.isArray(models) ? models : [], works);
     } catch (err) {
       console.error(err);
       message.textContent = '静的JSONを読み込めませんでした。Cloudflareの再デプロイで /data/*.json が公開されているか確認してください。';
