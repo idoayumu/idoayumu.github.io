@@ -459,6 +459,17 @@ h2 {
   min-width: 0;
 }
 
+.edit-mode-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #d7d3e8;
+  background: #f7f5fb;
+  color: #3b315f;
+  font-weight: 700;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
 .save-mode-field {
   display: grid;
   gap: 10px;
@@ -896,6 +907,12 @@ h2 {
 .save-action-row button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+.save-action-row .secondary-action {
+  border-color: #7a708e;
+  background: #fff;
+  color: #332b45;
 }
 
 .api-result-box {

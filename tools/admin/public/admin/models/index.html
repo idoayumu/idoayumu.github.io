@@ -30,6 +30,7 @@
         <h2 id="model-register-title">モデル新規登録</h2>
       </div>
       <p class="preview-note">保存先はdevブランチです。横画像を使用してください。GitHub ActionsでWebP変換後にmodels.jsonへ反映されます。</p>
+      <p class="edit-mode-note" id="modelEditNotice" hidden></p>
       <div class="preview-form-grid">
         <label>モデルIDベース
           <input id="modelFormIdBase" type="text" placeholder="momo" autocomplete="off" autocapitalize="none" spellcheck="false" />
@@ -59,7 +60,7 @@
         <label>agency
           <input id="modelFormAgency" type="text" placeholder="撮影会・所属など" autocomplete="off" />
         </label>
-        <label class="preview-form-wide">プロフィール画像
+        <label class="preview-form-wide" id="modelProfileImageField">プロフィール画像
           <input id="modelProfileImageInput" type="file" accept="image/jpeg,image/png" />
           <small class="field-help">JPEG / PNGのみ対応。HEIC / HEIFは非対応です。横画像を使用してください。</small>
         </label>
@@ -82,7 +83,7 @@
             </div>
           </dl>
         </section>
-        <details class="advanced-option preview-form-wide">
+        <details class="advanced-option preview-form-wide" id="modelProfileAdvancedOption">
           <summary>既存画像パス指定</summary>
           <label>profileImage
             <input id="modelFormProfileImage" type="text" placeholder="existing_profile.webp" autocomplete="off" />
@@ -107,6 +108,7 @@
       </div>
       <div class="save-action-row">
         <button id="saveModelDev" type="button" disabled>pendingへモデル保存</button>
+        <button id="cancelModelEdit" class="secondary-action" type="button" hidden>編集をキャンセル</button>
       </div>
       <p class="note" id="modelFormMessage">モデルIDと名前を入力してください。</p>
       <pre class="api-result-box" id="modelSaveResult" hidden></pre>

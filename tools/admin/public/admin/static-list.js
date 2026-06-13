@@ -75,7 +75,11 @@
   const modelFormThreads = document.getElementById('modelFormThreads');
   const modelFormOtherUrl = document.getElementById('modelFormOtherUrl');
   const modelFormOtherLabel = document.getElementById('modelFormOtherLabel');
+  const modelEditNotice = document.getElementById('modelEditNotice');
+  const modelProfileImageField = document.getElementById('modelProfileImageField');
+  const modelProfileAdvancedOption = document.getElementById('modelProfileAdvancedOption');
   const saveModelDev = document.getElementById('saveModelDev');
+  const cancelModelEdit = document.getElementById('cancelModelEdit');
   const modelFormMessage = document.getElementById('modelFormMessage');
   const modelSaveResult = document.getElementById('modelSaveResult');
   const modelPostSaveActions = document.getElementById('modelPostSaveActions');
@@ -111,6 +115,7 @@
   let modelIdEditedManually = false;
   let selectedModelProfileImage = null;
   let modelProfilePreviewUrl = '';
+  let editingModelId = '';
 
   function normalizeText(value) {
     return String(value || '')
@@ -748,6 +753,53 @@
     };
   }
 
+  function buildModelUpdatesPayload() {
+    return {
+      name: String(modelFormName?.value || '').trim(),
+      shortName: String(modelFormShortName?.value || '').trim(),
+      yomi: String(modelFormYomi?.value || '').trim(),
+      agency: String(modelFormAgency?.value || '').trim(),
+      x: normalizeModelSocialUrl(modelFormX?.value, 'x'),
+      instagram: normalizeModelSocialUrl(modelFormInstagram?.value, 'instagram'),
+      threads: normalizeModelSocialUrl(modelFormThreads?.value, 'threads'),
+      otherUrl: String(modelFormOtherUrl?.value || '').trim(),
+      otherLabel: String(modelFormOtherLabel?.value || '').trim()
+    };
+  }
+
+  function formValuesFromModel(model) {
+    const links = model?.links || {};
+    return {
+      id: String(model?.id || '').trim(),
+      name: String(model?.name || '').trim(),
+      shortName: String(model?.displayName || model?.shortName || '').trim(),
+      yomi: String(model?.nameKana || model?.yomi || '').trim(),
+      agency: String(model?.agency || '').trim(),
+      x: normalizeModelSocialUrl(links.x || links.twitter || '', 'x'),
+      instagram: normalizeModelSocialUrl(links.instagram || '', 'instagram'),
+      threads: normalizeModelSocialUrl(links.threads || '', 'threads'),
+      otherUrl: String(links.website || '').trim(),
+      otherLabel: String(links.websiteLabel || '').trim(),
+      profileImage: String(model?.thumbnail || model?.profileImage || '').trim()
+    };
+  }
+
+  function setModelFormValues(values) {
+    if (modelFormId) modelFormId.value = values.id || '';
+    if (modelFormIdBase) modelFormIdBase.value = '';
+    if (modelFormIdSuffix) modelFormIdSuffix.value = '';
+    if (modelFormName) modelFormName.value = values.name || '';
+    if (modelFormShortName) modelFormShortName.value = values.shortName || '';
+    if (modelFormYomi) modelFormYomi.value = values.yomi || '';
+    if (modelFormAgency) modelFormAgency.value = values.agency || '';
+    if (modelFormX) modelFormX.value = values.x || '';
+    if (modelFormInstagram) modelFormInstagram.value = values.instagram || '';
+    if (modelFormThreads) modelFormThreads.value = values.threads || '';
+    if (modelFormOtherUrl) modelFormOtherUrl.value = values.otherUrl || '';
+    if (modelFormOtherLabel) modelFormOtherLabel.value = values.otherLabel || '';
+    if (modelFormProfileImage) modelFormProfileImage.value = values.profileImage || '';
+  }
+
   function generatedModelIdFromParts() {
     const base = String(modelFormIdBase?.value || '').trim();
     const suffix = String(modelFormIdSuffix?.value || '').trim();
@@ -783,6 +835,9 @@
 
   function canSaveModel() {
     const model = buildModelPayload();
+    if (editingModelId) {
+      return Boolean(editingModelId && model.name);
+    }
     return Boolean(
       model.id
       && isValidNewModelId(model.id)
@@ -818,32 +873,40 @@
   function updateModelSaveState() {
     if (!saveModelDev) return;
     const model = buildModelPayload();
+    const isEditingModel = Boolean(editingModelId);
     const base = String(modelFormIdBase?.value || '').trim();
     const suffix = String(modelFormIdSuffix?.value || '').trim();
-    const duplicate = Boolean(model.id && modelsListRef.some((item) => item?.id === model.id));
+    const duplicate = !isEditingModel && Boolean(model.id && modelsListRef.some((item) => item?.id === model.id));
     const idMessage = modelIdValidationMessage(model.id);
-    const baseMessage = !base
+    const baseMessage = isEditingModel ? '' : !base
       ? 'モデルIDベースを入力してください。'
       : isValidModelIdBase(base)
         ? ''
         : 'モデルIDベースは a-z と 0-9 のみです。';
-    const suffixMessage = isValidModelIdSuffix(suffix)
+    const suffixMessage = isEditingModel || isValidModelIdSuffix(suffix)
       ? ''
       : '補足（所属）は a-z, 0-9, ハイフンのみです。先頭/末尾/連続ハイフンは使えません。';
-    const imageMessage = selectedModelProfileImage
+    const imageMessage = isEditingModel ? '' : selectedModelProfileImage
       ? isHeicFile(selectedModelProfileImage)
         ? 'HEIC / HEIFは非対応です。JPEGまたはPNGへ変換してから選択してください。'
         : isPendingSourceImage(selectedModelProfileImage)
           ? ''
           : 'プロフィール画像はJPEGまたはPNGを選択してください。'
       : 'プロフィール画像を選択してください。';
-    saveModelDev.disabled = Boolean(baseMessage || suffixMessage || idMessage || imageMessage) || !model.name || duplicate;
+    const nextDisabled = isEditingModel
+      ? !model.name
+      : Boolean(baseMessage || suffixMessage || idMessage || imageMessage) || !model.name || duplicate;
+    saveModelDev.disabled = nextDisabled;
     if (modelIdError) {
-      modelIdError.textContent = baseMessage || suffixMessage || idMessage;
-      modelIdError.hidden = !(baseMessage || suffixMessage || idMessage);
+      modelIdError.textContent = isEditingModel ? '' : baseMessage || suffixMessage || idMessage;
+      modelIdError.hidden = isEditingModel || !(baseMessage || suffixMessage || idMessage);
     }
     if (modelFormMessage) {
-      if (duplicate) {
+      if (isEditingModel && !model.name) {
+        modelFormMessage.textContent = '名前を入力してください。';
+      } else if (isEditingModel) {
+        modelFormMessage.textContent = '編集内容をdevブランチへ保存できます。idと画像は変更できません。';
+      } else if (duplicate) {
         modelFormMessage.textContent = `同じモデルIDが既に存在します: ${model.id}`;
       } else if (baseMessage || suffixMessage || idMessage) {
         modelFormMessage.textContent = baseMessage || suffixMessage || idMessage;
@@ -893,6 +956,14 @@
   function renderModelPostSaveActions(payload) {
     if (!modelPostSaveActions) return;
     modelPostSaveActions.hidden = false;
+    const checklist = modelPostSaveActions.querySelector('.post-save-checklist');
+    if (checklist) {
+      checklist.innerHTML = `
+        <li>pending保存済み</li>
+        <li><span id="modelPostSaveBranch">${escapeHtml(payload.branch || saveBranch)}</span>へ保存済み</li>
+        <li>GitHub Actionsで変換待ち</li>
+      `;
+    }
     if (modelPostSaveBranch) modelPostSaveBranch.textContent = payload.branch || saveBranch;
     if (modelPostSaveCommitUrl) {
       modelPostSaveCommitUrl.innerHTML = payload.commitUrl
@@ -931,7 +1002,90 @@
     modelIdEditedManually = false;
     selectedModelProfileImage = null;
     clearModelProfilePreview();
+    if (!editingModelId) updateModelEditUi();
     updateModelSaveState();
+  }
+
+  function updateModelEditUi() {
+    const isEditingModel = Boolean(editingModelId);
+    const editableIdFields = [modelFormIdBase, modelFormIdSuffix, modelFormId];
+    editableIdFields.forEach((input) => {
+      if (input) input.disabled = isEditingModel;
+    });
+    if (modelProfileImageField) modelProfileImageField.hidden = isEditingModel;
+    if (modelProfileAdvancedOption) modelProfileAdvancedOption.hidden = isEditingModel;
+    if (cancelModelEdit) cancelModelEdit.hidden = !isEditingModel;
+    if (saveModelDev) saveModelDev.textContent = isEditingModel ? '編集を保存' : 'pendingへモデル保存';
+    if (modelEditNotice) {
+      modelEditNotice.hidden = !isEditingModel;
+      modelEditNotice.textContent = isEditingModel
+        ? `編集中: ${editingModelId}。idとプロフィール画像は変更できません。画像差し替えは別フェーズです。`
+        : '';
+    }
+  }
+
+  function enterModelEditMode(modelId) {
+    if (editingModelId === modelId) {
+      if (modelFormMessage) modelFormMessage.textContent = 'このモデルを編集中です。フォームへ戻りました。';
+      document.querySelector('.model-register-tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      modelFormName?.focus({ preventScroll: true });
+      return;
+    }
+
+    const model = modelsListRef.find((item) => item?.id === modelId);
+    if (!model) {
+      if (modelFormMessage) modelFormMessage.textContent = `編集対象が見つかりません: ${modelId}`;
+      return;
+    }
+
+    editingModelId = model.id;
+    modelIdEditedManually = true;
+    selectedModelProfileImage = null;
+    clearModelProfilePreview();
+    setModelFormValues(formValuesFromModel(model));
+    if (modelProfileImageInput) modelProfileImageInput.value = '';
+    if (modelSaveResult) modelSaveResult.hidden = true;
+    hideModelPostSaveActions();
+    updateModelEditUi();
+    updateModelSaveState();
+    if (modelFormMessage) modelFormMessage.textContent = 'モデル情報を編集中です。idと画像は変更できません。';
+    renderModelsList?.();
+    document.querySelector('.model-register-tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    modelFormName?.focus({ preventScroll: true });
+  }
+
+  function exitModelEditMode({ keepMessage = false } = {}) {
+    editingModelId = '';
+    clearModelRegisterForm({ keepResult: false });
+    updateModelEditUi();
+    renderModelsList?.();
+    if (!keepMessage && modelFormMessage) modelFormMessage.textContent = '編集をキャンセルしました。';
+  }
+
+  function updateModelInMemory(modelId, updates) {
+    modelsListRef = modelsListRef.map((model) => {
+      if (model?.id !== modelId) return model;
+      const links = {
+        ...(model.links || {}),
+        instagram: updates.instagram,
+        x: updates.x,
+        threads: updates.threads,
+        website: updates.otherUrl,
+        websiteLabel: updates.otherLabel
+      };
+      return {
+        ...model,
+        name: updates.name,
+        displayName: updates.shortName,
+        nameKana: updates.yomi,
+        agency: updates.agency,
+        links
+      };
+    });
+    previewModels = previewModels.map((model) => (model?.id === modelId
+      ? modelsListRef.find((item) => item.id === modelId) || model
+      : model));
+    renderModelsList?.();
   }
 
   function userMessageForModelApiError(error) {
@@ -939,6 +1093,7 @@
     const messages = {
       duplicate_model_id: '同じモデルIDが既に存在します。',
       pending_model_exists: '同じモデルIDのpendingデータが既にあります。直前の保存が成功している可能性があります。GitHub Actionsを確認してください。',
+      model_not_found: '編集対象のモデルが見つかりません。画面を再読み込みしてください。',
       missing_required_fields: 'モデルIDと名前を入力してください。',
       invalid_model_id: 'モデルIDは a-z, 0-9, ハイフンで入力してください。',
       unsupported_image_type: 'プロフィール画像はJPEGまたはPNGを選択してください。',
@@ -950,7 +1105,90 @@
     return messages[code] || error?.message || 'モデル保存に失敗しました。';
   }
 
+  async function saveModelEditToDev() {
+    if (!saveModelDev || !editingModelId || !canSaveModel()) {
+      updateModelSaveState();
+      return;
+    }
+
+    const updates = buildModelUpdatesPayload();
+    saveModelDev.disabled = true;
+    saveModelDev.textContent = '編集保存中...';
+    if (modelSaveResult) modelSaveResult.hidden = true;
+    hideModelPostSaveActions();
+    if (modelFormMessage) modelFormMessage.textContent = 'devブランチへモデル編集を保存中です...';
+    let saveSucceeded = false;
+
+    try {
+      const resp = await fetch('/api/admin/models', {
+        method: 'PATCH',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: editingModelId,
+          updates
+        })
+      });
+      const json = await readApiJsonResponse(resp);
+      renderModelSaveResult(json, resp.ok && json.success);
+      if (!resp.ok || !json.success) {
+        if (modelFormMessage) modelFormMessage.textContent = userMessageForModelApiError(json.error);
+        return;
+      }
+
+      const savedModelId = editingModelId;
+      updateModelInMemory(savedModelId, updates);
+      editingModelId = '';
+      updateModelEditUi();
+      renderModelsList?.();
+      if (modelFormMessage) {
+        modelFormMessage.textContent = `devへ編集を保存しました。本番反映はまだです。branch: ${json.branch || saveBranch} / modelId: ${json.modelId || savedModelId}`;
+      }
+      const checklist = modelPostSaveActions?.querySelector('.post-save-checklist');
+      if (checklist) {
+        checklist.innerHTML = `
+          <li>devへ編集保存済み</li>
+          <li>本番反映はまだです</li>
+        `;
+      }
+      if (modelPostSaveCommitUrl) {
+        modelPostSaveCommitUrl.innerHTML = json.commitUrl
+          ? `<a href="${escapeHtml(json.commitUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(json.commitUrl)}</a>`
+          : '-';
+      }
+      if (modelPostSaveFiles) {
+        const files = Array.isArray(json.updatedFiles) ? json.updatedFiles : [];
+        modelPostSaveFiles.innerHTML = files.length
+          ? `<ul>${files.map((filePath) => `<li>${escapeHtml(filePath)}</li>`).join('')}</ul>`
+          : '-';
+      }
+      if (modelPostSaveActions) modelPostSaveActions.hidden = false;
+      modelPostSaveActions?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      saveSucceeded = true;
+    } catch (err) {
+      console.error(err);
+      const payload = {
+        success: false,
+        error: {
+          code: 'request_failed',
+          message: err.message || 'モデル編集保存リクエストに失敗しました。'
+        }
+      };
+      renderModelSaveResult(payload, false);
+      if (modelFormMessage) modelFormMessage.textContent = payload.error.message;
+    } finally {
+      if (saveModelDev) saveModelDev.textContent = editingModelId ? '編集を保存' : 'pendingへモデル保存';
+      if (!saveSucceeded) updateModelSaveState();
+    }
+  }
+
   async function saveModelToDev() {
+    if (editingModelId) {
+      await saveModelEditToDev();
+      return;
+    }
+
     if (!saveModelDev || !canSaveModel()) {
       updateModelSaveState();
       return;
@@ -1476,14 +1714,19 @@
         const links = socialLinks(model).map(([label, url]) => (
           `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`
         )).join(' / ') || 'SNS未設定';
+        const isEditing = editingModelId === model.id;
         return `
-          <article class="static-list-card">
+          <article class="static-list-card${isEditing ? ' is-editing' : ''}">
             <div class="static-list-thumb static-list-profile">${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(model.name || model.id)}" loading="lazy">` : ''}</div>
             <div class="static-list-body">
               <h3>${escapeHtml(model.displayName || model.name || model.id)}</h3>
+              ${isEditing ? '<p class="static-list-status">編集中</p>' : ''}
               <p>${escapeHtml(model.agency || '所属未設定')} / ${workCountByModelId.get(model.id) || 0} works</p>
               <p>${links}</p>
               <small>ID: ${escapeHtml(model.id)}</small>
+              <div class="static-list-actions">
+                <button class="${isEditing ? 'is-editing' : ''}" type="button" data-edit-model-id="${escapeHtml(model.id)}">${isEditing ? '編集中のフォームへ戻る' : '編集'}</button>
+              </div>
             </div>
           </article>
         `;
@@ -1491,6 +1734,10 @@
     }
 
     renderModelsList = render;
+    list.addEventListener('click', (event) => {
+      const editButton = event.target.closest('[data-edit-model-id]');
+      if (editButton) enterModelEditMode(editButton.dataset.editModelId);
+    });
     search.addEventListener('input', render);
     render();
     message.textContent = `${modelsListRef.length}件のモデルを静的JSONから表示しています。新規登録はdevブランチへ保存されます。`;
@@ -1534,7 +1781,10 @@
       updateModelSaveState();
     });
     saveModelDev.addEventListener('click', saveModelToDev);
+    cancelModelEdit?.addEventListener('click', () => exitModelEditMode());
     continueModelRegister?.addEventListener('click', () => {
+      editingModelId = '';
+      updateModelEditUi();
       clearModelRegisterForm();
       if (modelFormMessage) modelFormMessage.textContent = '続けて登録できます。';
       modelFormIdBase?.focus({ preventScroll: true });
@@ -1544,6 +1794,7 @@
     openModelGitHubActions?.addEventListener('click', () => {
       window.open(githubActionsIndexUrl, '_blank', 'noopener,noreferrer');
     });
+    updateModelEditUi();
     updateModelSaveState();
   }
 
