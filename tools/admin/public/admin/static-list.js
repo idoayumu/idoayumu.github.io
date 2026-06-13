@@ -173,6 +173,38 @@
     }
   }
 
+  async function fetchModelsForAdmin() {
+    if (page !== 'models') {
+      const models = await fetchJson('/data/models.json');
+      return {
+        models: Array.isArray(models) ? models : [],
+        source: 'static',
+        branch: ''
+      };
+    }
+
+    try {
+      const payload = await fetchJson('/api/admin/models-dev');
+      if (payload?.success && Array.isArray(payload.models)) {
+        return {
+          models: payload.models,
+          source: payload.source || 'github',
+          branch: payload.branch || 'dev'
+        };
+      }
+      throw new Error(payload?.error?.message || 'dev最新models.jsonを読み込めませんでした。');
+    } catch (err) {
+      console.warn('Falling back to static models JSON', err);
+      const models = await fetchJson('/data/models.json');
+      return {
+        models: Array.isArray(models) ? models : [],
+        source: 'static',
+        branch: '',
+        error: err
+      };
+    }
+  }
+
   async function readApiJsonResponse(resp) {
     const status = resp.status;
     const contentType = resp.headers.get('content-type') || '';
@@ -1684,7 +1716,7 @@
     }
   }
 
-  function renderModels(models, works) {
+  function renderModels(models, works, meta = {}) {
     modelsListRef = [...models];
     const workCountByModelId = new Map();
     works.forEach((work) => {
@@ -1740,7 +1772,11 @@
     });
     search.addEventListener('input', render);
     render();
-    message.textContent = `${modelsListRef.length}件のモデルを静的JSONから表示しています。新規登録はdevブランチへ保存されます。`;
+    if (meta.source === 'github') {
+      message.textContent = `${modelsListRef.length}件のモデルをdev最新JSONから表示しています。source: github / branch: ${meta.branch || 'dev'}`;
+    } else {
+      message.textContent = `${modelsListRef.length}件のモデルを静的JSONから表示しています。source: static / dev最新JSONを読めない場合のフォールバックです。`;
+    }
   }
 
   function initModelRegisterTool(models) {
@@ -1800,16 +1836,17 @@
 
   async function init() {
     try {
-      const [worksResult, models] = await Promise.all([
+      const [worksResult, modelsResult] = await Promise.all([
         fetchWorksForAdmin(),
-        fetchJson('/data/models.json')
+        fetchModelsForAdmin()
       ]);
       const works = worksResult.works;
+      const models = modelsResult.models;
 
-      if (page === 'works') renderWorks(works, Array.isArray(models) ? models : [], worksResult);
-      if (page === 'models') renderModels(Array.isArray(models) ? models : [], works);
-      if (page === 'models') initModelRegisterTool(Array.isArray(models) ? models : []);
-      if (page === 'works') initImagePreviewTool(Array.isArray(models) ? models : [], works);
+      if (page === 'works') renderWorks(works, models, worksResult);
+      if (page === 'models') renderModels(models, works, modelsResult);
+      if (page === 'models') initModelRegisterTool(models);
+      if (page === 'works') initImagePreviewTool(models, works);
     } catch (err) {
       console.error(err);
       message.textContent = '静的JSONを読み込めませんでした。Cloudflareの再デプロイで /data/*.json が公開されているか確認してください。';
