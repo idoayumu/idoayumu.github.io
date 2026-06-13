@@ -31,8 +31,20 @@
       </div>
       <p class="preview-note">保存先はdevブランチです。モデル画像アップロードは今回は扱いません。</p>
       <div class="preview-form-grid">
-        <label>モデルID
-          <input id="modelFormId" type="text" placeholder="minaseaoi" autocomplete="off" />
+        <label>モデルIDベース
+          <input id="modelFormIdBase" type="text" placeholder="momo" autocomplete="off" autocapitalize="none" spellcheck="false" />
+          <small class="field-help">半角英小文字と数字のみ。表示名ではなく管理用IDの土台です。</small>
+        </label>
+        <label>補足（所属）
+          <input id="modelFormIdSuffix" type="text" placeholder="osakabimage" autocomplete="off" autocapitalize="none" spellcheck="false" />
+          <small class="field-help">同名対策が必要な場合に使います。ハイフンは自動で付与されます。</small>
+        </label>
+        <label class="preview-form-wide model-id-field">モデルID
+          <input id="modelFormId" type="text" placeholder="momo-osakabimage" autocomplete="off" autocapitalize="none" spellcheck="false" />
+          <small class="field-help">モデルIDは作品ID生成、modelIds、モデル個人ページURLに使用します。表示名ではなく、管理用IDです。</small>
+          <small class="field-help">同名対策は補足欄を使用してください。例: momo-osakabimage / momo-manacolle / marin-shirokuro</small>
+          <small class="field-help">登録後は原則変更しません。</small>
+          <small class="field-error" id="modelIdError" aria-live="polite"></small>
         </label>
         <label>名前
           <input id="modelFormName" type="text" placeholder="水瀬あおい" autocomplete="off" />

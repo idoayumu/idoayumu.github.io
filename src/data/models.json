@@ -120,5 +120,22 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "test1",
+    "name": "テスト太郎",
+    "aliases": [],
+    "agency": "テスト撮影会",
+    "bio": "",
+    "links": {
+      "instagram": "",
+      "x": "",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true,
+    "displayName": "テス太郎",
+    "nameKana": "テスト"
   }
 ]
