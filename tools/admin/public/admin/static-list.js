@@ -703,6 +703,35 @@
     target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function extractSocialHandleFromUrl(value, service) {
+    try {
+      const parsed = new URL(value);
+      const parts = parsed.pathname.split('/').map((part) => part.trim()).filter(Boolean);
+      if (!parts.length) return '';
+      const host = parsed.hostname.replace(/^www\./i, '').toLowerCase();
+      if (service === 'x' && (host === 'x.com' || host === 'twitter.com')) return parts[0].replace(/^@/, '');
+      if (service === 'instagram' && host === 'instagram.com') return parts[0].replace(/^@/, '');
+      if (service === 'threads' && host === 'threads.net') return parts[0].replace(/^@/, '');
+      return '';
+    } catch {
+      return '';
+    }
+  }
+
+  function normalizeModelSocialUrl(value, service) {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+
+    const urlHandle = /^https?:\/\//i.test(raw) ? extractSocialHandleFromUrl(raw, service) : '';
+    const handle = (urlHandle || raw).replace(/^@/, '').replace(/\/+$/g, '').trim();
+    if (!handle) return '';
+
+    if (service === 'x') return `https://x.com/${handle}`;
+    if (service === 'instagram') return `https://www.instagram.com/${handle}`;
+    if (service === 'threads') return `https://www.threads.net/@${handle}`;
+    return raw;
+  }
+
   function buildModelPayload() {
     return {
       id: String(modelFormId?.value || '').trim(),
@@ -710,9 +739,9 @@
       shortName: String(modelFormShortName?.value || '').trim(),
       yomi: String(modelFormYomi?.value || '').trim(),
       agency: String(modelFormAgency?.value || '').trim(),
-      x: String(modelFormX?.value || '').trim(),
-      instagram: String(modelFormInstagram?.value || '').trim(),
-      threads: String(modelFormThreads?.value || '').trim(),
+      x: normalizeModelSocialUrl(modelFormX?.value, 'x'),
+      instagram: normalizeModelSocialUrl(modelFormInstagram?.value, 'instagram'),
+      threads: normalizeModelSocialUrl(modelFormThreads?.value, 'threads'),
       otherUrl: String(modelFormOtherUrl?.value || '').trim(),
       otherLabel: String(modelFormOtherLabel?.value || '').trim(),
       profileImage: String(modelFormProfileImage?.value || '').trim()
@@ -1342,9 +1371,9 @@
   function socialLinks(model) {
     const links = model.links || {};
     return [
-      ['Instagram', links.instagram],
-      ['X', links.x || links.twitter],
-      ['Threads', links.threads],
+      ['Instagram', normalizeModelSocialUrl(links.instagram, 'instagram')],
+      ['X', normalizeModelSocialUrl(links.x || links.twitter, 'x')],
+      ['Threads', normalizeModelSocialUrl(links.threads, 'threads')],
       [links.websiteLabel || 'Website', links.website]
     ].filter(([, url]) => url);
   }
