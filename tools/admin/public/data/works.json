@@ -260,5 +260,18 @@
     ],
     "image": "/images/works/large/260611misaki_0002.webp",
     "thumbnail": "/images/works/thumbs/260611misaki_0002.webp"
+  },
+  {
+    "id": "260613minaseaoi_0001",
+    "title": "恋",
+    "date": "2025-11-02",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "恋って、鯉やん",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/260613minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/260613minaseaoi_0001.webp"
   }
 ]

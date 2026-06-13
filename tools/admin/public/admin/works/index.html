@@ -183,6 +183,38 @@
         <p class="preview-note">pending保存では <code>tools/admin/uploads/works/pending/&lt;workId&gt;/</code> に元画像とwork.jsonだけを保存します。</p>
         <pre class="api-result-box" id="saveApiResult" hidden></pre>
       </section>
+
+      <section class="post-save-actions" id="postSaveActions" hidden aria-labelledby="post-save-title">
+        <div class="section-heading">
+          <p>Pending Saved</p>
+          <h2 id="post-save-title">登録予約完了</h2>
+        </div>
+        <p class="post-save-status">pending保存済み</p>
+        <dl>
+          <div>
+            <dt>保存先branch</dt>
+            <dd id="postSaveBranch">dev</dd>
+          </div>
+          <div>
+            <dt>変換</dt>
+            <dd>GitHub ActionsでWebP変換後に作品として反映されます</dd>
+          </div>
+          <div>
+            <dt>commitUrl</dt>
+            <dd id="postSaveCommitUrl">-</dd>
+          </div>
+          <div>
+            <dt>pendingFiles</dt>
+            <dd id="postSavePendingFiles">-</dd>
+          </div>
+        </dl>
+        <div class="post-save-button-grid">
+          <button id="continueSameModelWork" type="button">同じモデルで続けて登録</button>
+          <button id="clearNextWork" type="button">フォームを空にして次を登録</button>
+          <button id="goWorksList" type="button">作品一覧へ移動</button>
+          <button id="openGitHubActions" type="button">GitHub Actionsを確認</button>
+        </div>
+      </section>
     </section>
 
     <section class="dashboard" aria-labelledby="works-title">

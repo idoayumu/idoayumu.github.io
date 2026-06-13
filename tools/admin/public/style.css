@@ -740,6 +740,71 @@ h2 {
   color: #5f1717;
 }
 
+.post-save-actions {
+  margin-top: 22px;
+  padding: 18px;
+  border: 1px solid #cfe7d9;
+  background: #f3fbf5;
+}
+
+.post-save-status {
+  width: fit-content;
+  margin: 0 0 14px;
+  padding: 5px 10px;
+  border: 1px solid #1b6f5a;
+  background: #e7f5ef;
+  color: #155746;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.post-save-actions dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.post-save-actions dl > div {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid #d8eadc;
+  background: #fff;
+}
+
+.post-save-actions dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.post-save-actions ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.post-save-button-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.post-save-button-grid button {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.post-save-button-grid button:first-child {
+  background: #111;
+  color: #fff;
+}
+
 .static-list {
   display: grid;
   gap: 12px;
@@ -857,7 +922,9 @@ h2 {
 
   .preview-form-grid,
   .preview-meta-grid,
-  .save-preview-summary dl {
+  .save-preview-summary dl,
+  .post-save-actions dl,
+  .post-save-button-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

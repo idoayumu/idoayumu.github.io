@@ -46,9 +46,18 @@
   const saveWorkEdit = document.getElementById('saveWorkEdit');
   const cancelWorkEdit = document.getElementById('cancelWorkEdit');
   const saveApiResult = document.getElementById('saveApiResult');
+  const postSaveActions = document.getElementById('postSaveActions');
+  const postSaveBranch = document.getElementById('postSaveBranch');
+  const postSaveCommitUrl = document.getElementById('postSaveCommitUrl');
+  const postSavePendingFiles = document.getElementById('postSavePendingFiles');
+  const continueSameModelWork = document.getElementById('continueSameModelWork');
+  const clearNextWork = document.getElementById('clearNextWork');
+  const goWorksList = document.getElementById('goWorksList');
+  const openGitHubActions = document.getElementById('openGitHubActions');
   const largeMaxEdge = 2000;
   const thumbMaxEdge = 700;
   const saveBranch = 'dev';
+  const githubActionsUrl = 'https://github.com/idoayumu/idoayumu.github.io/actions/workflows/process-pending-work.yml';
   let originalPreviewUrl = '';
   let largePreviewUrl = '';
   let thumbPreviewUrl = '';
@@ -58,6 +67,7 @@
   let generatedExtension = 'webp';
   let generatedWorkId = '';
   let editingWorkId = '';
+  let pendingSaveCompleted = false;
   let previewWorks = [];
   let previewModels = [];
   let worksListRef = [];
@@ -327,6 +337,7 @@
   function canSavePendingWork() {
     return Boolean(
       !editingWorkId
+      && !pendingSaveCompleted
       && generatedWorkId
       && String(previewTitle?.value || '').trim()
       && String(previewDate?.value || '').trim()
@@ -382,8 +393,10 @@
     const file = previewImageInput.files[0];
 
     revokePreviewUrls();
+    pendingSaveCompleted = false;
     selectedOriginalFile = file;
     if (saveApiResult) saveApiResult.hidden = true;
+    hidePostSaveActions();
     previewMessage.textContent = currentSaveMode() === 'pending' ? '元画像を読み込み中です...' : '画像を生成中です...';
     previewMeta.hidden = true;
     previewImages.hidden = true;
@@ -490,6 +503,72 @@
     saveApiResult.textContent = JSON.stringify(payload, null, 2);
   }
 
+  function hidePostSaveActions() {
+    if (postSaveActions) postSaveActions.hidden = true;
+  }
+
+  function renderPostSaveActions(payload) {
+    if (!postSaveActions) return;
+    postSaveActions.hidden = false;
+    if (postSaveBranch) postSaveBranch.textContent = payload.branch || saveBranch;
+    if (postSaveCommitUrl) {
+      postSaveCommitUrl.innerHTML = payload.commitUrl
+        ? `<a href="${escapeHtml(payload.commitUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(payload.commitUrl)}</a>`
+        : '-';
+    }
+    if (postSavePendingFiles) {
+      const files = Array.isArray(payload.pendingFiles) ? payload.pendingFiles : [];
+      postSavePendingFiles.innerHTML = files.length
+        ? `<ul>${files.map((filePath) => `<li>${escapeHtml(filePath)}</li>`).join('')}</ul>`
+        : '-';
+    }
+  }
+
+  function resetImagePreviewState() {
+    revokePreviewUrls();
+    if (previewImageInput) previewImageInput.value = '';
+    if (previewOriginalImage) previewOriginalImage.removeAttribute('src');
+    if (previewLargeImage) previewLargeImage.removeAttribute('src');
+    if (previewThumbImage) previewThumbImage.removeAttribute('src');
+    if (previewFileName) previewFileName.textContent = '-';
+    if (previewMimeType) previewMimeType.textContent = '-';
+    if (previewFileSize) previewFileSize.textContent = '-';
+    if (previewImageSize) previewImageSize.textContent = '-';
+    if (previewLargeMeta) previewLargeMeta.textContent = '-';
+    if (previewThumbMeta) previewThumbMeta.textContent = '-';
+    if (previewMeta) previewMeta.hidden = true;
+    if (previewImages) previewImages.hidden = true;
+  }
+
+  function resetWorkForm({ keepContext = false } = {}) {
+    const keepModelIds = keepContext ? selectedModelIds() : [];
+    const keepDate = keepContext ? previewDate?.value || '' : '';
+    const keepLocation = keepContext ? previewLocation?.value || '' : '';
+    const keepProduction = keepContext ? previewProduction?.value || '' : '';
+
+    editingWorkId = '';
+    generatedWorkId = '';
+    pendingSaveCompleted = false;
+    if (previewTitle) previewTitle.value = '';
+    if (previewDate) previewDate.value = keepDate;
+    if (previewLocation) previewLocation.value = keepLocation;
+    if (previewProduction) previewProduction.value = keepProduction;
+    if (previewCaption) previewCaption.value = '';
+    setSelectedModelIds(keepModelIds);
+    resetImagePreviewState();
+    if (savePreviewSummary) savePreviewSummary.hidden = true;
+    if (saveApiResult) saveApiResult.hidden = true;
+    hidePostSaveActions();
+    updateGeneratedWorkId();
+    updateModeVisibility();
+    renderWorksList?.();
+  }
+
+  function scrollToWorksList() {
+    const target = document.getElementById('works-title')?.closest('section') || list;
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   function userMessageForApiError(error) {
     const code = error?.code || '';
     const messages = {
@@ -523,6 +602,7 @@
     savePendingWork.textContent = 'pending保存中...';
     previewMessage.textContent = 'devブランチのpendingへ保存中です...';
     if (saveApiResult) saveApiResult.hidden = true;
+    hidePostSaveActions();
 
     try {
       const resp = await fetch('/api/admin/works-upload-pending', {
@@ -543,7 +623,11 @@
         return;
       }
 
-      previewMessage.textContent = `pending保存しました。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
+      previewWorks = [...previewWorks, work];
+      pendingSaveCompleted = true;
+      previewMessage.textContent = `登録予約完了。pending保存済みです。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
+      renderPostSaveActions(json);
+      postSaveActions?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       console.error(err);
       const payload = {
@@ -573,6 +657,7 @@
     saveWorkEdit.textContent = '編集保存中...';
     previewMessage.textContent = 'devブランチへ編集内容を保存中です...';
     if (saveApiResult) saveApiResult.hidden = true;
+    hidePostSaveActions();
 
     try {
       const resp = await fetch('/api/admin/works-with-images', {
@@ -637,6 +722,7 @@
     saveWorkWithImages.textContent = '保存中...';
     previewMessage.textContent = 'devブランチへ保存中です...';
     if (saveApiResult) saveApiResult.hidden = true;
+    hidePostSaveActions();
 
     try {
       const resp = await fetch('/api/admin/works-with-images', {
@@ -839,6 +925,21 @@
     saveWorkWithImages?.addEventListener('click', saveWorkWithImagesToGitHub);
     saveWorkEdit?.addEventListener('click', saveWorkEditToGitHub);
     cancelWorkEdit?.addEventListener('click', () => exitEditMode());
+    continueSameModelWork?.addEventListener('click', () => {
+      resetWorkForm({ keepContext: true });
+      previewMessage.textContent = '同じモデルで続けて登録できます。次のタイトルと画像を選択してください。';
+      previewTitle?.focus({ preventScroll: true });
+      document.querySelector('.image-preview-tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    clearNextWork?.addEventListener('click', () => {
+      resetWorkForm();
+      previewMessage.textContent = 'フォームを空にしました。';
+      document.querySelector('.image-preview-tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    goWorksList?.addEventListener('click', scrollToWorksList);
+    openGitHubActions?.addEventListener('click', () => {
+      window.open(githubActionsUrl, '_blank', 'noopener,noreferrer');
+    });
     updateGeneratedWorkId();
     updateModeVisibility();
   }
