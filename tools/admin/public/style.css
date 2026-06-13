@@ -754,6 +754,12 @@ h2 {
   background: #fff;
 }
 
+.static-list-card.is-editing {
+  border-color: #1b6f5a;
+  background: #f4fbf8;
+  box-shadow: 0 0 0 2px rgba(27, 111, 90, 0.12);
+}
+
 .static-list-thumb {
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -796,6 +802,16 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.static-list-body .static-list-status {
+  width: fit-content;
+  padding: 3px 8px;
+  border: 1px solid #1b6f5a;
+  background: #e7f5ef;
+  color: #155746;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .static-list-actions {
   display: flex;
   flex-wrap: wrap;
@@ -818,6 +834,12 @@ h2 {
   border-color: #8f1d1d;
   background: #fff6f6;
   color: #8f1d1d;
+}
+
+.static-list-actions button.is-editing {
+  border-color: #1b6f5a;
+  background: #e7f5ef;
+  color: #155746;
 }
 
 @media (min-width: 720px) {

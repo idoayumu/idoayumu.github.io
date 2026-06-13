@@ -600,7 +600,7 @@
       }
 
       updateWorkInMemory(editingWorkId, updates);
-      previewMessage.textContent = `編集を保存しました。branch: ${json.branch || saveBranch} / workId: ${json.updatedWorkId || editingWorkId}`;
+      previewMessage.textContent = `devへ編集を保存しました。本番反映はまだです。branch: ${json.branch || saveBranch} / workId: ${json.updatedWorkId || editingWorkId}`;
       exitEditMode({ keepMessage: true });
       renderWorksList?.();
     } catch (err) {
@@ -662,8 +662,14 @@
         image: `/images/works/large/${work.id}.webp`,
         thumbnail: `/images/works/thumbs/${work.id}.webp`
       }];
-      previewMessage.textContent = `保存しました。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
+      worksListRef = [...worksListRef, {
+        ...work,
+        image: `/images/works/large/${work.id}.webp`,
+        thumbnail: `/images/works/thumbs/${work.id}.webp`
+      }];
+      previewMessage.textContent = `devへ保存しました。本番反映はまだです。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
       updateGeneratedWorkId();
+      renderWorksList?.();
     } catch (err) {
       console.error(err);
       const payload = {
@@ -688,7 +694,21 @@
     });
   }
 
+  function focusEditForm() {
+    const target = document.querySelector('.image-preview-tool') || savePreviewSummary;
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.setTimeout(() => {
+      previewTitle?.focus({ preventScroll: true });
+    }, 250);
+  }
+
   function beginEditWork(workId) {
+    if (editingWorkId === workId) {
+      previewMessage.textContent = 'この作品を編集中です。フォームへ戻りました。';
+      focusEditForm();
+      return;
+    }
+
     const work = previewWorks.find((item) => item?.id === workId);
     if (!work) {
       previewMessage.textContent = `編集対象が見つかりません: ${workId}`;
@@ -708,7 +728,8 @@
     previewMessage.textContent = '作品情報を編集中です。id、image、thumbnailは変更できません。';
     updateGeneratedWorkId();
     updateModeVisibility();
-    savePreviewSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    renderWorksList?.();
+    focusEditForm();
   }
 
   function exitEditMode({ keepMessage = false } = {}) {
@@ -717,6 +738,7 @@
     if (!keepMessage) previewMessage.textContent = '編集をキャンセルしました。';
     updateGeneratedWorkId();
     updateModeVisibility();
+    renderWorksList?.();
   }
 
   function updateWorkInMemory(workId, updates) {
@@ -832,7 +854,7 @@
   }
 
   function renderWorks(works, models) {
-    worksListRef = works;
+    worksListRef = [...works];
     const modelById = new Map(models.map((model) => [model.id, model]));
 
     function namesFor(work) {
@@ -841,7 +863,7 @@
 
     function render() {
       const query = normalizeText(search.value);
-      const visible = works.filter((work) => {
+      const visible = worksListRef.filter((work) => {
         const text = normalizeText([
           work.id,
           work.title,
@@ -857,16 +879,18 @@
       list.innerHTML = visible.map((work) => {
         const thumb = toSiteImageUrl(work.thumbnail || work.image || '');
         const names = namesFor(work).join('・') || 'モデル未設定';
+        const isEditing = editingWorkId === work.id;
         return `
-          <article class="static-list-card">
+          <article class="static-list-card${isEditing ? ' is-editing' : ''}">
             <div class="static-list-thumb">${thumb ? `<img src="${escapeHtml(thumb)}" alt="${escapeHtml(work.title || work.id)}" loading="lazy">` : ''}</div>
             <div class="static-list-body">
               <h3>${escapeHtml(work.title || '(無題)')}</h3>
+              ${isEditing ? '<p class="static-list-status">編集中</p>' : ''}
               <p>${escapeHtml(names)} / ${escapeHtml(work.date || '日付未設定')}</p>
               <p>${escapeHtml(work.location || '撮影地未設定')} / ${escapeHtml(work.production || 'Production未設定')}</p>
               <small>ID: ${escapeHtml(work.id)}</small>
               <div class="static-list-actions">
-                <button type="button" data-edit-work-id="${escapeHtml(work.id)}">編集</button>
+                <button class="${isEditing ? 'is-editing' : ''}" type="button" data-edit-work-id="${escapeHtml(work.id)}">${isEditing ? '編集中のフォームへ戻る' : '編集'}</button>
                 <button class="is-danger" type="button" data-delete-work-id="${escapeHtml(work.id)}">削除</button>
               </div>
             </div>
@@ -890,7 +914,7 @@
     });
     search.addEventListener('input', render);
     render();
-    message.textContent = `${works.length}件の作品を静的JSONから表示しています。編集保存はdevブランチへ反映されます。`;
+    message.textContent = `${worksListRef.length}件の作品を静的JSONから表示しています。編集保存はdevブランチへ反映されます。`;
   }
 
   function renderModels(models, works) {
