@@ -952,6 +952,51 @@ h2 {
   font-weight: 700;
 }
 
+.post-save-checklist {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-save-checklist li {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #d8eadc;
+  background: #fff;
+  color: #155746;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.post-save-checklist li::before {
+  content: "✓";
+  margin-right: 8px;
+}
+
+.post-save-details {
+  min-width: 0;
+  margin-top: 14px;
+  border: 1px solid #d8eadc;
+  background: #fff;
+}
+
+.post-save-details summary {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 10px 12px;
+  color: #155746;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.post-save-details dl {
+  padding: 0 12px 12px;
+}
+
 .post-save-actions dl {
   display: grid;
   gap: 10px;

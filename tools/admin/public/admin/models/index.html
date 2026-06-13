@@ -115,28 +115,26 @@
           <p>Model Saved</p>
           <h2 id="model-post-save-title">登録予約完了</h2>
         </div>
-        <p class="post-save-status">pending保存済み</p>
-        <dl>
-          <div>
-            <dt>保存先branch</dt>
-            <dd id="modelPostSaveBranch">dev</dd>
-          </div>
-          <div>
-            <dt>commitUrl</dt>
-            <dd id="modelPostSaveCommitUrl">-</dd>
-          </div>
-          <div>
-            <dt>変換</dt>
-            <dd>GitHub ActionsでWebP変換後にmodels.jsonへ反映されます</dd>
-          </div>
-          <div>
-            <dt>pendingFiles</dt>
-            <dd id="modelPostSaveFiles">-</dd>
-          </div>
-        </dl>
+        <ul class="post-save-checklist">
+          <li>pending保存済み</li>
+          <li><span id="modelPostSaveBranch">dev</span>へ保存済み</li>
+          <li>GitHub Actionsで変換待ち</li>
+        </ul>
+        <details class="post-save-details">
+          <summary>詳細を表示</summary>
+          <dl>
+            <div>
+              <dt>commitUrl</dt>
+              <dd id="modelPostSaveCommitUrl">-</dd>
+            </div>
+            <div>
+              <dt>pendingFiles</dt>
+              <dd id="modelPostSaveFiles">-</dd>
+            </div>
+          </dl>
+        </details>
         <div class="post-save-button-grid">
           <button id="continueModelRegister" type="button">続けて登録</button>
-          <button id="clearModelForm" type="button">フォームを空にする</button>
           <button id="goModelsList" type="button">モデル一覧へ移動</button>
           <button id="openModelGitHubActions" type="button">GitHub Actionsを確認</button>
         </div>

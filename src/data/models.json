@@ -120,5 +120,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "yua-manacolle",
+    "name": "結愛",
+    "displayName": "結愛",
+    "nameKana": "ユア",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "マナコレ撮影会",
+    "bio": "",
+    "thumbnail": "yua-manacolle_profile.webp",
+    "profileImage": "yua-manacolle_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "@yuatango",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
