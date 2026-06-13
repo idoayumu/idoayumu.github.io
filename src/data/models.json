@@ -134,8 +134,8 @@
     "profileImage": "yua-manacolle_profile.webp",
     "profileImagePosition": "center",
     "links": {
-      "instagram": "",
-      "x": "@yuatango",
+      "instagram": "https://www.instagram.com/yuatango",
+      "x": "https://x.com/yuatango",
       "threads": "",
       "website": "",
       "websiteLabel": ""
