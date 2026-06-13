@@ -43,6 +43,8 @@
   const confirmBranch = document.getElementById('confirmBranch');
   const savePendingWork = document.getElementById('savePendingWork');
   const saveWorkWithImages = document.getElementById('saveWorkWithImages');
+  const saveWorkEdit = document.getElementById('saveWorkEdit');
+  const cancelWorkEdit = document.getElementById('cancelWorkEdit');
   const saveApiResult = document.getElementById('saveApiResult');
   const largeMaxEdge = 2000;
   const thumbMaxEdge = 700;
@@ -55,8 +57,11 @@
   let generatedThumbBlob = null;
   let generatedExtension = 'webp';
   let generatedWorkId = '';
+  let editingWorkId = '';
   let previewWorks = [];
   let previewModels = [];
+  let worksListRef = [];
+  let renderWorksList = null;
 
   function normalizeText(value) {
     return String(value || '')
@@ -263,12 +268,14 @@
   }
 
   function updateGeneratedWorkId() {
-    generatedWorkId = generateWorkId();
+    generatedWorkId = editingWorkId || generateWorkId();
     if (registrationDateNote) {
-      registrationDateNote.textContent = `先頭YYMMDDは登録日 ${todayRegistrationDate().display} です。撮影日ではありません。`;
+      registrationDateNote.textContent = editingWorkId
+        ? '編集中は作品IDを変更できません。'
+        : `先頭YYMMDDは登録日 ${todayRegistrationDate().display} です。撮影日ではありません。`;
     }
     if (previewGeneratedWorkId) {
-      previewGeneratedWorkId.textContent = generatedWorkId || 'モデル選択で自動生成';
+      previewGeneratedWorkId.textContent = generatedWorkId || (editingWorkId ? '編集中' : 'モデル選択で自動生成');
       previewGeneratedWorkId.classList.toggle('is-empty', !generatedWorkId);
     }
     if (copyGeneratedWorkId) {
@@ -319,7 +326,8 @@
 
   function canSavePendingWork() {
     return Boolean(
-      generatedWorkId
+      !editingWorkId
+      && generatedWorkId
       && String(previewTitle?.value || '').trim()
       && String(previewDate?.value || '').trim()
       && String(previewLocation?.value || '').trim()
@@ -331,8 +339,13 @@
 
   function updateSaveButtonState() {
     const mode = currentSaveMode();
-    if (savePendingWork) savePendingWork.disabled = mode !== 'pending' || !canSavePendingWork();
-    if (saveWorkWithImages) saveWorkWithImages.disabled = mode !== 'webp' || !canSaveWork();
+    if (savePendingWork) savePendingWork.disabled = Boolean(editingWorkId) || mode !== 'pending' || !canSavePendingWork();
+    if (saveWorkWithImages) saveWorkWithImages.disabled = Boolean(editingWorkId) || mode !== 'webp' || !canSaveWork();
+    if (saveWorkEdit) {
+      saveWorkEdit.hidden = !editingWorkId;
+      saveWorkEdit.disabled = !canSaveEditWork();
+    }
+    if (cancelWorkEdit) cancelWorkEdit.hidden = !editingWorkId;
   }
 
   function updateModeVisibility() {
@@ -449,6 +462,27 @@
     };
   }
 
+  function buildWorkUpdatesPayload() {
+    return {
+      title: String(previewTitle?.value || '').trim(),
+      date: String(previewDate?.value || '').trim(),
+      location: String(previewLocation?.value || '').trim(),
+      production: String(previewProduction?.value || '').trim(),
+      caption: String(previewCaption?.value || '').trim(),
+      modelIds: selectedModelIds()
+    };
+  }
+
+  function canSaveEditWork() {
+    return Boolean(
+      editingWorkId
+      && String(previewTitle?.value || '').trim()
+      && String(previewDate?.value || '').trim()
+      && String(previewLocation?.value || '').trim()
+      && selectedModelIds().length
+    );
+  }
+
   function renderSaveResult(payload, ok) {
     if (!saveApiResult) return;
     saveApiResult.hidden = false;
@@ -527,6 +561,65 @@
     }
   }
 
+  async function saveWorkEditToGitHub() {
+    if (!editingWorkId || !canSaveEditWork()) {
+      previewMessage.textContent = '編集保存に必要な項目が不足しています。';
+      updateSaveButtonState();
+      return;
+    }
+
+    const updates = buildWorkUpdatesPayload();
+    saveWorkEdit.disabled = true;
+    saveWorkEdit.textContent = '編集保存中...';
+    previewMessage.textContent = 'devブランチへ編集内容を保存中です...';
+    if (saveApiResult) saveApiResult.hidden = true;
+
+    try {
+      const resp = await fetch('/api/admin/works-with-images', {
+        method: 'PATCH',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: editingWorkId,
+          updates
+        })
+      });
+      const json = await resp.json().catch(() => ({
+        success: false,
+        error: {
+          code: 'invalid_response',
+          message: 'APIレスポンスを解析できませんでした。'
+        }
+      }));
+
+      renderSaveResult(json, resp.ok && json.success);
+      if (!resp.ok || !json.success) {
+        previewMessage.textContent = userMessageForApiError(json.error);
+        return;
+      }
+
+      updateWorkInMemory(editingWorkId, updates);
+      previewMessage.textContent = `編集を保存しました。branch: ${json.branch || saveBranch} / workId: ${json.updatedWorkId || editingWorkId}`;
+      exitEditMode({ keepMessage: true });
+      renderWorksList?.();
+    } catch (err) {
+      console.error(err);
+      const payload = {
+        success: false,
+        error: {
+          code: 'request_failed',
+          message: err.message || '編集保存リクエストに失敗しました。'
+        }
+      };
+      renderSaveResult(payload, false);
+      previewMessage.textContent = payload.error.message;
+    } finally {
+      if (saveWorkEdit) saveWorkEdit.textContent = '編集を保存';
+      updateSaveButtonState();
+    }
+  }
+
   async function saveWorkWithImagesToGitHub() {
     if (!saveWorkWithImages || !canSaveWork()) {
       previewMessage.textContent = '保存に必要な項目が不足しています。';
@@ -588,6 +681,110 @@
     }
   }
 
+  function setSelectedModelIds(modelIds) {
+    const selected = new Set(Array.isArray(modelIds) ? modelIds : []);
+    Array.from(previewModelIds?.querySelectorAll('input[type="checkbox"]') || []).forEach((input) => {
+      input.checked = selected.has(input.value);
+    });
+  }
+
+  function beginEditWork(workId) {
+    const work = previewWorks.find((item) => item?.id === workId);
+    if (!work) {
+      previewMessage.textContent = `編集対象が見つかりません: ${workId}`;
+      return;
+    }
+
+    editingWorkId = work.id;
+    generatedWorkId = work.id;
+    previewTitle.value = work.title || '';
+    previewDate.value = work.date || '';
+    previewLocation.value = work.location || '';
+    previewProduction.value = work.production || '';
+    previewCaption.value = work.caption || '';
+    setSelectedModelIds(getWorkModelIds(work));
+    savePreviewSummary.hidden = false;
+    if (saveApiResult) saveApiResult.hidden = true;
+    previewMessage.textContent = '作品情報を編集中です。id、image、thumbnailは変更できません。';
+    updateGeneratedWorkId();
+    updateModeVisibility();
+    savePreviewSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function exitEditMode({ keepMessage = false } = {}) {
+    editingWorkId = '';
+    generatedWorkId = '';
+    if (!keepMessage) previewMessage.textContent = '編集をキャンセルしました。';
+    updateGeneratedWorkId();
+    updateModeVisibility();
+  }
+
+  function updateWorkInMemory(workId, updates) {
+    const update = (work) => (
+      work?.id === workId
+        ? {
+          ...work,
+          ...updates,
+          id: work.id,
+          image: work.image,
+          thumbnail: work.thumbnail
+        }
+        : work
+    );
+    previewWorks = previewWorks.map(update);
+    worksListRef = worksListRef.map(update);
+  }
+
+  async function deleteWorkWithImagesFromGitHub(workId) {
+    const work = previewWorks.find((item) => item?.id === workId);
+    const title = work?.title || workId;
+    const ok = window.confirm(`作品「${title}」を削除します。\n\n対象ID: ${workId}\n\nworks.jsonと画像2枚をdevブランチから削除します。よろしいですか？`);
+    if (!ok) return;
+
+    previewMessage.textContent = 'devブランチから削除中です...';
+    if (saveApiResult) saveApiResult.hidden = true;
+
+    try {
+      const resp = await fetch('/api/admin/works-with-images', {
+        method: 'DELETE',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({ id: workId })
+      });
+      const json = await resp.json().catch(() => ({
+        success: false,
+        error: {
+          code: 'invalid_response',
+          message: 'APIレスポンスを解析できませんでした。'
+        }
+      }));
+
+      renderSaveResult(json, resp.ok && json.success);
+      if (!resp.ok || !json.success) {
+        previewMessage.textContent = userMessageForApiError(json.error);
+        return;
+      }
+
+      previewWorks = previewWorks.filter((item) => item?.id !== workId);
+      worksListRef = worksListRef.filter((item) => item?.id !== workId);
+      if (editingWorkId === workId) exitEditMode({ keepMessage: true });
+      renderWorksList?.();
+      previewMessage.textContent = `削除しました。branch: ${json.branch || saveBranch} / workId: ${json.deletedWorkId || workId}`;
+    } catch (err) {
+      console.error(err);
+      const payload = {
+        success: false,
+        error: {
+          code: 'request_failed',
+          message: err.message || '削除リクエストに失敗しました。'
+        }
+      };
+      renderSaveResult(payload, false);
+      previewMessage.textContent = payload.error.message;
+    }
+  }
+
   async function copyWorkId() {
     if (!generatedWorkId) return;
     try {
@@ -618,6 +815,8 @@
     });
     savePendingWork?.addEventListener('click', savePendingWorkToGitHub);
     saveWorkWithImages?.addEventListener('click', saveWorkWithImagesToGitHub);
+    saveWorkEdit?.addEventListener('click', saveWorkEditToGitHub);
+    cancelWorkEdit?.addEventListener('click', () => exitEditMode());
     updateGeneratedWorkId();
     updateModeVisibility();
   }
@@ -633,6 +832,7 @@
   }
 
   function renderWorks(works, models) {
+    worksListRef = works;
     const modelById = new Map(models.map((model) => [model.id, model]));
 
     function namesFor(work) {
@@ -665,15 +865,32 @@
               <p>${escapeHtml(names)} / ${escapeHtml(work.date || '日付未設定')}</p>
               <p>${escapeHtml(work.location || '撮影地未設定')} / ${escapeHtml(work.production || 'Production未設定')}</p>
               <small>ID: ${escapeHtml(work.id)}</small>
+              <div class="static-list-actions">
+                <button type="button" data-edit-work-id="${escapeHtml(work.id)}">編集</button>
+                <button class="is-danger" type="button" data-delete-work-id="${escapeHtml(work.id)}">削除</button>
+              </div>
             </div>
           </article>
         `;
       }).join('') || '<p class="note">一致する作品がありません。</p>';
     }
 
+    renderWorksList = render;
+    list.addEventListener('click', (event) => {
+      const editButton = event.target.closest('[data-edit-work-id]');
+      if (editButton) {
+        beginEditWork(editButton.dataset.editWorkId);
+        return;
+      }
+
+      const deleteButton = event.target.closest('[data-delete-work-id]');
+      if (deleteButton) {
+        deleteWorkWithImagesFromGitHub(deleteButton.dataset.deleteWorkId);
+      }
+    });
     search.addEventListener('input', render);
     render();
-    message.textContent = `${works.length}件の作品を静的JSONから表示しています。保存・編集はできません。`;
+    message.textContent = `${works.length}件の作品を静的JSONから表示しています。編集保存はdevブランチへ反映されます。`;
   }
 
   function renderModels(models, works) {
