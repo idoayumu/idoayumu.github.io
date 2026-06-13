@@ -1,6 +1,7 @@
 name: Process pending work
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
