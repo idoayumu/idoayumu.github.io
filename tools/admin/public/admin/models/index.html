@@ -21,8 +21,82 @@
     <header class="page-header">
       <p class="eyebrow">Cloudflare Static Mode</p>
       <h1>Models一覧</h1>
-      <p>Cloudflare公開版では閲覧のみ可能です。登録・編集・保存はローカル管理ツールを使用してください。</p>
+      <p>Cloudflare公開版では、モデル情報をdevブランチへ登録できます。モデル画像アップロードは未対応です。</p>
     </header>
+
+    <section class="model-register-tool" aria-labelledby="model-register-title">
+      <div class="section-heading">
+        <p>Dev Save</p>
+        <h2 id="model-register-title">モデル新規登録</h2>
+      </div>
+      <p class="preview-note">保存先はdevブランチです。モデル画像アップロードは今回は扱いません。</p>
+      <div class="preview-form-grid">
+        <label>モデルID
+          <input id="modelFormId" type="text" placeholder="minaseaoi" autocomplete="off" />
+        </label>
+        <label>名前
+          <input id="modelFormName" type="text" placeholder="水瀬あおい" autocomplete="off" />
+        </label>
+        <label>shortName
+          <input id="modelFormShortName" type="text" placeholder="一覧表示名が必要な場合" autocomplete="off" />
+        </label>
+        <label>yomi
+          <input id="modelFormYomi" type="text" placeholder="ミナセアオイ" autocomplete="off" />
+        </label>
+        <label>agency
+          <input id="modelFormAgency" type="text" placeholder="撮影会・所属など" autocomplete="off" />
+        </label>
+        <label>profileImage
+          <input id="modelFormProfileImage" type="text" placeholder="existing_profile.webp" autocomplete="off" />
+        </label>
+        <label>X
+          <input id="modelFormX" type="url" placeholder="https://x.com/..." autocomplete="off" />
+        </label>
+        <label>Instagram
+          <input id="modelFormInstagram" type="url" placeholder="https://www.instagram.com/..." autocomplete="off" />
+        </label>
+        <label>Threads
+          <input id="modelFormThreads" type="url" placeholder="https://www.threads.net/..." autocomplete="off" />
+        </label>
+        <label>otherUrl
+          <input id="modelFormOtherUrl" type="url" placeholder="https://..." autocomplete="off" />
+        </label>
+        <label>otherLabel
+          <input id="modelFormOtherLabel" type="text" placeholder="lit.link など" autocomplete="off" />
+        </label>
+      </div>
+      <div class="save-action-row">
+        <button id="saveModelDev" type="button" disabled>devへモデル登録</button>
+      </div>
+      <p class="note" id="modelFormMessage">モデルIDと名前を入力してください。</p>
+      <pre class="api-result-box" id="modelSaveResult" hidden></pre>
+      <section class="post-save-actions" id="modelPostSaveActions" hidden aria-labelledby="model-post-save-title">
+        <div class="section-heading">
+          <p>Model Saved</p>
+          <h2 id="model-post-save-title">モデル登録完了</h2>
+        </div>
+        <p class="post-save-status">dev保存済み</p>
+        <dl>
+          <div>
+            <dt>保存先branch</dt>
+            <dd id="modelPostSaveBranch">dev</dd>
+          </div>
+          <div>
+            <dt>commitUrl</dt>
+            <dd id="modelPostSaveCommitUrl">-</dd>
+          </div>
+          <div>
+            <dt>updatedFiles</dt>
+            <dd id="modelPostSaveFiles">-</dd>
+          </div>
+        </dl>
+        <div class="post-save-button-grid">
+          <button id="continueModelRegister" type="button">続けて登録</button>
+          <button id="clearModelForm" type="button">フォームを空にする</button>
+          <button id="goModelsList" type="button">モデル一覧へ移動</button>
+        </div>
+      </section>
+    </section>
 
     <section class="dashboard" aria-labelledby="models-title">
       <div class="section-heading">

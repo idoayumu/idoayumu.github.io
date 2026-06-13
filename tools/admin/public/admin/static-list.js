@@ -55,6 +55,27 @@
   const clearNextWork = document.getElementById('clearNextWork');
   const goWorksList = document.getElementById('goWorksList');
   const openGitHubActions = document.getElementById('openGitHubActions');
+  const modelFormId = document.getElementById('modelFormId');
+  const modelFormName = document.getElementById('modelFormName');
+  const modelFormShortName = document.getElementById('modelFormShortName');
+  const modelFormYomi = document.getElementById('modelFormYomi');
+  const modelFormAgency = document.getElementById('modelFormAgency');
+  const modelFormProfileImage = document.getElementById('modelFormProfileImage');
+  const modelFormX = document.getElementById('modelFormX');
+  const modelFormInstagram = document.getElementById('modelFormInstagram');
+  const modelFormThreads = document.getElementById('modelFormThreads');
+  const modelFormOtherUrl = document.getElementById('modelFormOtherUrl');
+  const modelFormOtherLabel = document.getElementById('modelFormOtherLabel');
+  const saveModelDev = document.getElementById('saveModelDev');
+  const modelFormMessage = document.getElementById('modelFormMessage');
+  const modelSaveResult = document.getElementById('modelSaveResult');
+  const modelPostSaveActions = document.getElementById('modelPostSaveActions');
+  const modelPostSaveBranch = document.getElementById('modelPostSaveBranch');
+  const modelPostSaveCommitUrl = document.getElementById('modelPostSaveCommitUrl');
+  const modelPostSaveFiles = document.getElementById('modelPostSaveFiles');
+  const continueModelRegister = document.getElementById('continueModelRegister');
+  const clearModelForm = document.getElementById('clearModelForm');
+  const goModelsList = document.getElementById('goModelsList');
   const largeMaxEdge = 2000;
   const thumbMaxEdge = 700;
   const saveBranch = 'dev';
@@ -74,7 +95,9 @@
   let previewWorks = [];
   let previewModels = [];
   let worksListRef = [];
+  let modelsListRef = [];
   let renderWorksList = null;
+  let renderModelsList = null;
 
   function normalizeText(value) {
     return String(value || '')
@@ -662,6 +685,183 @@
     target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function scrollToModelsList() {
+    const target = document.getElementById('models-title')?.closest('section') || list;
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function buildModelPayload() {
+    return {
+      id: String(modelFormId?.value || '').trim(),
+      name: String(modelFormName?.value || '').trim(),
+      shortName: String(modelFormShortName?.value || '').trim(),
+      yomi: String(modelFormYomi?.value || '').trim(),
+      agency: String(modelFormAgency?.value || '').trim(),
+      x: String(modelFormX?.value || '').trim(),
+      instagram: String(modelFormInstagram?.value || '').trim(),
+      threads: String(modelFormThreads?.value || '').trim(),
+      otherUrl: String(modelFormOtherUrl?.value || '').trim(),
+      otherLabel: String(modelFormOtherLabel?.value || '').trim(),
+      profileImage: String(modelFormProfileImage?.value || '').trim()
+    };
+  }
+
+  function modelPayloadToListModel(model) {
+    const next = {
+      id: model.id,
+      name: model.name,
+      aliases: [],
+      agency: model.agency || '',
+      bio: '',
+      links: {
+        instagram: model.instagram || '',
+        x: model.x || '',
+        threads: model.threads || '',
+        website: model.otherUrl || '',
+        websiteLabel: model.otherLabel || ''
+      },
+      featured: true
+    };
+    if (model.shortName) next.displayName = model.shortName;
+    if (model.yomi) next.nameKana = model.yomi;
+    if (model.profileImage) next.thumbnail = model.profileImage;
+    return next;
+  }
+
+  function canSaveModel() {
+    const model = buildModelPayload();
+    return Boolean(model.id && model.name && !modelsListRef.some((item) => item?.id === model.id));
+  }
+
+  function updateModelSaveState() {
+    if (!saveModelDev) return;
+    const model = buildModelPayload();
+    const duplicate = Boolean(model.id && modelsListRef.some((item) => item?.id === model.id));
+    saveModelDev.disabled = !model.id || !model.name || duplicate;
+    if (modelFormMessage) {
+      if (duplicate) {
+        modelFormMessage.textContent = `同じモデルIDが既に存在します: ${model.id}`;
+      } else if (!model.id || !model.name) {
+        modelFormMessage.textContent = 'モデルIDと名前を入力してください。';
+      } else {
+        modelFormMessage.textContent = 'devブランチへ保存できます。';
+      }
+    }
+  }
+
+  function renderModelSaveResult(payload, ok) {
+    if (!modelSaveResult) return;
+    modelSaveResult.hidden = false;
+    modelSaveResult.classList.toggle('is-error', !ok);
+    modelSaveResult.textContent = JSON.stringify(payload, null, 2);
+  }
+
+  function hideModelPostSaveActions() {
+    if (modelPostSaveActions) modelPostSaveActions.hidden = true;
+  }
+
+  function renderModelPostSaveActions(payload) {
+    if (!modelPostSaveActions) return;
+    modelPostSaveActions.hidden = false;
+    if (modelPostSaveBranch) modelPostSaveBranch.textContent = payload.branch || saveBranch;
+    if (modelPostSaveCommitUrl) {
+      modelPostSaveCommitUrl.innerHTML = payload.commitUrl
+        ? `<a href="${escapeHtml(payload.commitUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(payload.commitUrl)}</a>`
+        : '-';
+    }
+    if (modelPostSaveFiles) {
+      const files = Array.isArray(payload.updatedFiles) ? payload.updatedFiles : [];
+      modelPostSaveFiles.innerHTML = files.length
+        ? `<ul>${files.map((filePath) => `<li>${escapeHtml(filePath)}</li>`).join('')}</ul>`
+        : '-';
+    }
+  }
+
+  function clearModelRegisterForm({ keepResult = false } = {}) {
+    [
+      modelFormId,
+      modelFormName,
+      modelFormShortName,
+      modelFormYomi,
+      modelFormAgency,
+      modelFormProfileImage,
+      modelFormX,
+      modelFormInstagram,
+      modelFormThreads,
+      modelFormOtherUrl,
+      modelFormOtherLabel
+    ].forEach((input) => {
+      if (input) input.value = '';
+    });
+    if (!keepResult && modelSaveResult) modelSaveResult.hidden = true;
+    if (!keepResult) hideModelPostSaveActions();
+    updateModelSaveState();
+  }
+
+  function userMessageForModelApiError(error) {
+    const code = error?.code || '';
+    const messages = {
+      duplicate_model_id: '同じモデルIDが既に存在します。',
+      missing_required_fields: 'モデルIDと名前を入力してください。',
+      invalid_model_id: 'モデルIDは英数字、アンダースコア、ハイフンで入力してください。',
+      branch_conflict: 'GitHub上のdevブランチが更新されています。画面を再読み込みしてから再実行してください。',
+      invalid_response: 'APIレスポンスをJSONとして確認できませんでした。詳細を確認してください。'
+    };
+    return messages[code] || error?.message || 'モデル保存に失敗しました。';
+  }
+
+  async function saveModelToDev() {
+    if (!saveModelDev || !canSaveModel()) {
+      updateModelSaveState();
+      return;
+    }
+
+    const model = buildModelPayload();
+    saveModelDev.disabled = true;
+    saveModelDev.textContent = '保存中...';
+    if (modelSaveResult) modelSaveResult.hidden = true;
+    hideModelPostSaveActions();
+    if (modelFormMessage) modelFormMessage.textContent = 'devブランチへモデルを保存中です...';
+
+    try {
+      const resp = await fetch('/api/admin/models', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({ model })
+      });
+      const json = await readApiJsonResponse(resp);
+      renderModelSaveResult(json, resp.ok && json.success);
+      if (!resp.ok || !json.success) {
+        if (modelFormMessage) modelFormMessage.textContent = userMessageForModelApiError(json.error);
+        return;
+      }
+
+      const listModel = modelPayloadToListModel(model);
+      modelsListRef = [...modelsListRef, listModel];
+      previewModels = [...previewModels, listModel];
+      renderModelsList?.();
+      renderModelPostSaveActions(json);
+      if (modelFormMessage) modelFormMessage.textContent = `devへモデルを保存しました。modelId: ${json.modelId || model.id}`;
+      modelPostSaveActions?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      console.error(err);
+      const payload = {
+        success: false,
+        error: {
+          code: 'request_failed',
+          message: err.message || 'モデル保存リクエストに失敗しました。'
+        }
+      };
+      renderModelSaveResult(payload, false);
+      if (modelFormMessage) modelFormMessage.textContent = payload.error.message;
+    } finally {
+      saveModelDev.textContent = 'devへモデル登録';
+      updateModelSaveState();
+    }
+  }
+
   function userMessageForApiError(error) {
     const code = error?.code || '';
     const messages = {
@@ -1106,6 +1306,7 @@
   }
 
   function renderModels(models, works) {
+    modelsListRef = [...models];
     const workCountByModelId = new Map();
     works.forEach((work) => {
       getWorkModelIds(work).forEach((id) => {
@@ -1115,7 +1316,7 @@
 
     function render() {
       const query = normalizeText(search.value);
-      const visible = models.filter((model) => {
+      const visible = modelsListRef.filter((model) => {
         const linkText = socialLinks(model).map(([, url]) => url).join(' ');
         const text = normalizeText([
           model.id,
@@ -1148,9 +1349,47 @@
       }).join('') || '<p class="note">一致するモデルがありません。</p>';
     }
 
+    renderModelsList = render;
     search.addEventListener('input', render);
     render();
-    message.textContent = `${models.length}件のモデルを静的JSONから表示しています。保存・編集はできません。`;
+    message.textContent = `${modelsListRef.length}件のモデルを静的JSONから表示しています。新規登録はdevブランチへ保存されます。`;
+  }
+
+  function initModelRegisterTool(models) {
+    if (!saveModelDev) return;
+    modelsListRef = [...models];
+    [
+      modelFormId,
+      modelFormName,
+      modelFormShortName,
+      modelFormYomi,
+      modelFormAgency,
+      modelFormProfileImage,
+      modelFormX,
+      modelFormInstagram,
+      modelFormThreads,
+      modelFormOtherUrl,
+      modelFormOtherLabel
+    ].forEach((input) => {
+      input?.addEventListener('input', () => {
+        if (modelSaveResult) modelSaveResult.hidden = true;
+        hideModelPostSaveActions();
+        updateModelSaveState();
+      });
+    });
+    saveModelDev.addEventListener('click', saveModelToDev);
+    continueModelRegister?.addEventListener('click', () => {
+      clearModelRegisterForm();
+      if (modelFormMessage) modelFormMessage.textContent = '続けて登録できます。';
+      modelFormId?.focus({ preventScroll: true });
+      document.querySelector('.model-register-tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    clearModelForm?.addEventListener('click', () => {
+      clearModelRegisterForm();
+      if (modelFormMessage) modelFormMessage.textContent = 'フォームを空にしました。';
+    });
+    goModelsList?.addEventListener('click', scrollToModelsList);
+    updateModelSaveState();
   }
 
   async function init() {
@@ -1163,6 +1402,7 @@
 
       if (page === 'works') renderWorks(works, Array.isArray(models) ? models : [], worksResult);
       if (page === 'models') renderModels(Array.isArray(models) ? models : [], works);
+      if (page === 'models') initModelRegisterTool(Array.isArray(models) ? models : []);
       if (page === 'works') initImagePreviewTool(Array.isArray(models) ? models : [], works);
     } catch (err) {
       console.error(err);
