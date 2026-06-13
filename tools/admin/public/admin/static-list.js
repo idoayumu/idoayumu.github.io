@@ -83,7 +83,6 @@
   const modelPostSaveCommitUrl = document.getElementById('modelPostSaveCommitUrl');
   const modelPostSaveFiles = document.getElementById('modelPostSaveFiles');
   const continueModelRegister = document.getElementById('continueModelRegister');
-  const clearModelForm = document.getElementById('clearModelForm');
   const goModelsList = document.getElementById('goModelsList');
   const openModelGitHubActions = document.getElementById('openModelGitHubActions');
   const largeMaxEdge = 2000;
@@ -1511,10 +1510,6 @@
       if (modelFormMessage) modelFormMessage.textContent = '続けて登録できます。';
       modelFormIdBase?.focus({ preventScroll: true });
       document.querySelector('.model-register-tool')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    clearModelForm?.addEventListener('click', () => {
-      clearModelRegisterForm();
-      if (modelFormMessage) modelFormMessage.textContent = 'フォームを空にしました。';
     });
     goModelsList?.addEventListener('click', scrollToModelsList);
     openModelGitHubActions?.addEventListener('click', () => {
