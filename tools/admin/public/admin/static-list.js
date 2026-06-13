@@ -46,6 +46,7 @@
   const saveWorkEdit = document.getElementById('saveWorkEdit');
   const cancelWorkEdit = document.getElementById('cancelWorkEdit');
   const saveApiResult = document.getElementById('saveApiResult');
+  const retryPendingSave = document.getElementById('retryPendingSave');
   const postSaveActions = document.getElementById('postSaveActions');
   const postSaveBranch = document.getElementById('postSaveBranch');
   const postSaveCommitUrl = document.getElementById('postSaveCommitUrl');
@@ -68,6 +69,7 @@
   let generatedWorkId = '';
   let editingWorkId = '';
   let pendingSaveCompleted = false;
+  let pendingSaveInFlight = false;
   let previewWorks = [];
   let previewModels = [];
   let worksListRef = [];
@@ -95,6 +97,41 @@
     const resp = await fetch(path, { cache: 'no-store' });
     if (!resp.ok) throw new Error(`${path}: HTTP ${resp.status}`);
     return resp.json();
+  }
+
+  async function readApiJsonResponse(resp) {
+    const status = resp.status;
+    const contentType = resp.headers.get('content-type') || '';
+    const text = await resp.text();
+    const trimmedText = text.trim();
+
+    if (!trimmedText) {
+      return {
+        success: false,
+        error: {
+          code: 'invalid_response',
+          message: 'APIレスポンスが空でした。',
+          status,
+          contentType,
+          bodyPreview: ''
+        }
+      };
+    }
+
+    try {
+      return JSON.parse(trimmedText);
+    } catch {
+      return {
+        success: false,
+        error: {
+          code: 'invalid_response',
+          message: 'APIレスポンスをJSONとして解析できませんでした。',
+          status,
+          contentType,
+          bodyPreview: trimmedText.slice(0, 800)
+        }
+      };
+    }
   }
 
   function getWorkModelIds(work) {
@@ -338,6 +375,7 @@
     return Boolean(
       !editingWorkId
       && !pendingSaveCompleted
+      && !pendingSaveInFlight
       && generatedWorkId
       && String(previewTitle?.value || '').trim()
       && String(previewDate?.value || '').trim()
@@ -503,6 +541,10 @@
     saveApiResult.textContent = JSON.stringify(payload, null, 2);
   }
 
+  function showRetryPendingSave(show) {
+    if (retryPendingSave) retryPendingSave.hidden = !show;
+  }
+
   function hidePostSaveActions() {
     if (postSaveActions) postSaveActions.hidden = true;
   }
@@ -558,6 +600,7 @@
     resetImagePreviewState();
     if (savePreviewSummary) savePreviewSummary.hidden = true;
     if (saveApiResult) saveApiResult.hidden = true;
+    showRetryPendingSave(false);
     hidePostSaveActions();
     updateGeneratedWorkId();
     updateModeVisibility();
@@ -573,7 +616,7 @@
     const code = error?.code || '';
     const messages = {
       duplicate_work_id: '同じ作品IDが既に存在します。作品一覧を再読み込みしてIDを確認してください。',
-      pending_work_exists: '同じ作品IDのpendingデータが既に存在します。',
+      pending_work_exists: '同じ作品IDのpendingデータが既にあります。直前の保存が成功している可能性があります。GitHub Actionsを確認してください。',
       image_file_exists: '保存予定の画像ファイルが既に存在します。',
       unsupported_image_type: '画像形式が対応していません。JPEGまたはPNGを選択してください。',
       original_image_too_large: '元画像のサイズが30MBを超えています。',
@@ -581,7 +624,8 @@
       invalid_thumb_image_type: 'thumb画像はWebPのみ保存できます。',
       branch_conflict: 'GitHub上のdevブランチが更新されています。画面を再読み込みしてから再実行してください。',
       missing_required_fields: '必須項目が不足しています。タイトル、撮影日、撮影地、モデル、画像を確認してください。',
-      invalid_work_id: '作品IDの形式が不正です。'
+      invalid_work_id: '作品IDの形式が不正です。',
+      invalid_response: 'APIレスポンスをJSONとして確認できませんでした。詳細を確認し、必要ならもう一度試してください。'
     };
     return messages[code] || error?.message || '保存に失敗しました。';
   }
@@ -600,8 +644,10 @@
 
     savePendingWork.disabled = true;
     savePendingWork.textContent = 'pending保存中...';
+    pendingSaveInFlight = true;
     previewMessage.textContent = 'devブランチのpendingへ保存中です...';
     if (saveApiResult) saveApiResult.hidden = true;
+    showRetryPendingSave(false);
     hidePostSaveActions();
 
     try {
@@ -609,17 +655,12 @@
         method: 'POST',
         body: form
       });
-      const json = await resp.json().catch(() => ({
-        success: false,
-        error: {
-          code: 'invalid_response',
-          message: 'APIレスポンスを解析できませんでした。'
-        }
-      }));
+      const json = await readApiJsonResponse(resp);
 
       renderSaveResult(json, resp.ok && json.success);
       if (!resp.ok || !json.success) {
         previewMessage.textContent = userMessageForApiError(json.error);
+        showRetryPendingSave(json.error?.code === 'invalid_response');
         return;
       }
 
@@ -638,8 +679,10 @@
         }
       };
       renderSaveResult(payload, false);
+      showRetryPendingSave(true);
       previewMessage.textContent = payload.error.message;
     } finally {
+      pendingSaveInFlight = false;
       savePendingWork.textContent = 'pendingへ保存';
       updateSaveButtonState();
     }
@@ -670,13 +713,7 @@
           updates
         })
       });
-      const json = await resp.json().catch(() => ({
-        success: false,
-        error: {
-          code: 'invalid_response',
-          message: 'APIレスポンスを解析できませんでした。'
-        }
-      }));
+      const json = await readApiJsonResponse(resp);
 
       renderSaveResult(json, resp.ok && json.success);
       if (!resp.ok || !json.success) {
@@ -729,13 +766,7 @@
         method: 'POST',
         body: form
       });
-      const json = await resp.json().catch(() => ({
-        success: false,
-        error: {
-          code: 'invalid_response',
-          message: 'APIレスポンスを解析できませんでした。'
-        }
-      }));
+      const json = await readApiJsonResponse(resp);
 
       renderSaveResult(json, resp.ok && json.success);
       if (!resp.ok || !json.success) {
@@ -860,13 +891,7 @@
         },
         body: JSON.stringify({ id: workId })
       });
-      const json = await resp.json().catch(() => ({
-        success: false,
-        error: {
-          code: 'invalid_response',
-          message: 'APIレスポンスを解析できませんでした。'
-        }
-      }));
+      const json = await readApiJsonResponse(resp);
 
       renderSaveResult(json, resp.ok && json.success);
       if (!resp.ok || !json.success) {
@@ -925,6 +950,7 @@
     saveWorkWithImages?.addEventListener('click', saveWorkWithImagesToGitHub);
     saveWorkEdit?.addEventListener('click', saveWorkEditToGitHub);
     cancelWorkEdit?.addEventListener('click', () => exitEditMode());
+    retryPendingSave?.addEventListener('click', savePendingWorkToGitHub);
     continueSameModelWork?.addEventListener('click', () => {
       resetWorkForm({ keepContext: true });
       previewMessage.textContent = '同じモデルで続けて登録できます。次のタイトルと画像を選択してください。';

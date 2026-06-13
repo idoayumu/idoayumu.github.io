@@ -43,6 +43,10 @@
       </fieldset>
 
       <div class="preview-form-grid">
+        <fieldset class="preview-model-field preview-form-wide">
+          <legend>モデル</legend>
+          <div class="preview-model-list" id="previewModelIds"></div>
+        </fieldset>
         <div class="generated-id-panel">
           <span>作品ID</span>
           <strong id="previewGeneratedWorkId">モデル選択で自動生成</strong>
@@ -64,10 +68,6 @@
         <label class="preview-form-wide">caption
           <textarea id="previewCaption" rows="4" placeholder="作品本文"></textarea>
         </label>
-        <fieldset class="preview-model-field">
-          <legend>モデル</legend>
-          <div class="preview-model-list" id="previewModelIds"></div>
-        </fieldset>
         <label>画像選択
           <input id="previewImageInput" type="file" accept="image/jpeg,image/png,image/heic,image/heif" />
         </label>
@@ -182,6 +182,7 @@
         </div>
         <p class="preview-note">pending保存では <code>tools/admin/uploads/works/pending/&lt;workId&gt;/</code> に元画像とwork.jsonだけを保存します。</p>
         <pre class="api-result-box" id="saveApiResult" hidden></pre>
+        <button class="retry-action-button" id="retryPendingSave" type="button" hidden>もう一度試す</button>
       </section>
 
       <section class="post-save-actions" id="postSaveActions" hidden aria-labelledby="post-save-title">
