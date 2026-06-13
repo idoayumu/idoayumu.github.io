@@ -167,9 +167,9 @@ function normalizePendingModel(input) {
     shortName: trim(input.shortName),
     yomi: trim(input.yomi),
     agency: trim(input.agency),
-    x: trim(input.x),
-    instagram: trim(input.instagram),
-    threads: trim(input.threads),
+    x: normalizeSocialUrl(input.x, 'x'),
+    instagram: normalizeSocialUrl(input.instagram, 'instagram'),
+    threads: normalizeSocialUrl(input.threads, 'threads'),
     otherUrl: trim(input.otherUrl),
     otherLabel: trim(input.otherLabel)
   };
@@ -271,6 +271,35 @@ function isFileLike(value) {
 
 function trim(value) {
   return String(value || '').trim();
+}
+
+function extractSocialHandleFromUrl(value, service) {
+  try {
+    const parsed = new URL(value);
+    const parts = parsed.pathname.split('/').map((part) => part.trim()).filter(Boolean);
+    if (!parts.length) return '';
+    const host = parsed.hostname.replace(/^www\./i, '').toLowerCase();
+    if (service === 'x' && (host === 'x.com' || host === 'twitter.com')) return parts[0].replace(/^@/, '');
+    if (service === 'instagram' && host === 'instagram.com') return parts[0].replace(/^@/, '');
+    if (service === 'threads' && host === 'threads.net') return parts[0].replace(/^@/, '');
+    return '';
+  } catch {
+    return '';
+  }
+}
+
+function normalizeSocialUrl(value, service) {
+  const raw = trim(value);
+  if (!raw) return '';
+
+  const urlHandle = /^https?:\/\//i.test(raw) ? extractSocialHandleFromUrl(raw, service) : '';
+  const handle = (urlHandle || raw).replace(/^@/, '').replace(/\/+$/g, '').trim();
+  if (!handle) return '';
+
+  if (service === 'x') return `https://x.com/${handle}`;
+  if (service === 'instagram') return `https://www.instagram.com/${handle}`;
+  if (service === 'threads') return `https://www.threads.net/@${handle}`;
+  return raw;
 }
 
 function publicErrorWithDetails(err, fallbackCode) {
