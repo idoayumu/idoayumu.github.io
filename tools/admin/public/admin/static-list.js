@@ -14,9 +14,11 @@
   const previewCaption = document.getElementById('previewCaption');
   const previewModelIds = document.getElementById('previewModelIds');
   const previewImageInput = document.getElementById('previewImageInput');
+  const saveModeInputs = Array.from(document.querySelectorAll('input[name="workSaveMode"]'));
   const previewMessage = document.getElementById('previewMessage');
   const previewMeta = document.getElementById('previewMeta');
   const previewImages = document.getElementById('previewImages');
+  const webpPreviewItems = Array.from(document.querySelectorAll('[data-webp-preview]'));
   const previewFileName = document.getElementById('previewFileName');
   const previewMimeType = document.getElementById('previewMimeType');
   const previewFileSize = document.getElementById('previewFileSize');
@@ -32,9 +34,14 @@
   const confirmDate = document.getElementById('confirmDate');
   const confirmModels = document.getElementById('confirmModels');
   const confirmModelIds = document.getElementById('confirmModelIds');
+  const confirmOriginalFileName = document.getElementById('confirmOriginalFileName');
+  const confirmOriginalMime = document.getElementById('confirmOriginalMime');
+  const confirmOriginalSize = document.getElementById('confirmOriginalSize');
+  const confirmPendingPath = document.getElementById('confirmPendingPath');
   const confirmLargePath = document.getElementById('confirmLargePath');
   const confirmThumbPath = document.getElementById('confirmThumbPath');
   const confirmBranch = document.getElementById('confirmBranch');
+  const savePendingWork = document.getElementById('savePendingWork');
   const saveWorkWithImages = document.getElementById('saveWorkWithImages');
   const saveApiResult = document.getElementById('saveApiResult');
   const largeMaxEdge = 2000;
@@ -43,6 +50,7 @@
   let originalPreviewUrl = '';
   let largePreviewUrl = '';
   let thumbPreviewUrl = '';
+  let selectedOriginalFile = null;
   let generatedLargeBlob = null;
   let generatedThumbBlob = null;
   let generatedExtension = 'webp';
@@ -98,6 +106,7 @@
     originalPreviewUrl = '';
     largePreviewUrl = '';
     thumbPreviewUrl = '';
+    selectedOriginalFile = null;
     generatedLargeBlob = null;
     generatedThumbBlob = null;
   }
@@ -145,6 +154,23 @@
     const type = String(file?.type || '').toLowerCase();
     return ['image/jpeg', 'image/png', 'image/webp'].includes(type)
       || /\.(jpe?g|png|webp)$/.test(name);
+  }
+
+  function isPendingSourceImage(file) {
+    const name = String(file?.name || '').toLowerCase();
+    const type = String(file?.type || '').toLowerCase();
+    return ['image/jpeg', 'image/png'].includes(type) || /\.(jpe?g|png)$/.test(name);
+  }
+
+  function pendingExtension(file) {
+    const name = String(file?.name || '').toLowerCase();
+    const type = String(file?.type || '').toLowerCase();
+    if (type === 'image/png' || /\.png$/.test(name)) return 'png';
+    return 'jpg';
+  }
+
+  function currentSaveMode() {
+    return saveModeInputs.find((input) => input.checked)?.value || 'pending';
   }
 
   function selectedModelIds() {
@@ -264,6 +290,14 @@
     if (confirmDate) confirmDate.textContent = date || '未入力';
     confirmModels.textContent = modelNames.join('・') || '未選択';
     if (confirmModelIds) confirmModelIds.textContent = modelIds.join(', ') || '未選択';
+    if (confirmOriginalFileName) confirmOriginalFileName.textContent = selectedOriginalFile?.name || '未選択';
+    if (confirmOriginalMime) confirmOriginalMime.textContent = selectedOriginalFile?.type || '未選択';
+    if (confirmOriginalSize) confirmOriginalSize.textContent = selectedOriginalFile ? formatBytes(selectedOriginalFile.size) : '未選択';
+    if (confirmPendingPath) {
+      confirmPendingPath.textContent = generatedWorkId && selectedOriginalFile
+        ? `tools/admin/uploads/works/pending/${generatedWorkId}/original.${pendingExtension(selectedOriginalFile)}`
+        : '未生成';
+    }
     confirmLargePath.textContent = generatedWorkId ? `/images/works/large/${generatedWorkId}.webp` : '未生成';
     confirmThumbPath.textContent = generatedWorkId ? `/images/works/thumbs/${generatedWorkId}.webp` : '未生成';
     if (confirmBranch) confirmBranch.textContent = saveBranch;
@@ -283,9 +317,31 @@
     );
   }
 
+  function canSavePendingWork() {
+    return Boolean(
+      generatedWorkId
+      && String(previewTitle?.value || '').trim()
+      && String(previewDate?.value || '').trim()
+      && String(previewLocation?.value || '').trim()
+      && selectedModelIds().length
+      && selectedOriginalFile
+      && isPendingSourceImage(selectedOriginalFile)
+    );
+  }
+
   function updateSaveButtonState() {
-    if (!saveWorkWithImages) return;
-    saveWorkWithImages.disabled = !canSaveWork();
+    const mode = currentSaveMode();
+    if (savePendingWork) savePendingWork.disabled = mode !== 'pending' || !canSavePendingWork();
+    if (saveWorkWithImages) saveWorkWithImages.disabled = mode !== 'webp' || !canSaveWork();
+  }
+
+  function updateModeVisibility() {
+    const mode = currentSaveMode();
+    webpPreviewItems.forEach((item) => {
+      item.hidden = mode === 'pending';
+    });
+    updateSaveButtonState();
+    updateSavePreview();
   }
 
   function populatePreviewModels(models) {
@@ -313,8 +369,9 @@
     const file = previewImageInput.files[0];
 
     revokePreviewUrls();
+    selectedOriginalFile = file;
     if (saveApiResult) saveApiResult.hidden = true;
-    previewMessage.textContent = '画像を生成中です...';
+    previewMessage.textContent = currentSaveMode() === 'pending' ? '元画像を読み込み中です...' : '画像を生成中です...';
     previewMeta.hidden = true;
     previewImages.hidden = true;
     savePreviewSummary.hidden = true;
@@ -324,12 +381,30 @@
       if (isHeicFile(file)) {
         throw new Error('HEIC/HEIFは非対応です。iPhoneの写真をJPEG/PNG/WebPに変換してから選択してください。');
       }
-      if (!isSupportedSourceImage(file)) {
-        throw new Error('JPEG / PNG / WebP の画像を選択してください。');
+      if (currentSaveMode() === 'pending' && !isPendingSourceImage(file)) {
+        throw new Error('pending保存ではJPEG / PNG の画像を選択してください。');
+      }
+      if (currentSaveMode() === 'webp' && !isSupportedSourceImage(file)) {
+        throw new Error('WebP直接保存ではJPEG / PNG / WebP の画像を選択してください。');
       }
 
       originalPreviewUrl = URL.createObjectURL(file);
       const originalImage = await loadImageFromUrl(originalPreviewUrl);
+      previewFileName.textContent = file.name || '-';
+      previewMimeType.textContent = file.type || '未取得';
+      previewFileSize.textContent = formatBytes(file.size);
+      previewImageSize.textContent = `${originalImage.naturalWidth} x ${originalImage.naturalHeight}px`;
+      previewOriginalImage.src = originalPreviewUrl;
+
+      if (currentSaveMode() === 'pending') {
+        previewMeta.hidden = false;
+        previewImages.hidden = false;
+        savePreviewSummary.hidden = false;
+        previewMessage.textContent = '元画像を確認しました。pending保存ではCanvas変換せず、この画像をそのままdevへ保存します。';
+        updateModeVisibility();
+        return;
+      }
+
       const large = await renderToBlob(originalImage, largeMaxEdge, 0.85);
       const thumb = await renderToBlob(originalImage, thumbMaxEdge, 0.8);
 
@@ -341,11 +416,6 @@
       largePreviewUrl = URL.createObjectURL(large.blob);
       thumbPreviewUrl = URL.createObjectURL(thumb.blob);
 
-      previewFileName.textContent = file.name || '-';
-      previewMimeType.textContent = file.type || '未取得';
-      previewFileSize.textContent = formatBytes(file.size);
-      previewImageSize.textContent = `${originalImage.naturalWidth} x ${originalImage.naturalHeight}px`;
-      previewOriginalImage.src = originalPreviewUrl;
       previewLargeImage.src = largePreviewUrl;
       previewThumbImage.src = thumbPreviewUrl;
       previewLargeMeta.textContent = `${large.width} x ${large.height}px / ${large.type} / ${formatBytes(large.blob.size)}`;
@@ -361,6 +431,7 @@
     } catch (err) {
       console.error(err);
       revokePreviewUrls();
+      selectedOriginalFile = null;
       updateSaveButtonState();
       previewMessage.textContent = err.message || '画像生成に失敗しました。';
     }
@@ -389,8 +460,10 @@
     const code = error?.code || '';
     const messages = {
       duplicate_work_id: '同じ作品IDが既に存在します。作品一覧を再読み込みしてIDを確認してください。',
+      pending_work_exists: '同じ作品IDのpendingデータが既に存在します。',
       image_file_exists: '保存予定の画像ファイルが既に存在します。',
-      unsupported_image_type: '画像形式が対応していません。WebP生成後に保存してください。',
+      unsupported_image_type: '画像形式が対応していません。JPEGまたはPNGを選択してください。',
+      original_image_too_large: '元画像のサイズが30MBを超えています。',
       invalid_large_image_type: 'large画像はWebPのみ保存できます。',
       invalid_thumb_image_type: 'thumb画像はWebPのみ保存できます。',
       branch_conflict: 'GitHub上のdevブランチが更新されています。画面を再読み込みしてから再実行してください。',
@@ -398,6 +471,60 @@
       invalid_work_id: '作品IDの形式が不正です。'
     };
     return messages[code] || error?.message || '保存に失敗しました。';
+  }
+
+  async function savePendingWorkToGitHub() {
+    if (!savePendingWork || !canSavePendingWork()) {
+      previewMessage.textContent = 'pending保存に必要な項目が不足しています。';
+      updateSaveButtonState();
+      return;
+    }
+
+    const work = buildWorkPayload();
+    const form = new FormData();
+    form.append('work', JSON.stringify(work));
+    form.append('original', selectedOriginalFile, selectedOriginalFile.name || `original.${pendingExtension(selectedOriginalFile)}`);
+
+    savePendingWork.disabled = true;
+    savePendingWork.textContent = 'pending保存中...';
+    previewMessage.textContent = 'devブランチのpendingへ保存中です...';
+    if (saveApiResult) saveApiResult.hidden = true;
+
+    try {
+      const resp = await fetch('/api/admin/works-upload-pending', {
+        method: 'POST',
+        body: form
+      });
+      const json = await resp.json().catch(() => ({
+        success: false,
+        error: {
+          code: 'invalid_response',
+          message: 'APIレスポンスを解析できませんでした。'
+        }
+      }));
+
+      renderSaveResult(json, resp.ok && json.success);
+      if (!resp.ok || !json.success) {
+        previewMessage.textContent = userMessageForApiError(json.error);
+        return;
+      }
+
+      previewMessage.textContent = `pending保存しました。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
+    } catch (err) {
+      console.error(err);
+      const payload = {
+        success: false,
+        error: {
+          code: 'request_failed',
+          message: err.message || 'pending保存リクエストに失敗しました。'
+        }
+      };
+      renderSaveResult(payload, false);
+      previewMessage.textContent = payload.error.message;
+    } finally {
+      savePendingWork.textContent = 'pendingへ保存';
+      updateSaveButtonState();
+    }
   }
 
   async function saveWorkWithImagesToGitHub() {
@@ -483,8 +610,16 @@
     });
     previewModelIds?.addEventListener('change', updateGeneratedWorkId);
     copyGeneratedWorkId?.addEventListener('click', copyWorkId);
+    saveModeInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        updateModeVisibility();
+        if (selectedOriginalFile) handlePreviewImageChange();
+      });
+    });
+    savePendingWork?.addEventListener('click', savePendingWorkToGitHub);
     saveWorkWithImages?.addEventListener('click', saveWorkWithImagesToGitHub);
     updateGeneratedWorkId();
+    updateModeVisibility();
   }
 
   function socialLinks(model) {

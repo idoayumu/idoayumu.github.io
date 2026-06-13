@@ -30,6 +30,18 @@
         <h2 id="image-preview-title">作品画像プレビュー</h2>
       </div>
 
+      <fieldset class="save-mode-field" aria-label="保存モード">
+        <legend>保存モード</legend>
+        <label>
+          <input type="radio" name="workSaveMode" value="pending" checked>
+          <span>pending保存（iPhone Safari向け）</span>
+        </label>
+        <label>
+          <input type="radio" name="workSaveMode" value="webp">
+          <span>WebP直接保存（対応ブラウザ向け）</span>
+        </label>
+      </fieldset>
+
       <div class="preview-form-grid">
         <div class="generated-id-panel">
           <span>作品ID</span>
@@ -57,10 +69,11 @@
           <div class="preview-model-list" id="previewModelIds"></div>
         </fieldset>
         <label>画像選択
-          <input id="previewImageInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
+          <input id="previewImageInput" type="file" accept="image/jpeg,image/png,image/heic,image/heif" />
         </label>
       </div>
 
+      <p class="preview-note">iPhone Safariではpending保存を使います。WebP変換と作品公開用JSON更新は次フェーズのGitHub Actionsで行います。</p>
       <p class="preview-note">Cloudflare保存はdevブランチへ保存されます。mainには保存しません。HEIC/HEIFは非対応です。</p>
       <p class="note" id="previewMessage">画像を選択してください。</p>
 
@@ -90,14 +103,14 @@
             <img id="previewOriginalImage" alt="選択した元画像のプレビュー" />
           </div>
         </article>
-        <article>
+        <article data-webp-preview>
           <h3>large</h3>
           <div class="generated-preview-frame">
             <img id="previewLargeImage" alt="生成したlarge画像のプレビュー" />
           </div>
           <p id="previewLargeMeta">-</p>
         </article>
-        <article>
+        <article data-webp-preview>
           <h3>thumb</h3>
           <div class="generated-preview-frame generated-preview-thumb">
             <img id="previewThumbImage" alt="生成したthumb画像のプレビュー" />
@@ -133,6 +146,22 @@
             <dd id="confirmModelIds">未選択</dd>
           </div>
           <div>
+            <dt>元画像ファイル名</dt>
+            <dd id="confirmOriginalFileName">未選択</dd>
+          </div>
+          <div>
+            <dt>元画像MIME</dt>
+            <dd id="confirmOriginalMime">未選択</dd>
+          </div>
+          <div>
+            <dt>元画像サイズ</dt>
+            <dd id="confirmOriginalSize">未選択</dd>
+          </div>
+          <div>
+            <dt>pending保存予定パス</dt>
+            <dd id="confirmPendingPath">未生成</dd>
+          </div>
+          <div>
             <dt>保存予定largeパス</dt>
             <dd id="confirmLargePath">未入力</dd>
           </div>
@@ -146,9 +175,10 @@
           </div>
         </dl>
         <div class="save-action-row">
-          <button id="saveWorkWithImages" type="button" disabled>devへ保存</button>
+          <button id="savePendingWork" type="button" disabled>pendingへ保存</button>
+          <button id="saveWorkWithImages" type="button" disabled>WebPをdevへ保存</button>
         </div>
-        <p class="preview-note">保存するとGitHubのdevブランチへcommitされます。main公開反映は別工程です。</p>
+        <p class="preview-note">pending保存では <code>tools/admin/uploads/works/pending/&lt;workId&gt;/</code> に元画像とwork.jsonだけを保存します。</p>
         <pre class="api-result-box" id="saveApiResult" hidden></pre>
       </section>
     </section>
