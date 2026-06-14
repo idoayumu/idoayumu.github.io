@@ -274,7 +274,7 @@ function renderSettingsHistory(kind, history, container) {
     const action = renderSettingsHistoryAction({ kind, index, isCurrent, canSwitch });
     return `
       <article class="settings-history-card">
-        <img src="${escapeHtml(toSiteImageUrl(item.path))}" alt="${kind === 'hero' ? 'Hero画像履歴' : 'About画像履歴'} ${index + 1}" loading="lazy">
+        <img src="${escapeHtml(toSiteImageUrl(item.path))}" alt="${kind === 'hero' ? 'Hero画像履歴' : 'コンセプト画像履歴'} ${index + 1}" loading="lazy">
         <div>
           <strong>${escapeHtml(item.memo || 'メモなし')}</strong>
           <dl>
@@ -314,7 +314,7 @@ async function switchSettingsImage(kind, index) {
   const item = currentSiteSettings[historyKey]?.[index];
   if (!item?.path) return;
 
-  const label = kind === 'hero' ? 'Hero画像' : 'About画像';
+  const label = kind === 'hero' ? 'Hero画像' : 'コンセプト画像';
   const ok = window.confirm(`${label}を「${item.memo || item.path}」へ使用中に切り替えます。実行しますか？`);
   if (!ok) return;
 
@@ -437,7 +437,7 @@ async function saveSettingsImagePending(kind) {
   };
   refs.saveButton.disabled = true;
   refs.saveButton.textContent = '保存中...';
-  if (settingsMessage) settingsMessage.textContent = `${kind === 'hero' ? 'Hero画像' : 'About画像'}をpendingへ保存中です...`;
+  if (settingsMessage) settingsMessage.textContent = `${kind === 'hero' ? 'Hero画像' : 'コンセプト画像'}をpendingへ保存中です...`;
   try {
     const form = new FormData();
     form.append('settings', JSON.stringify(settings));
