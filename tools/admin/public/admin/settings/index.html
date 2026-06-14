@@ -78,13 +78,19 @@
           <input id="settingsHeroUpload" type="file" accept="image/jpeg,image/png,image/heic,image/heif" />
         </label>
         <div class="preview-form-grid">
-          <label>year
+          <label>年
             <input id="settingsHeroYear" type="number" min="2000" max="2100" value="2026" />
           </label>
-          <label>season
-            <input id="settingsHeroSeason" type="text" placeholder="spring" />
+          <label>季節
+            <select id="settingsHeroSeason">
+              <option value="spring">春</option>
+              <option value="summer">夏</option>
+              <option value="autumn">秋</option>
+              <option value="winter">冬</option>
+              <option value="special">特別</option>
+            </select>
           </label>
-          <label class="preview-form-wide">memo
+          <label class="preview-form-wide">メモ
             <input id="settingsHeroUploadMemo" type="text" placeholder="画像メモ" />
           </label>
         </div>
@@ -105,13 +111,19 @@
           <input id="settingsAboutUpload" type="file" accept="image/jpeg,image/png,image/heic,image/heif" />
         </label>
         <div class="preview-form-grid">
-          <label>year
+          <label>年
             <input id="settingsAboutYear" type="number" min="2000" max="2100" value="2026" />
           </label>
-          <label>season
-            <input id="settingsAboutSeason" type="text" placeholder="spring" />
+          <label>季節
+            <select id="settingsAboutSeason">
+              <option value="spring">春</option>
+              <option value="summer">夏</option>
+              <option value="autumn">秋</option>
+              <option value="winter">冬</option>
+              <option value="special">特別</option>
+            </select>
           </label>
-          <label class="preview-form-wide">memo
+          <label class="preview-form-wide">メモ
             <input id="settingsAboutUploadMemo" type="text" placeholder="画像メモ" />
           </label>
         </div>

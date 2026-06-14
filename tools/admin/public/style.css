@@ -677,7 +677,8 @@ h2 {
   line-height: 1.6;
 }
 
-.settings-replace-card input {
+.settings-replace-card input,
+.settings-replace-card select {
   width: 100%;
   min-width: 0;
   padding: 10px 12px;
