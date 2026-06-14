@@ -64,9 +64,15 @@
         </label>
         <label class="preview-form-wide" id="modelProfileImageField">プロフィール画像
           <input id="modelProfileImageInput" type="file" accept="image/jpeg,image/png" />
-          <small class="field-help">JPEG / PNGのみ対応。HEIC / HEIFは非対応です。横画像を使用してください。</small>
+          <small class="field-help">新しい画像を選択。JPEG / PNGのみ対応。HEIC / HEIFは非対応です。横画像を使用してください。</small>
         </label>
+        <section class="model-current-profile preview-form-wide" id="modelCurrentProfileImage" hidden>
+          <p>現在の画像</p>
+          <img id="modelCurrentProfileImageThumb" alt="現在のプロフィール画像" />
+          <small id="modelCurrentProfileImagePath"></small>
+        </section>
         <section class="model-profile-preview preview-form-wide" id="modelProfilePreview" hidden aria-label="選択したプロフィール画像の確認">
+          <p>保存前プレビュー</p>
           <div class="model-profile-preview-image">
             <img id="modelProfilePreviewImage" alt="選択したプロフィール画像プレビュー" />
           </div>
@@ -110,6 +116,7 @@
       </div>
       <div class="save-action-row">
         <button id="saveModelDev" type="button" disabled>pendingへモデル保存</button>
+        <button id="saveModelImageReplace" class="secondary-action" type="button" hidden disabled>プロフィール画像を差し替え</button>
         <button id="cancelModelEdit" class="secondary-action" type="button" hidden>編集をキャンセル</button>
       </div>
       <p class="note" id="modelFormMessage">モデルIDと名前を入力してください。</p>

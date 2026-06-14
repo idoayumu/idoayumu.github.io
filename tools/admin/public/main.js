@@ -46,6 +46,18 @@ const settingsHeroHistory = document.getElementById('settingsHeroHistory');
 const settingsAboutHistory = document.getElementById('settingsAboutHistory');
 const settingsMessage = document.getElementById('settingsMessage');
 const settingsResult = document.getElementById('settingsResult');
+const settingsHeroUpload = document.getElementById('settingsHeroUpload');
+const settingsHeroYear = document.getElementById('settingsHeroYear');
+const settingsHeroSeason = document.getElementById('settingsHeroSeason');
+const settingsHeroUploadMemo = document.getElementById('settingsHeroUploadMemo');
+const settingsHeroUploadPreview = document.getElementById('settingsHeroUploadPreview');
+const settingsHeroUploadSave = document.getElementById('settingsHeroUploadSave');
+const settingsAboutUpload = document.getElementById('settingsAboutUpload');
+const settingsAboutYear = document.getElementById('settingsAboutYear');
+const settingsAboutSeason = document.getElementById('settingsAboutSeason');
+const settingsAboutUploadMemo = document.getElementById('settingsAboutUploadMemo');
+const settingsAboutUploadPreview = document.getElementById('settingsAboutUploadPreview');
+const settingsAboutUploadSave = document.getElementById('settingsAboutUploadSave');
 const testEditWorkId = '260328minaseaoi_0002';
 const testEditOriginalTitle = 'ひだまりの笑顔';
 const testDeleteWorkId = '260612cloudflaretest_1099';
@@ -53,6 +65,9 @@ const testModelId = 'cloudflare-test-model';
 const pendingItemsByKey = new Map();
 const siteImageBaseUrl = 'https://idoayumu.github.io';
 let currentSiteSettings = null;
+let currentSettingsSource = '';
+const selectedSettingsImages = new Map();
+const settingsPreviewUrls = new Map();
 
 function fileNameFromPath(value) {
   const text = String(value || '').trim();
@@ -66,6 +81,24 @@ function toSiteImageUrl(path) {
   if (/^https?:\/\//i.test(value)) return value;
   if (value.startsWith('/images/')) return `${siteImageBaseUrl}${value}`;
   return value;
+}
+
+function formatBytes(bytes) {
+  const value = Number(bytes || 0);
+  if (!Number.isFinite(value) || value <= 0) return '0 MB';
+  return `${(value / 1024 / 1024).toFixed(2)} MB`;
+}
+
+function isHeicFile(file) {
+  const type = String(file?.type || '').toLowerCase();
+  const name = String(file?.name || '').toLowerCase();
+  return type.includes('heic') || type.includes('heif') || /\.(heic|heif)$/.test(name);
+}
+
+function isJpegOrPng(file) {
+  const type = String(file?.type || '').toLowerCase();
+  const name = String(file?.name || '').toLowerCase();
+  return type === 'image/jpeg' || type === 'image/png' || /\.(jpe?g|png)$/.test(name);
 }
 
 async function fetchJson(path) {
@@ -192,7 +225,9 @@ async function loadSettingsForPage() {
 }
 
 function renderSettingsPage(settings, source) {
+  currentSettingsSource = source;
   renderCurrentSettings(settings);
+  syncSettingsUploadDefaults(settings);
   renderSettingsHistory('hero', settings.heroImageHistory, settingsHeroHistory);
   renderSettingsHistory('about', settings.aboutImageHistory, settingsAboutHistory);
   if (settingsMessage) {
@@ -200,6 +235,15 @@ function renderSettingsPage(settings, source) {
       ? 'devブランチの最新サイト設定を表示しています。'
       : '静的JSONのサイト設定を表示しています。切替にはCloudflare Access認証が必要です。';
   }
+}
+
+function syncSettingsUploadDefaults(settings) {
+  if (settingsHeroYear) settingsHeroYear.value = settings.heroImageYear || new Date().getFullYear();
+  if (settingsHeroSeason) settingsHeroSeason.value = settings.heroImageSeason || 'spring';
+  if (settingsAboutYear) settingsAboutYear.value = settings.aboutImageYear || new Date().getFullYear();
+  if (settingsAboutSeason) settingsAboutSeason.value = settings.aboutImageSeason || 'spring';
+  updateSettingsUploadState('hero');
+  updateSettingsUploadState('about');
 }
 
 function renderCurrentSettings(settings) {
@@ -222,10 +266,12 @@ function renderSettingsHistory(kind, history, container) {
     return;
   }
 
+  const canSwitch = currentSettingsSource === 'github';
   container.innerHTML = items.map((item, index) => {
     const isCurrent = kind === 'hero'
       ? item.path === currentSiteSettings?.heroImage
       : item.path === currentSiteSettings?.aboutImage;
+    const action = renderSettingsHistoryAction({ kind, index, isCurrent, canSwitch });
     return `
       <article class="settings-history-card">
         <img src="${escapeHtml(toSiteImageUrl(item.path))}" alt="${kind === 'hero' ? 'Hero画像履歴' : 'About画像履歴'} ${index + 1}" loading="lazy">
@@ -236,11 +282,23 @@ function renderSettingsHistory(kind, history, container) {
             <div><dt>季節・年</dt><dd>${escapeHtml(item.season || '未設定')} / ${escapeHtml(item.year || '未設定')}</dd></div>
             <div><dt>保存日</dt><dd>${escapeHtml(formatSavedAt(item.savedAt))}</dd></div>
           </dl>
-          <button type="button" data-settings-switch="${kind}" data-settings-index="${index}" ${isCurrent ? 'disabled' : ''}>${isCurrent ? '使用中' : '使用中に切り替え'}</button>
+          ${action}
         </div>
       </article>
     `;
   }).join('');
+}
+
+function renderSettingsHistoryAction({ kind, index, isCurrent, canSwitch }) {
+  if (isCurrent) {
+    return '<p class="settings-current-label">使用中</p>';
+  }
+
+  if (!canSwitch) {
+    return '<p class="settings-action-note">静的JSON表示中のため、この画面では切り替えできません。Cloudflare Access認証後に操作できます。</p>';
+  }
+
+  return `<button type="button" data-settings-switch="${kind}" data-settings-index="${index}">使用中に切り替え</button>`;
 }
 
 function formatSavedAt(value) {
@@ -303,6 +361,110 @@ function renderSettingsResult(value) {
     : JSON.stringify(value, null, 2);
 }
 
+function settingsUploadRefs(kind) {
+  if (kind === 'hero') {
+    return {
+      fileInput: settingsHeroUpload,
+      yearInput: settingsHeroYear,
+      seasonInput: settingsHeroSeason,
+      memoInput: settingsHeroUploadMemo,
+      preview: settingsHeroUploadPreview,
+      saveButton: settingsHeroUploadSave
+    };
+  }
+  return {
+    fileInput: settingsAboutUpload,
+    yearInput: settingsAboutYear,
+    seasonInput: settingsAboutSeason,
+    memoInput: settingsAboutUploadMemo,
+    preview: settingsAboutUploadPreview,
+    saveButton: settingsAboutUploadSave
+  };
+}
+
+function handleSettingsImageSelected(kind) {
+  const refs = settingsUploadRefs(kind);
+  const file = refs.fileInput?.files?.[0] || null;
+  selectedSettingsImages.set(kind, file);
+  renderSettingsUploadPreview(kind, file);
+  updateSettingsUploadState(kind);
+}
+
+function renderSettingsUploadPreview(kind, file) {
+  const refs = settingsUploadRefs(kind);
+  if (settingsPreviewUrls.has(kind)) URL.revokeObjectURL(settingsPreviewUrls.get(kind));
+  settingsPreviewUrls.delete(kind);
+  if (!refs.preview) return;
+  const img = refs.preview.querySelector('img');
+  const meta = refs.preview.querySelector('small');
+  if (!file) {
+    refs.preview.hidden = true;
+    img?.removeAttribute('src');
+    if (meta) meta.textContent = '';
+    return;
+  }
+  const url = URL.createObjectURL(file);
+  settingsPreviewUrls.set(kind, url);
+  if (img) img.src = url;
+  if (meta) {
+    meta.textContent = `${file.name || '画像'} / ${file.type || 'MIME不明'} / ${formatBytes(file.size)}`;
+  }
+  refs.preview.hidden = false;
+}
+
+function updateSettingsUploadState(kind) {
+  const refs = settingsUploadRefs(kind);
+  if (!refs.saveButton) return;
+  const file = selectedSettingsImages.get(kind);
+  const year = Number(refs.yearInput?.value);
+  const season = String(refs.seasonInput?.value || '').trim();
+  refs.saveButton.disabled = !file || !isJpegOrPng(file) || isHeicFile(file) || !Number.isInteger(year) || !season || currentSettingsSource !== 'github';
+}
+
+async function saveSettingsImagePending(kind) {
+  const refs = settingsUploadRefs(kind);
+  const file = selectedSettingsImages.get(kind);
+  if (!file || !refs.saveButton) return;
+  if (isHeicFile(file) || !isJpegOrPng(file)) {
+    if (settingsMessage) settingsMessage.textContent = '新しい画像はJPEGまたはPNGを選択してください。HEIC / HEIFは非対応です。';
+    return;
+  }
+  const settings = {
+    kind,
+    year: Number(refs.yearInput?.value),
+    season: String(refs.seasonInput?.value || '').trim(),
+    memo: String(refs.memoInput?.value || '').trim()
+  };
+  refs.saveButton.disabled = true;
+  refs.saveButton.textContent = '保存中...';
+  if (settingsMessage) settingsMessage.textContent = `${kind === 'hero' ? 'Hero画像' : 'About画像'}をpendingへ保存中です...`;
+  try {
+    const form = new FormData();
+    form.append('settings', JSON.stringify(settings));
+    form.append('original', file, file.name || 'original.jpg');
+    const resp = await fetch('/api/admin/settings-image-upload-pending', {
+      method: 'POST',
+      body: form
+    });
+    const json = await readResponseJson(resp);
+    renderSettingsResult(json);
+    if (!resp.ok || json.success === false) {
+      if (settingsMessage) settingsMessage.textContent = json.error?.message || '画像差し替えのpending保存に失敗しました。';
+      return;
+    }
+    if (settingsMessage) settingsMessage.textContent = '画像差し替えを登録予約しました。GitHub ActionsでWebP変換後、履歴に追加され使用中になります。';
+    refs.fileInput.value = '';
+    selectedSettingsImages.delete(kind);
+    renderSettingsUploadPreview(kind, null);
+  } catch (err) {
+    renderSettingsResult({ success: false, error: { message: err.message } });
+    if (settingsMessage) settingsMessage.textContent = '画像差し替えのpending保存に失敗しました。';
+  } finally {
+    refs.saveButton.textContent = '差し替え保存';
+    updateSettingsUploadState(kind);
+  }
+}
+
 function renderAuthStatus(kind, title, detail) {
   if (!authStatus || !authStatusTitle || !authStatusDetail) return;
   authStatus.hidden = false;
@@ -341,6 +503,7 @@ function renderPendingResult(value) {
 function pendingTypeLabel(type) {
   if (type === 'works') return '作品';
   if (type === 'models') return 'モデル';
+  if (type === 'modelImages') return 'モデル画像';
   return '設定';
 }
 
@@ -356,8 +519,9 @@ function renderPendingStatus(payload) {
 
   const works = Array.isArray(payload.pending?.works) ? payload.pending.works : [];
   const models = Array.isArray(payload.pending?.models) ? payload.pending.models : [];
+  const modelImages = Array.isArray(payload.pending?.modelImages) ? payload.pending.modelImages : [];
   const settings = Array.isArray(payload.pending?.settings) ? payload.pending.settings : [];
-  const items = [...works, ...models, ...settings];
+  const items = [...works, ...models, ...modelImages, ...settings];
 
   if (!items.length) {
     pendingSummary.textContent = 'pendingはありません。保存途中または反映待ちの登録予約は残っていません。';
@@ -1084,3 +1248,13 @@ settingsAboutHistory?.addEventListener('click', (event) => {
   if (!button) return;
   switchSettingsImage(button.dataset.settingsSwitch, Number(button.dataset.settingsIndex));
 });
+settingsHeroUpload?.addEventListener('change', () => handleSettingsImageSelected('hero'));
+settingsAboutUpload?.addEventListener('change', () => handleSettingsImageSelected('about'));
+[settingsHeroYear, settingsHeroSeason, settingsHeroUploadMemo].forEach((input) => {
+  input?.addEventListener('input', () => updateSettingsUploadState('hero'));
+});
+[settingsAboutYear, settingsAboutSeason, settingsAboutUploadMemo].forEach((input) => {
+  input?.addEventListener('input', () => updateSettingsUploadState('about'));
+});
+settingsHeroUploadSave?.addEventListener('click', () => saveSettingsImagePending('hero'));
+settingsAboutUploadSave?.addEventListener('click', () => saveSettingsImagePending('about'));
