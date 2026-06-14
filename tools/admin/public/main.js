@@ -29,10 +29,15 @@ const modelsTestResult = document.getElementById('modelsTestResult');
 const settingsGetTestButton = document.getElementById('settingsGetTestButton');
 const settingsPutTestButton = document.getElementById('settingsPutTestButton');
 const settingsTestResult = document.getElementById('settingsTestResult');
+const pendingPanel = document.getElementById('pendingPanel');
+const pendingSummary = document.getElementById('pendingSummary');
+const pendingList = document.getElementById('pendingList');
+const pendingResult = document.getElementById('pendingResult');
 const testEditWorkId = '260328minaseaoi_0002';
 const testEditOriginalTitle = 'ひだまりの笑顔';
 const testDeleteWorkId = '260612cloudflaretest_1099';
 const testModelId = 'cloudflare-test-model';
+const pendingItemsByKey = new Map();
 
 function fileNameFromPath(value) {
   const text = String(value || '').trim();
@@ -145,6 +150,182 @@ function renderAuthStatus(kind, title, detail) {
   authStatusDetail.textContent = detail;
 }
 
+async function readResponseJson(resp) {
+  const text = await resp.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return {
+      success: false,
+      error: {
+        code: 'invalid_response',
+        message: 'APIレスポンスをJSONとして解析できませんでした。',
+        status: resp.status,
+        contentType: resp.headers.get('content-type') || '',
+        bodyPreview: text.slice(0, 500)
+      }
+    };
+  }
+}
+
+function renderPendingResult(value) {
+  if (!pendingResult) return;
+  pendingResult.hidden = false;
+  pendingResult.textContent = typeof value === 'string'
+    ? value
+    : JSON.stringify(value, null, 2);
+}
+
+function pendingTypeLabel(type) {
+  if (type === 'works') return '作品';
+  if (type === 'models') return 'モデル';
+  return '設定';
+}
+
+function pendingDisplayTitle(item) {
+  return item.title || item.id || 'ID未取得';
+}
+
+function renderPendingStatus(payload) {
+  if (!pendingPanel || !pendingSummary || !pendingList) return;
+  pendingPanel.hidden = false;
+  pendingItemsByKey.clear();
+  pendingList.innerHTML = '';
+
+  const works = Array.isArray(payload.pending?.works) ? payload.pending.works : [];
+  const models = Array.isArray(payload.pending?.models) ? payload.pending.models : [];
+  const settings = Array.isArray(payload.pending?.settings) ? payload.pending.settings : [];
+  const items = [...works, ...models, ...settings];
+
+  if (!items.length) {
+    pendingSummary.textContent = 'pendingはありません。保存途中または反映待ちの登録予約は残っていません。';
+    return;
+  }
+
+  pendingSummary.textContent = `${items.length}件のpendingがあります。pendingは保存処理途中、または反映前の一時状態です。勝手には削除しません。`;
+
+  for (const item of items) {
+    const key = `${item.type}:${item.id}`;
+    pendingItemsByKey.set(key, item);
+    const card = document.createElement('article');
+    card.className = `pending-card ${item.status === 'needs_attention' ? 'is-warning' : 'is-waiting'}`;
+    card.innerHTML = `
+      <div class="pending-card-main">
+        <span class="pending-badge">${escapeHtml(item.statusLabel || '反映待ち')}</span>
+        <h3>${escapeHtml(pendingTypeLabel(item.type))}: ${escapeHtml(pendingDisplayTitle(item))}</h3>
+        <dl>
+          <div><dt>ID</dt><dd>${escapeHtml(item.id)}</dd></div>
+          <div><dt>状態</dt><dd>${escapeHtml(item.statusLabel || '反映待ち')}</dd></div>
+          <div><dt>元画像</dt><dd>${escapeHtml(item.hasOriginal ? item.originalFile : '見つかりません')}</dd></div>
+          <div><dt>JSON</dt><dd>${escapeHtml(item.jsonValid ? '構文OK' : `構文エラー: ${item.jsonError || '不明'}`)}</dd></div>
+        </dl>
+        <p class="pending-help">${item.status === 'needs_attention'
+          ? '失敗の可能性があります。内容確認後、再試行するか、不要ならpendingだけを破棄してください。'
+          : 'GitHub Actionsによる反映待ちです。しばらく待っても残る場合は再試行できます。'}</p>
+      </div>
+      <div class="pending-actions">
+        <button type="button" data-pending-action="details" data-pending-key="${escapeHtml(key)}">pending内容を確認</button>
+        <button type="button" data-pending-action="retry" data-pending-key="${escapeHtml(key)}" ${item.jsonValid && item.canRetry !== false ? '' : 'disabled'}>再試行</button>
+        <button class="danger-button" type="button" data-pending-action="discard" data-pending-key="${escapeHtml(key)}">pendingを破棄</button>
+      </div>
+    `;
+    pendingList.append(card);
+  }
+}
+
+function renderPendingLoadError(error) {
+  if (!pendingPanel || !pendingSummary || !pendingList) return;
+  pendingPanel.hidden = false;
+  pendingSummary.textContent = 'pending状態を取得できませんでした。Cloudflare Access認証またはGitHub接続を確認してください。';
+  pendingList.innerHTML = '';
+  renderPendingResult(error);
+}
+
+async function loadPendingStatus() {
+  if (!isSummaryPage || !pendingPanel) return;
+
+  try {
+    const resp = await fetch('/api/admin/pending', { cache: 'no-store' });
+    const json = await readResponseJson(resp);
+    if (!resp.ok || json.success === false) {
+      renderPendingLoadError(json);
+      return;
+    }
+    renderPendingStatus(json);
+  } catch (err) {
+    renderPendingLoadError({
+      success: false,
+      error: {
+        message: err.message
+      }
+    });
+  }
+}
+
+async function requestPendingAction(method, item) {
+  const resp = await fetch('/api/admin/pending', {
+    method,
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      type: item.type,
+      id: item.id
+    })
+  });
+  const json = await readResponseJson(resp);
+  return { ok: resp.ok && json.success !== false, json };
+}
+
+async function handlePendingAction(event) {
+  const button = event.target.closest('[data-pending-action]');
+  if (!button) return;
+
+  const item = pendingItemsByKey.get(button.dataset.pendingKey);
+  if (!item) return;
+
+  const action = button.dataset.pendingAction;
+  if (action === 'details') {
+    renderPendingResult({
+      note: 'pending内容です。保存済みとは異なり、まだ本体JSONへ反映されていない一時状態です。',
+      item
+    });
+    pendingResult?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+
+  if (action === 'retry') {
+    const ok = window.confirm(`${pendingTypeLabel(item.type)} ${item.id} のpendingを再試行します。GitHub Actionsを再実行するためのcommitがdevへ作成されます。`);
+    if (!ok) return;
+    button.disabled = true;
+    renderPendingResult('pending再試行を要求中です...');
+    const result = await requestPendingAction('POST', item);
+    renderPendingResult(result.json);
+    await loadPendingStatus();
+    return;
+  }
+
+  if (action === 'discard') {
+    const ok = window.confirm(`${pendingTypeLabel(item.type)} ${item.id} のpendingだけを破棄します。\n\n消えるもの:\n- pending内の元画像\n- pending内のJSON\n\n消えないもの:\n- src/data/works.json\n- src/data/models.json\n- site-settings.json\n\n退避コピーを残してから破棄します。実行しますか？`);
+    if (!ok) return;
+    button.disabled = true;
+    renderPendingResult('pendingを破棄中です...');
+    const result = await requestPendingAction('DELETE', item);
+    renderPendingResult(result.json);
+    await loadPendingStatus();
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[char]);
+}
+
 async function loadCloudflareSession() {
   if (!isSummaryPage) return;
 
@@ -178,6 +359,7 @@ async function loadSummary() {
       const summary = await loadStaticSummary();
       renderSummary(summary, 'static');
       await loadCloudflareSession();
+      await loadPendingStatus();
     } catch (staticErr) {
       console.error(staticErr);
       renderSummary({
@@ -191,6 +373,7 @@ async function loadSummary() {
         heroImageYear: '未取得'
       }, 'static');
       await loadCloudflareSession();
+      await loadPendingStatus();
     }
   }
 }
@@ -724,3 +907,4 @@ modelsEditTestButton?.addEventListener('click', editModelTest);
 modelsDeleteTestButton?.addEventListener('click', deleteModelTest);
 settingsGetTestButton?.addEventListener('click', getSettingsTest);
 settingsPutTestButton?.addEventListener('click', putSettingsTest);
+pendingList?.addEventListener('click', handlePendingAction);

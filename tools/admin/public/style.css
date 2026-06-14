@@ -420,6 +420,122 @@ h2 {
   white-space: pre-wrap;
 }
 
+.pending-panel {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e4ddec;
+}
+
+.pending-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.pending-card {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e4ddec;
+  background: #fff;
+}
+
+.pending-card.is-waiting {
+  border-color: #d8c18e;
+  background: #fffaf0;
+}
+
+.pending-card.is-warning {
+  border-color: #e2a0ad;
+  background: #fff5f7;
+}
+
+.pending-card h3 {
+  margin: 8px 0 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.pending-card dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.pending-card dl > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pending-card dt {
+  color: #777;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.pending-card dd {
+  min-width: 0;
+  margin: 0;
+  color: #222;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.pending-badge {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px 9px;
+  border: 1px solid currentColor;
+  color: #6b4f00;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.pending-card.is-warning .pending-badge {
+  color: #9b1735;
+}
+
+.pending-help {
+  margin-top: 12px;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.pending-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.pending-actions button {
+  min-height: 46px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pending-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.pending-actions .danger-button {
+  border-color: #8f1d1d;
+  background: #fff6f6;
+  color: #8f1d1d;
+}
+
 .static-search {
   display: grid;
   gap: 6px;
@@ -1185,6 +1301,11 @@ h2 {
 
   .tool-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pending-card {
+    grid-template-columns: minmax(0, 1fr) 180px;
+    align-items: start;
   }
 
   .preview-form-grid,
