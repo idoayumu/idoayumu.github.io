@@ -536,6 +536,109 @@ h2 {
   color: #8f1d1d;
 }
 
+.settings-current-grid,
+.settings-history {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e4ddec;
+}
+
+.settings-current-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.settings-section-wide {
+  margin-bottom: 0;
+}
+
+.settings-image-card,
+.settings-history-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e4ddec;
+  background: #fff;
+}
+
+.settings-image-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.settings-image-card img,
+.settings-history-card img {
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  margin-bottom: 14px;
+  background: #f1eef7;
+}
+
+.settings-image-card dl,
+.settings-history-card dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.settings-image-card dl > div,
+.settings-history-card dl > div {
+  min-width: 0;
+}
+
+.settings-image-card dt,
+.settings-history-card dt {
+  color: #777;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.settings-image-card dd,
+.settings-history-card dd {
+  min-width: 0;
+  margin: 2px 0 0;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.settings-history-list {
+  display: grid;
+  gap: 14px;
+}
+
+.settings-history-card {
+  display: grid;
+  gap: 14px;
+}
+
+.settings-history-card strong {
+  display: block;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.settings-history-card button {
+  min-height: 46px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.settings-history-card button:disabled {
+  border-color: #ccc;
+  background: #f1eef7;
+  color: #777;
+  cursor: not-allowed;
+}
+
 .static-search {
   display: grid;
   gap: 6px;
@@ -1306,6 +1409,18 @@ h2 {
   .pending-card {
     grid-template-columns: minmax(0, 1fr) 180px;
     align-items: start;
+  }
+
+  .settings-current-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-section-wide {
+    grid-column: 1 / -1;
+  }
+
+  .settings-history-card {
+    grid-template-columns: 240px minmax(0, 1fr);
   }
 
   .preview-form-grid,

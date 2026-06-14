@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <title>サイト設定 | 光景ノオト管理ツール</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body class="is-static-mode settings-page">
+  <main>
+    <nav class="admin-nav" aria-label="管理ツールナビゲーション">
+      <a class="admin-nav-title" href="/">光景ノオト管理ツール</a>
+      <div class="admin-nav-links">
+        <a class="is-static-readable" href="/admin/works/">作品管理</a>
+        <a class="is-static-readable" href="/admin/models/">モデル管理</a>
+        <a class="is-active is-static-readable" href="/admin/settings/">サイト設定</a>
+        <a href="https://idoayumu.github.io/" target="_blank" rel="noopener noreferrer">光景ノオトを見る</a>
+      </div>
+    </nav>
+
+    <header class="page-header">
+      <p class="eyebrow">Site Settings</p>
+      <h1>サイト設定</h1>
+      <p>現在のHero画像・About画像と画像履歴を確認し、履歴画像を使用中に切り替えます。</p>
+      <div class="auth-status" id="authStatus" hidden>
+        <strong id="authStatusTitle">Cloudflare Access認証を確認中</strong>
+        <span id="authStatusDetail">保存機能を確認しています</span>
+      </div>
+    </header>
+
+    <section class="settings-current-grid" aria-labelledby="settings-current-title">
+      <div class="section-heading settings-section-wide">
+        <p>Current</p>
+        <h2 id="settings-current-title">現在の画像</h2>
+      </div>
+
+      <article class="settings-image-card">
+        <div class="section-heading">
+          <p>Hero</p>
+          <h3>現在のHero画像</h3>
+        </div>
+        <img id="settingsHeroImage" alt="現在のHero画像" />
+        <dl>
+          <div><dt>画像</dt><dd id="settingsHeroPath">読み込み中</dd></div>
+          <div><dt>メモ</dt><dd id="settingsHeroMemo">読み込み中</dd></div>
+          <div><dt>季節・年</dt><dd id="settingsHeroMeta">読み込み中</dd></div>
+        </dl>
+      </article>
+
+      <article class="settings-image-card">
+        <div class="section-heading">
+          <p>About</p>
+          <h3>現在のAbout画像</h3>
+        </div>
+        <img id="settingsAboutImage" alt="現在のAbout画像" />
+        <dl>
+          <div><dt>画像</dt><dd id="settingsAboutPath">読み込み中</dd></div>
+          <div><dt>メモ</dt><dd id="settingsAboutMemo">読み込み中</dd></div>
+          <div><dt>季節・年</dt><dd id="settingsAboutMeta">読み込み中</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="settings-history" aria-labelledby="settings-hero-history-title">
+      <div class="section-heading">
+        <p>画像履歴</p>
+        <h2 id="settings-hero-history-title">Hero画像履歴</h2>
+      </div>
+      <div class="settings-history-list" id="settingsHeroHistory"></div>
+    </section>
+
+    <section class="settings-history" aria-labelledby="settings-about-history-title">
+      <div class="section-heading">
+        <p>画像履歴</p>
+        <h2 id="settings-about-history-title">About画像履歴</h2>
+      </div>
+      <div class="settings-history-list" id="settingsAboutHistory"></div>
+    </section>
+
+    <p class="note" id="settingsMessage">サイト設定を読み込み中です。</p>
+    <pre class="test-result" id="settingsResult" hidden></pre>
+  </main>
+
+  <script src="/main.js"></script>
+</body>
+
+</html>
