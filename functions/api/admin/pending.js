@@ -22,6 +22,7 @@ const pendingTypes = {
     label: '作品',
     singular: 'work',
     root: 'tools/admin/uploads/works/pending',
+    discardRoot: 'tools/admin/uploads/works/discarded',
     jsonName: 'work.json',
     idKey: 'workId',
     titleKey: 'title'
@@ -30,14 +31,25 @@ const pendingTypes = {
     label: 'モデル',
     singular: 'model',
     root: 'tools/admin/uploads/models/pending',
+    discardRoot: 'tools/admin/uploads/models/discarded',
     jsonName: 'model.json',
     idKey: 'modelId',
     titleKey: 'name'
+  },
+  modelImages: {
+    label: 'モデル画像',
+    singular: 'model image',
+    root: 'tools/admin/uploads/models/replace-pending',
+    discardRoot: 'tools/admin/uploads/models/replace-discarded',
+    jsonName: 'model.json',
+    idKey: 'modelId',
+    titleKey: 'id'
   },
   settings: {
     label: '設定',
     singular: 'setting',
     root: 'tools/admin/uploads/settings/pending',
+    discardRoot: 'tools/admin/uploads/settings/discarded',
     jsonName: 'settings.json',
     idKey: 'settingsId',
     titleKey: 'title'
@@ -217,7 +229,7 @@ async function discardPending(config, installationToken, { type, id }) {
     throw httpError(404, 'pending_not_found', `${typeConfig.label}pendingが見つかりません: ${id}`);
   }
 
-  const backupRoot = `tools/admin/uploads/${type}/discarded/${id}/${timestampForPath()}`;
+  const backupRoot = `${typeConfig.discardRoot}/${id}/${timestampForPath()}`;
   const backupEntries = group.entries
     .filter((entry) => entry.type === 'blob' && entry.sha)
     .map((entry) => ({
@@ -260,6 +272,7 @@ async function collectPendingStatus(config, installationToken, tree) {
   return {
     works: await collectTypePendingStatus(config, installationToken, tree, 'works'),
     models: await collectTypePendingStatus(config, installationToken, tree, 'models'),
+    modelImages: await collectTypePendingStatus(config, installationToken, tree, 'modelImages'),
     settings: await collectTypePendingStatus(config, installationToken, tree, 'settings')
   };
 }

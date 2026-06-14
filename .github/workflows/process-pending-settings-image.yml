@@ -1,4 +1,4 @@
-name: Process pending model
+name: Process pending settings image
 
 on:
   workflow_dispatch:
@@ -6,14 +6,13 @@ on:
     branches:
       - dev
     paths:
-      - 'tools/admin/uploads/models/pending/**'
-      - 'tools/admin/uploads/models/replace-pending/**'
+      - 'tools/admin/uploads/settings/pending/**'
 
 permissions:
   contents: write
 
 concurrency:
-  group: process-pending-model-dev
+  group: process-pending-settings-image-dev
   cancel-in-progress: false
 
 jobs:
@@ -36,9 +35,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Process pending model
+      - name: Process pending settings image
         id: process
-        run: node tools/scripts/process-pending-model.cjs
+        run: node tools/scripts/process-pending-settings-image.cjs
 
       - name: Validate data
         if: steps.process.outputs.changed == 'true'
@@ -48,11 +47,11 @@ jobs:
         if: steps.process.outputs.changed == 'true'
         run: npm run build
 
-      - name: Commit processed model
+      - name: Commit processed settings image
         if: steps.process.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/images/models src/data/models.json tools/admin/public/data/models.json tools/admin/uploads/models/pending tools/admin/uploads/models/replace-pending
+          git add public/images/site src/data/site-settings.json tools/admin/public/data/site-settings.json tools/admin/uploads/settings/pending
           git commit -m "${{ steps.process.outputs.commit_message }}"
           git push origin dev

@@ -3,6 +3,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..', '..');
 const PENDING_ROOT = path.join(ROOT, 'tools', 'admin', 'uploads', 'models', 'pending');
+const REPLACE_PENDING_ROOT = path.join(ROOT, 'tools', 'admin', 'uploads', 'models', 'replace-pending');
 const MODELS_JSON = path.join(ROOT, 'src', 'data', 'models.json');
 const ADMIN_MODELS_JSON = path.join(ROOT, 'tools', 'admin', 'public', 'data', 'models.json');
 const MODELS_IMAGE_DIR = path.join(ROOT, 'public', 'images', 'models');
@@ -17,7 +18,8 @@ main().catch((err) => {
 
 async function main() {
   const pendingItems = readPendingItems();
-  if (!pendingItems.length) {
+  const replaceItems = readReplacePendingItems();
+  if (!pendingItems.length && !replaceItems.length) {
     console.log('No pending models found.');
     setGithubOutput({
       changed: 'false',
@@ -28,8 +30,10 @@ async function main() {
 
   const models = readJson(MODELS_JSON, 'src/data/models.json');
   validatePendingItems(pendingItems, models);
+  validateReplaceItems(replaceItems, models);
 
-  console.log(`Pending models: ${pendingItems.map((item) => item.model.id).join(', ')}`);
+  if (pendingItems.length) console.log(`Pending models: ${pendingItems.map((item) => item.model.id).join(', ')}`);
+  if (replaceItems.length) console.log(`Pending model image replacements: ${replaceItems.map((item) => item.modelId).join(', ')}`);
 
   if (isDryRun) {
     console.log('Dry-run completed. No files were changed.');
@@ -41,26 +45,35 @@ async function main() {
   for (const item of pendingItems) {
     await writeProfileImage(item);
   }
+  for (const item of replaceItems) {
+    await writeReplacementProfileImage(item);
+  }
 
-  const nextModels = [
+  let nextModels = [
     ...models,
     ...pendingItems.map((item) => item.model)
   ];
+  nextModels = applyReplacementModels(nextModels, replaceItems);
   writeJson(MODELS_JSON, nextModels);
   writeJson(ADMIN_MODELS_JSON, nextModels);
 
   for (const item of pendingItems) {
     fs.rmSync(item.dir, { recursive: true, force: true });
   }
+  for (const item of replaceItems) {
+    fs.rmSync(item.dir, { recursive: true, force: true });
+  }
 
   setGithubOutput({
     changed: 'true',
-    commit_message: pendingItems.length === 1
+    commit_message: replaceItems.length === 1 && !pendingItems.length
+      ? `Replace model image ${replaceItems[0].modelId}`
+      : pendingItems.length === 1 && !replaceItems.length
       ? `Process pending model ${pendingItems[0].model.id}`
-      : `Process ${pendingItems.length} pending models`
+      : `Process ${pendingItems.length + replaceItems.length} pending model changes`
   });
 
-  console.log(`Processed ${pendingItems.length} pending model(s).`);
+  console.log(`Processed ${pendingItems.length} pending model(s) and ${replaceItems.length} image replacement(s).`);
 }
 
 function readPendingItems() {
@@ -85,6 +98,31 @@ function readPendingItems() {
       };
     })
     .sort((a, b) => a.model.id.localeCompare(b.model.id));
+}
+
+function readReplacePendingItems() {
+  if (!fs.existsSync(REPLACE_PENDING_ROOT)) return [];
+
+  return fs.readdirSync(REPLACE_PENDING_ROOT, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      const dir = path.join(REPLACE_PENDING_ROOT, entry.name);
+      const modelJsonPath = path.join(dir, 'model.json');
+      if (!fs.existsSync(modelJsonPath)) {
+        throw new Error(`Missing model.json: ${rel(modelJsonPath)}`);
+      }
+      const model = readJson(modelJsonPath, rel(modelJsonPath));
+      const modelId = trim(model.id);
+      if (modelId !== entry.name) throw new Error(`${entry.name}/model.json: id must match pending directory name.`);
+      return {
+        dir,
+        modelJsonPath,
+        originalPath: findOriginalImage(dir),
+        modelId,
+        nextImage: `${modelId}_profile_${timestampForFile()}.webp`
+      };
+    })
+    .sort((a, b) => a.modelId.localeCompare(b.modelId));
 }
 
 function findOriginalImage(dir) {
@@ -158,6 +196,22 @@ function validatePendingItems(items, models) {
   });
 }
 
+function validateReplaceItems(items, models) {
+  const existingIds = new Set(models.map((model) => model?.id).filter(Boolean));
+  const pendingIds = new Set();
+  items.forEach((item) => {
+    if (!existingIds.has(item.modelId)) {
+      throw new Error(`Model not found in models.json: ${item.modelId}`);
+    }
+    if (pendingIds.has(item.modelId)) {
+      throw new Error(`Duplicate pending model image replacement: ${item.modelId}`);
+    }
+    pendingIds.add(item.modelId);
+    const imagePath = path.join(MODELS_IMAGE_DIR, item.nextImage);
+    if (fs.existsSync(imagePath)) throw new Error(`Model image already exists: ${rel(imagePath)}`);
+  });
+}
+
 async function writeProfileImage(item) {
   const sharp = require('sharp');
   const imagePath = path.join(MODELS_IMAGE_DIR, item.model.thumbnail);
@@ -167,6 +221,31 @@ async function writeProfileImage(item) {
     .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
     .webp({ quality: 85 })
     .toFile(imagePath);
+}
+
+async function writeReplacementProfileImage(item) {
+  const sharp = require('sharp');
+  const imagePath = path.join(MODELS_IMAGE_DIR, item.nextImage);
+
+  await sharp(item.originalPath, { failOn: 'none', unlimited: true })
+    .rotate()
+    .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
+    .webp({ quality: 85 })
+    .toFile(imagePath);
+}
+
+function applyReplacementModels(models, items) {
+  if (!items.length) return models;
+  const byId = new Map(items.map((item) => [item.modelId, item]));
+  return models.map((model) => {
+    const item = byId.get(model?.id);
+    if (!item) return model;
+    return {
+      ...model,
+      thumbnail: item.nextImage,
+      profileImage: item.nextImage
+    };
+  });
 }
 
 function readJson(filePath, label) {
@@ -184,6 +263,17 @@ function writeJson(filePath, value) {
 
 function trim(value) {
   return String(value || '').trim();
+}
+
+function timestampForFile() {
+  const now = new Date();
+  const yyyy = now.getUTCFullYear();
+  const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(now.getUTCDate()).padStart(2, '0');
+  const hh = String(now.getUTCHours()).padStart(2, '0');
+  const min = String(now.getUTCMinutes()).padStart(2, '0');
+  const ss = String(now.getUTCSeconds()).padStart(2, '0');
+  return `${yyyy}${mm}${dd}${hh}${min}${ss}`;
 }
 
 function extractSocialHandleFromUrl(value, service) {

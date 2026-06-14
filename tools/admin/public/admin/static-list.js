@@ -69,6 +69,9 @@
   const modelProfileFileName = document.getElementById('modelProfileFileName');
   const modelProfileMimeType = document.getElementById('modelProfileMimeType');
   const modelProfileFileSize = document.getElementById('modelProfileFileSize');
+  const modelCurrentProfileImage = document.getElementById('modelCurrentProfileImage');
+  const modelCurrentProfileImageThumb = document.getElementById('modelCurrentProfileImageThumb');
+  const modelCurrentProfileImagePath = document.getElementById('modelCurrentProfileImagePath');
   const modelFormProfileImage = document.getElementById('modelFormProfileImage');
   const modelFormX = document.getElementById('modelFormX');
   const modelFormInstagram = document.getElementById('modelFormInstagram');
@@ -79,6 +82,7 @@
   const modelProfileImageField = document.getElementById('modelProfileImageField');
   const modelProfileAdvancedOption = document.getElementById('modelProfileAdvancedOption');
   const saveModelDev = document.getElementById('saveModelDev');
+  const saveModelImageReplace = document.getElementById('saveModelImageReplace');
   const cancelModelEdit = document.getElementById('cancelModelEdit');
   const modelFormMessage = document.getElementById('modelFormMessage');
   const modelSaveResult = document.getElementById('modelSaveResult');
@@ -929,6 +933,12 @@
       ? !model.name
       : Boolean(baseMessage || suffixMessage || idMessage || imageMessage) || !model.name || duplicate;
     saveModelDev.disabled = nextDisabled;
+    if (saveModelImageReplace) {
+      saveModelImageReplace.disabled = !isEditingModel
+        || !selectedModelProfileImage
+        || isHeicFile(selectedModelProfileImage)
+        || !isPendingSourceImage(selectedModelProfileImage);
+    }
     if (modelIdError) {
       modelIdError.textContent = isEditingModel ? '' : baseMessage || suffixMessage || idMessage;
       modelIdError.hidden = isEditingModel || !(baseMessage || suffixMessage || idMessage);
@@ -937,7 +947,9 @@
       if (isEditingModel && !model.name) {
         modelFormMessage.textContent = '名前を入力してください。';
       } else if (isEditingModel) {
-        modelFormMessage.textContent = '編集内容をdevブランチへ保存できます。idと画像は変更できません。';
+        modelFormMessage.textContent = selectedModelProfileImage
+          ? '保存前プレビューを確認し、画像だけ差し替える場合は「プロフィール画像を差し替え」を押してください。'
+          : '編集内容をdevブランチへ保存できます。プロフィール画像も差し替えできます。';
       } else if (duplicate) {
         modelFormMessage.textContent = `同じモデルIDが既に存在します: ${model.id}`;
       } else if (baseMessage || suffixMessage || idMessage) {
@@ -1044,15 +1056,34 @@
     editableIdFields.forEach((input) => {
       if (input) input.disabled = isEditingModel;
     });
-    if (modelProfileImageField) modelProfileImageField.hidden = isEditingModel;
+    if (modelProfileImageField) modelProfileImageField.hidden = false;
     if (modelProfileAdvancedOption) modelProfileAdvancedOption.hidden = isEditingModel;
     if (cancelModelEdit) cancelModelEdit.hidden = !isEditingModel;
+    if (saveModelImageReplace) saveModelImageReplace.hidden = !isEditingModel;
     if (saveModelDev) saveModelDev.textContent = isEditingModel ? '編集を保存' : 'pendingへモデル保存';
     if (modelEditNotice) {
       modelEditNotice.hidden = !isEditingModel;
       modelEditNotice.textContent = isEditingModel
-        ? `編集中: ${editingModelId}。idとプロフィール画像は変更できません。画像差し替えは別フェーズです。`
+        ? `編集中: ${editingModelId}。idは変更できません。プロフィール画像を差し替える場合は新しい画像を選択し、「プロフィール画像を差し替え」を押してください。`
         : '';
+    }
+    renderCurrentModelProfileImage();
+  }
+
+  function renderCurrentModelProfileImage() {
+    if (!modelCurrentProfileImage) return;
+    const model = modelsListRef.find((item) => item?.id === editingModelId);
+    const image = model ? toSiteImageUrl(model.thumbnail || model.profileImage || '') : '';
+    modelCurrentProfileImage.hidden = !editingModelId || !image;
+    if (modelCurrentProfileImageThumb) {
+      if (image) {
+        modelCurrentProfileImageThumb.src = image;
+      } else {
+        modelCurrentProfileImageThumb.removeAttribute('src');
+      }
+    }
+    if (modelCurrentProfileImagePath) {
+      modelCurrentProfileImagePath.textContent = model?.thumbnail || model?.profileImage || '';
     }
   }
 
@@ -1125,6 +1156,7 @@
     const messages = {
       duplicate_model_id: '同じモデルIDが既に存在します。',
       pending_model_exists: '同じモデルIDのpendingデータが既にあります。直前の保存が成功している可能性があります。GitHub Actionsを確認してください。',
+      pending_model_image_replace_exists: '同じモデルのプロフィール画像差し替えpendingが既にあります。GitHub Actionsを確認してください。',
       model_not_found: '編集対象のモデルが見つかりません。画面を再読み込みしてください。',
       missing_required_fields: 'モデルIDと名前を入力してください。',
       invalid_model_id: 'モデルIDは a-z, 0-9, ハイフンで入力してください。',
@@ -1212,6 +1244,67 @@
     } finally {
       if (saveModelDev) saveModelDev.textContent = editingModelId ? '編集を保存' : 'pendingへモデル保存';
       if (!saveSucceeded) updateModelSaveState();
+    }
+  }
+
+  async function saveModelImageReplacePending() {
+    if (!saveModelImageReplace || !editingModelId || !selectedModelProfileImage) {
+      updateModelSaveState();
+      return;
+    }
+    if (isHeicFile(selectedModelProfileImage) || !isPendingSourceImage(selectedModelProfileImage)) {
+      if (modelFormMessage) modelFormMessage.textContent = '新しい画像はJPEGまたはPNGを選択してください。HEIC / HEIFは非対応です。';
+      updateModelSaveState();
+      return;
+    }
+
+    const form = new FormData();
+    form.append('model', JSON.stringify({ id: editingModelId }));
+    form.append('original', selectedModelProfileImage, selectedModelProfileImage.name || `original.${pendingExtension(selectedModelProfileImage)}`);
+
+    saveModelImageReplace.disabled = true;
+    saveModelImageReplace.textContent = '差し替え保存中...';
+    if (modelSaveResult) modelSaveResult.hidden = true;
+    hideModelPostSaveActions();
+    if (modelFormMessage) modelFormMessage.textContent = 'プロフィール画像の差し替えをpendingへ保存中です...';
+
+    try {
+      const resp = await fetch('/api/admin/model-image-replace-pending', {
+        method: 'POST',
+        body: form
+      });
+      const json = await readApiJsonResponse(resp);
+      renderModelSaveResult(json, resp.ok && json.success);
+      if (!resp.ok || !json.success) {
+        if (modelFormMessage) modelFormMessage.textContent = userMessageForModelApiError(json.error);
+        return;
+      }
+
+      renderModelPostSaveActions({
+        ...json,
+        pendingFiles: json.pendingFiles || []
+      });
+      if (modelFormMessage) {
+        modelFormMessage.textContent = `プロフィール画像の差し替えを登録予約しました。branch: ${json.branch || saveBranch} / modelId: ${json.modelId || editingModelId}`;
+      }
+      if (modelProfileImageInput) modelProfileImageInput.value = '';
+      selectedModelProfileImage = null;
+      clearModelProfilePreview();
+      modelPostSaveActions?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      console.error(err);
+      const payload = {
+        success: false,
+        error: {
+          code: 'request_failed',
+          message: err.message || 'プロフィール画像差し替えリクエストに失敗しました。'
+        }
+      };
+      renderModelSaveResult(payload, false);
+      if (modelFormMessage) modelFormMessage.textContent = payload.error.message;
+    } finally {
+      saveModelImageReplace.textContent = 'プロフィール画像を差し替え';
+      updateModelSaveState();
     }
   }
 
@@ -1817,6 +1910,7 @@
       updateModelSaveState();
     });
     saveModelDev.addEventListener('click', saveModelToDev);
+    saveModelImageReplace?.addEventListener('click', saveModelImageReplacePending);
     cancelModelEdit?.addEventListener('click', () => exitModelEditMode());
     continueModelRegister?.addEventListener('click', () => {
       editingModelId = '';

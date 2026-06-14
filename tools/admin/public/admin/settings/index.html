@@ -63,6 +63,67 @@
       </article>
     </section>
 
+    <section class="settings-replace-grid" aria-labelledby="settings-replace-title">
+      <div class="section-heading settings-section-wide">
+        <p>Replace</p>
+        <h2 id="settings-replace-title">画像差し替え</h2>
+      </div>
+
+      <article class="settings-replace-card" data-settings-upload="hero">
+        <div class="section-heading">
+          <p>Hero</p>
+          <h3>Hero画像を差し替え</h3>
+        </div>
+        <label>新しい画像を選択
+          <input id="settingsHeroUpload" type="file" accept="image/jpeg,image/png,image/heic,image/heif" />
+        </label>
+        <div class="preview-form-grid">
+          <label>year
+            <input id="settingsHeroYear" type="number" min="2000" max="2100" value="2026" />
+          </label>
+          <label>season
+            <input id="settingsHeroSeason" type="text" placeholder="spring" />
+          </label>
+          <label class="preview-form-wide">memo
+            <input id="settingsHeroUploadMemo" type="text" placeholder="画像メモ" />
+          </label>
+        </div>
+        <div class="settings-upload-preview" id="settingsHeroUploadPreview" hidden>
+          <p>保存前プレビュー</p>
+          <img alt="Hero画像 保存前プレビュー" />
+          <small></small>
+        </div>
+        <button id="settingsHeroUploadSave" type="button" disabled>差し替え保存</button>
+      </article>
+
+      <article class="settings-replace-card" data-settings-upload="about">
+        <div class="section-heading">
+          <p>About</p>
+          <h3>About画像を差し替え</h3>
+        </div>
+        <label>新しい画像を選択
+          <input id="settingsAboutUpload" type="file" accept="image/jpeg,image/png,image/heic,image/heif" />
+        </label>
+        <div class="preview-form-grid">
+          <label>year
+            <input id="settingsAboutYear" type="number" min="2000" max="2100" value="2026" />
+          </label>
+          <label>season
+            <input id="settingsAboutSeason" type="text" placeholder="spring" />
+          </label>
+          <label class="preview-form-wide">memo
+            <input id="settingsAboutUploadMemo" type="text" placeholder="画像メモ" />
+          </label>
+        </div>
+        <div class="settings-upload-preview" id="settingsAboutUploadPreview" hidden>
+          <p>保存前プレビュー</p>
+          <img alt="About画像 保存前プレビュー" />
+          <small></small>
+        </div>
+        <button id="settingsAboutUploadSave" type="button" disabled>差し替え保存</button>
+      </article>
+    </section>
+
     <section class="settings-history" aria-labelledby="settings-hero-history-title">
       <div class="section-heading">
         <p>画像履歴</p>
