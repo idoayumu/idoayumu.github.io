@@ -33,16 +33,39 @@ const pendingPanel = document.getElementById('pendingPanel');
 const pendingSummary = document.getElementById('pendingSummary');
 const pendingList = document.getElementById('pendingList');
 const pendingResult = document.getElementById('pendingResult');
+const isSettingsPage = Boolean(document.getElementById('settingsHeroHistory'));
+const settingsHeroImage = document.getElementById('settingsHeroImage');
+const settingsHeroPath = document.getElementById('settingsHeroPath');
+const settingsHeroMemo = document.getElementById('settingsHeroMemo');
+const settingsHeroMeta = document.getElementById('settingsHeroMeta');
+const settingsAboutImage = document.getElementById('settingsAboutImage');
+const settingsAboutPath = document.getElementById('settingsAboutPath');
+const settingsAboutMemo = document.getElementById('settingsAboutMemo');
+const settingsAboutMeta = document.getElementById('settingsAboutMeta');
+const settingsHeroHistory = document.getElementById('settingsHeroHistory');
+const settingsAboutHistory = document.getElementById('settingsAboutHistory');
+const settingsMessage = document.getElementById('settingsMessage');
+const settingsResult = document.getElementById('settingsResult');
 const testEditWorkId = '260328minaseaoi_0002';
 const testEditOriginalTitle = 'ひだまりの笑顔';
 const testDeleteWorkId = '260612cloudflaretest_1099';
 const testModelId = 'cloudflare-test-model';
 const pendingItemsByKey = new Map();
+const siteImageBaseUrl = 'https://idoayumu.github.io';
+let currentSiteSettings = null;
 
 function fileNameFromPath(value) {
   const text = String(value || '').trim();
   if (!text) return '未設定';
   return text.split('/').filter(Boolean).at(-1) || text;
+}
+
+function toSiteImageUrl(path) {
+  const value = String(path || '').trim();
+  if (!value) return '';
+  if (/^https?:\/\//i.test(value)) return value;
+  if (value.startsWith('/images/')) return `${siteImageBaseUrl}${value}`;
+  return value;
 }
 
 async function fetchJson(path) {
@@ -62,7 +85,7 @@ function setImageOrPlaceholder(img, src) {
   img.onerror = () => {
     img.hidden = true;
   };
-  img.src = src;
+  img.src = toSiteImageUrl(src);
 }
 
 function renderSummary(summary, mode) {
@@ -87,16 +110,16 @@ function renderSummary(summary, mode) {
 }
 
 async function loadLocalSummary() {
-  const json = await fetchJson('./api/summary');
+  const json = await fetchJson('/api/summary');
   if (!json.ok) throw new Error(json.message || 'summary api failed');
   return json.summary;
 }
 
 async function loadStaticSummary() {
   const results = await Promise.allSettled([
-    fetchJson('./data/works.json'),
-    fetchJson('./data/models.json'),
-    fetchJson('./data/site-settings.json')
+    fetchJson('/data/works.json'),
+    fetchJson('/data/models.json'),
+    fetchJson('/data/site-settings.json')
   ]);
 
   const works = results[0].status === 'fulfilled' && Array.isArray(results[0].value)
@@ -126,7 +149,8 @@ function activateStaticMode() {
   document.querySelector('.admin-nav-title')?.setAttribute('href', './');
   document.querySelectorAll('.tool-card, .admin-nav-links a').forEach((link) => {
     const href = link.getAttribute('href') || '';
-    const canBrowseStatic = href === '/admin/works/' || href === '/admin/models/';
+    const isExternal = /^https?:\/\//i.test(href);
+    const canBrowseStatic = href === '/admin/works/' || href === '/admin/models/' || href === '/admin/settings/' || isExternal;
     if (canBrowseStatic) {
       link.classList.add('is-static-readable');
       return;
@@ -139,6 +163,144 @@ function activateStaticMode() {
       summaryMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
   });
+}
+
+async function loadSettingsForPage() {
+  if (!isSettingsPage) return;
+  await loadCloudflareSession();
+
+  try {
+    const resp = await fetch('/api/admin/settings', { cache: 'no-store' });
+    const json = await readResponseJson(resp);
+    if (!resp.ok || json.success === false || !json.settings) {
+      throw json;
+    }
+    currentSiteSettings = json.settings;
+    renderSettingsPage(json.settings, 'github');
+  } catch (err) {
+    console.info('Settings API unavailable. Falling back to static JSON.', err);
+    try {
+      const settings = await fetchJson('/data/site-settings.json');
+      currentSiteSettings = settings;
+      renderSettingsPage(settings, 'static');
+    } catch (staticErr) {
+      currentSiteSettings = null;
+      if (settingsMessage) settingsMessage.textContent = 'サイト設定を取得できませんでした。Cloudflare Access認証またはGitHub接続を確認してください。';
+      renderSettingsResult(staticErr);
+    }
+  }
+}
+
+function renderSettingsPage(settings, source) {
+  renderCurrentSettings(settings);
+  renderSettingsHistory('hero', settings.heroImageHistory, settingsHeroHistory);
+  renderSettingsHistory('about', settings.aboutImageHistory, settingsAboutHistory);
+  if (settingsMessage) {
+    settingsMessage.textContent = source === 'github'
+      ? 'devブランチの最新サイト設定を表示しています。'
+      : '静的JSONのサイト設定を表示しています。切替にはCloudflare Access認証が必要です。';
+  }
+}
+
+function renderCurrentSettings(settings) {
+  setImageOrPlaceholder(settingsHeroImage, settings.heroImage);
+  if (settingsHeroPath) settingsHeroPath.textContent = settings.heroImage || '未設定';
+  if (settingsHeroMemo) settingsHeroMemo.textContent = settings.heroImageMemo || '未設定';
+  if (settingsHeroMeta) settingsHeroMeta.textContent = `${settings.heroImageSeason || '未設定'} / ${settings.heroImageYear || '未設定'}`;
+
+  setImageOrPlaceholder(settingsAboutImage, settings.aboutImage);
+  if (settingsAboutPath) settingsAboutPath.textContent = settings.aboutImage || '未設定';
+  if (settingsAboutMemo) settingsAboutMemo.textContent = settings.aboutImageMemo || '未設定';
+  if (settingsAboutMeta) settingsAboutMeta.textContent = `${settings.aboutImageSeason || '未設定'} / ${settings.aboutImageYear || '未設定'}`;
+}
+
+function renderSettingsHistory(kind, history, container) {
+  if (!container) return;
+  const items = Array.isArray(history) ? history : [];
+  if (!items.length) {
+    container.innerHTML = '<p class="preview-note">画像履歴はありません。</p>';
+    return;
+  }
+
+  container.innerHTML = items.map((item, index) => {
+    const isCurrent = kind === 'hero'
+      ? item.path === currentSiteSettings?.heroImage
+      : item.path === currentSiteSettings?.aboutImage;
+    return `
+      <article class="settings-history-card">
+        <img src="${escapeHtml(toSiteImageUrl(item.path))}" alt="${kind === 'hero' ? 'Hero画像履歴' : 'About画像履歴'} ${index + 1}" loading="lazy">
+        <div>
+          <strong>${escapeHtml(item.memo || 'メモなし')}</strong>
+          <dl>
+            <div><dt>画像</dt><dd>${escapeHtml(item.path || '')}</dd></div>
+            <div><dt>季節・年</dt><dd>${escapeHtml(item.season || '未設定')} / ${escapeHtml(item.year || '未設定')}</dd></div>
+            <div><dt>保存日</dt><dd>${escapeHtml(formatSavedAt(item.savedAt))}</dd></div>
+          </dl>
+          <button type="button" data-settings-switch="${kind}" data-settings-index="${index}" ${isCurrent ? 'disabled' : ''}>${isCurrent ? '使用中' : '使用中に切り替え'}</button>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+function formatSavedAt(value) {
+  if (!value) return '未設定';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString('ja-JP');
+}
+
+async function switchSettingsImage(kind, index) {
+  if (!currentSiteSettings) return;
+  const historyKey = kind === 'hero' ? 'heroImageHistory' : 'aboutImageHistory';
+  const item = currentSiteSettings[historyKey]?.[index];
+  if (!item?.path) return;
+
+  const label = kind === 'hero' ? 'Hero画像' : 'About画像';
+  const ok = window.confirm(`${label}を「${item.memo || item.path}」へ使用中に切り替えます。実行しますか？`);
+  if (!ok) return;
+
+  const prefix = kind === 'hero' ? 'heroImage' : 'aboutImage';
+  const settings = {
+    [prefix]: item.path,
+    [`${prefix}Season`]: item.season || '',
+    [`${prefix}Memo`]: item.memo || ''
+  };
+  if (item.year !== undefined && item.year !== null && item.year !== '') {
+    settings[`${prefix}Year`] = item.year;
+  }
+
+  if (settingsMessage) settingsMessage.textContent = `${label}を切り替え中です...`;
+  try {
+    const resp = await fetch('/api/admin/settings', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ settings })
+    });
+    const json = await readResponseJson(resp);
+    renderSettingsResult(json);
+    if (!resp.ok || json.success === false) {
+      if (settingsMessage) settingsMessage.textContent = `${label}の切り替えに失敗しました。`;
+      return;
+    }
+    currentSiteSettings = {
+      ...currentSiteSettings,
+      ...settings
+    };
+    renderSettingsPage(currentSiteSettings, 'github');
+    if (settingsMessage) settingsMessage.textContent = `${label}を使用中に切り替えました。`;
+  } catch (err) {
+    if (settingsMessage) settingsMessage.textContent = `${label}の切り替えに失敗しました。`;
+    renderSettingsResult({ success: false, error: { message: err.message } });
+  }
+}
+
+function renderSettingsResult(value) {
+  if (!settingsResult) return;
+  settingsResult.hidden = false;
+  settingsResult.textContent = typeof value === 'string'
+    ? value
+    : JSON.stringify(value, null, 2);
 }
 
 function renderAuthStatus(kind, title, detail) {
@@ -898,6 +1060,10 @@ if (isSummaryPage) {
   loadSummary();
 }
 
+if (isSettingsPage) {
+  loadSettingsForPage();
+}
+
 worksPostTestButton?.addEventListener('click', postWorksTest);
 worksEditTestButton?.addEventListener('click', editWorksTest);
 worksEditResetButton?.addEventListener('click', resetEditWorksTest);
@@ -908,3 +1074,13 @@ modelsDeleteTestButton?.addEventListener('click', deleteModelTest);
 settingsGetTestButton?.addEventListener('click', getSettingsTest);
 settingsPutTestButton?.addEventListener('click', putSettingsTest);
 pendingList?.addEventListener('click', handlePendingAction);
+settingsHeroHistory?.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-settings-switch]');
+  if (!button) return;
+  switchSettingsImage(button.dataset.settingsSwitch, Number(button.dataset.settingsIndex));
+});
+settingsAboutHistory?.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-settings-switch]');
+  if (!button) return;
+  switchSettingsImage(button.dataset.settingsSwitch, Number(button.dataset.settingsIndex));
+});

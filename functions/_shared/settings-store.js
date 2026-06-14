@@ -27,10 +27,57 @@ export function updateSettings(settings, input) {
     };
   }
 
-  const nextSettings = {
-    ...settings,
-    adminTestMemo: trim(input.adminTestMemo)
-  };
+  const nextSettings = { ...settings };
+  const allowedStringKeys = [
+    'adminTestMemo',
+    'aboutImage',
+    'aboutImageSeason',
+    'aboutImageMemo',
+    'heroImage',
+    'heroImageSeason',
+    'heroImageMemo'
+  ];
+  const allowedNumberKeys = [
+    'aboutImageYear',
+    'heroImageYear'
+  ];
+
+  for (const key of allowedStringKeys) {
+    if (Object.prototype.hasOwnProperty.call(input, key)) {
+      nextSettings[key] = trim(input[key]);
+    }
+  }
+
+  for (const key of allowedNumberKeys) {
+    if (Object.prototype.hasOwnProperty.call(input, key)) {
+      const year = Number(input[key]);
+      if (!Number.isInteger(year) || year < 2000 || year > 2100) {
+        return {
+          ok: false,
+          status: 400,
+          error: {
+            code: 'invalid_settings_year',
+            message: `${key} は2000から2100の整数で指定してください。`
+          }
+        };
+      }
+      nextSettings[key] = year;
+    }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(input, 'aboutImageHistory')) {
+    if (!Array.isArray(input.aboutImageHistory)) {
+      return invalidArray('aboutImageHistory');
+    }
+    nextSettings.aboutImageHistory = input.aboutImageHistory;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(input, 'heroImageHistory')) {
+    if (!Array.isArray(input.heroImageHistory)) {
+      return invalidArray('heroImageHistory');
+    }
+    nextSettings.heroImageHistory = input.heroImageHistory;
+  }
 
   return {
     ok: true,
@@ -58,6 +105,17 @@ function assertSettingsObject(settings) {
 
 function trim(value) {
   return String(value || '').trim();
+}
+
+function invalidArray(key) {
+  return {
+    ok: false,
+    status: 400,
+    error: {
+      code: 'invalid_settings_array',
+      message: `${key} は配列で指定してください。`
+    }
+  };
 }
 
 function isObject(value) {
