@@ -310,8 +310,7 @@ h2 {
   transform: translateY(-2px);
 }
 
-.is-static-mode .tool-card,
-.is-static-mode .admin-nav-links a {
+.is-static-mode .tool-card {
   cursor: not-allowed;
   opacity: 0.72;
 }
@@ -536,16 +535,14 @@ h2 {
   color: #8f1d1d;
 }
 
-.settings-current-grid,
-.settings-replace-grid,
+.settings-page-flow,
 .settings-history {
   margin-top: 28px;
   padding-top: 26px;
   border-top: 1px solid #e4ddec;
 }
 
-.settings-current-grid,
-.settings-replace-grid {
+.settings-page-flow {
   display: grid;
   gap: 16px;
 }
@@ -1535,11 +1532,7 @@ h2 {
     align-items: start;
   }
 
-  .settings-current-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .settings-replace-grid {
+  .settings-page-flow {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

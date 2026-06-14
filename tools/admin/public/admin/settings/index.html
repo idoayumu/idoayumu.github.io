@@ -16,27 +16,27 @@
         <a class="is-static-readable" href="/admin/works/">作品管理</a>
         <a class="is-static-readable" href="/admin/models/">モデル管理</a>
         <a class="is-active is-static-readable" href="/admin/settings/">サイト設定</a>
-        <a href="https://idoayumu.github.io/" target="_blank" rel="noopener noreferrer">光景ノオトを見る</a>
+        <a href="https://idoayumu.github.io/" target="_blank" rel="noopener noreferrer">光景ノオトへ</a>
       </div>
     </nav>
 
     <header class="page-header">
       <p class="eyebrow">Site Settings</p>
       <h1>サイト設定</h1>
-      <p>現在のHero画像・About画像と画像履歴を確認し、履歴画像を使用中に切り替えます。</p>
+      <p>現在のHero画像・コンセプト画像と画像履歴を確認し、履歴画像を使用中に切り替えます。</p>
       <div class="auth-status" id="authStatus" hidden>
         <strong id="authStatusTitle">Cloudflare Access認証を確認中</strong>
         <span id="authStatusDetail">保存機能を確認しています</span>
       </div>
     </header>
 
-    <section class="settings-current-grid" aria-labelledby="settings-current-title">
+    <section class="settings-page-flow" aria-labelledby="settings-current-title">
       <div class="section-heading settings-section-wide">
         <p>Current</p>
         <h2 id="settings-current-title">現在の画像</h2>
       </div>
 
-      <article class="settings-image-card">
+      <article class="settings-image-card settings-flow-hero-current">
         <div class="section-heading">
           <p>Hero</p>
           <h3>現在のHero画像</h3>
@@ -49,27 +49,7 @@
         </dl>
       </article>
 
-      <article class="settings-image-card">
-        <div class="section-heading">
-          <p>About</p>
-          <h3>現在のAbout画像</h3>
-        </div>
-        <img id="settingsAboutImage" alt="現在のAbout画像" />
-        <dl>
-          <div><dt>画像</dt><dd id="settingsAboutPath">読み込み中</dd></div>
-          <div><dt>メモ</dt><dd id="settingsAboutMemo">読み込み中</dd></div>
-          <div><dt>季節・年</dt><dd id="settingsAboutMeta">読み込み中</dd></div>
-        </dl>
-      </article>
-    </section>
-
-    <section class="settings-replace-grid" aria-labelledby="settings-replace-title">
-      <div class="section-heading settings-section-wide">
-        <p>Replace</p>
-        <h2 id="settings-replace-title">画像差し替え</h2>
-      </div>
-
-      <article class="settings-replace-card" data-settings-upload="hero">
+      <article class="settings-replace-card settings-flow-hero-replace" data-settings-upload="hero">
         <div class="section-heading">
           <p>Hero</p>
           <h3>Hero画像を差し替え</h3>
@@ -102,10 +82,23 @@
         <button id="settingsHeroUploadSave" type="button" disabled>差し替え保存</button>
       </article>
 
-      <article class="settings-replace-card" data-settings-upload="about">
+      <article class="settings-image-card settings-flow-about-current">
         <div class="section-heading">
-          <p>About</p>
-          <h3>About画像を差し替え</h3>
+          <p>コンセプト</p>
+          <h3>現在のコンセプト画像</h3>
+        </div>
+        <img id="settingsAboutImage" alt="現在のコンセプト画像" />
+        <dl>
+          <div><dt>画像</dt><dd id="settingsAboutPath">読み込み中</dd></div>
+          <div><dt>メモ</dt><dd id="settingsAboutMemo">読み込み中</dd></div>
+          <div><dt>季節・年</dt><dd id="settingsAboutMeta">読み込み中</dd></div>
+        </dl>
+      </article>
+
+      <article class="settings-replace-card settings-flow-about-replace" data-settings-upload="about">
+        <div class="section-heading">
+          <p>コンセプト</p>
+          <h3>コンセプト画像を差し替え</h3>
         </div>
         <label>新しい画像を選択
           <input id="settingsAboutUpload" type="file" accept="image/jpeg,image/png,image/heic,image/heif" />
@@ -129,27 +122,27 @@
         </div>
         <div class="settings-upload-preview" id="settingsAboutUploadPreview" hidden>
           <p>保存前プレビュー</p>
-          <img alt="About画像 保存前プレビュー" />
+          <img alt="コンセプト画像 保存前プレビュー" />
           <small></small>
         </div>
         <button id="settingsAboutUploadSave" type="button" disabled>差し替え保存</button>
       </article>
-    </section>
 
-    <section class="settings-history" aria-labelledby="settings-hero-history-title">
-      <div class="section-heading">
-        <p>画像履歴</p>
-        <h2 id="settings-hero-history-title">Hero画像履歴</h2>
-      </div>
-      <div class="settings-history-list" id="settingsHeroHistory"></div>
-    </section>
+      <section class="settings-history settings-flow-hero-history" aria-labelledby="settings-hero-history-title">
+        <div class="section-heading">
+          <p>画像履歴</p>
+          <h2 id="settings-hero-history-title">Hero画像履歴</h2>
+        </div>
+        <div class="settings-history-list" id="settingsHeroHistory"></div>
+      </section>
 
-    <section class="settings-history" aria-labelledby="settings-about-history-title">
-      <div class="section-heading">
-        <p>画像履歴</p>
-        <h2 id="settings-about-history-title">About画像履歴</h2>
-      </div>
-      <div class="settings-history-list" id="settingsAboutHistory"></div>
+      <section class="settings-history settings-flow-about-history" aria-labelledby="settings-about-history-title">
+        <div class="section-heading">
+          <p>画像履歴</p>
+          <h2 id="settings-about-history-title">コンセプト画像履歴</h2>
+        </div>
+        <div class="settings-history-list" id="settingsAboutHistory"></div>
+      </section>
     </section>
 
     <p class="note" id="settingsMessage">サイト設定を読み込み中です。</p>
