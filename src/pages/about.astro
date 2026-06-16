@@ -4,6 +4,7 @@ import siteSettings from "../data/site-settings.json";
 
 const conceptImage = siteSettings.aboutImage || "/images/site/about/2026_spring_001.webp";
 const conceptImageMemo = siteSettings.aboutImageMemo?.trim();
+const conceptNoteDate = "2026.06.16";
 ---
 
 <Layout title="About | 光の記録 ー光景ノオトー">
@@ -23,19 +24,44 @@ const conceptImageMemo = siteSettings.aboutImageMemo?.trim();
   <section class="about-concept" aria-labelledby="concept-title">
     <div class="about-concept-copy">
       <p class="about-label">Concept</p>
-      <h2 id="concept-title">光景ポートレートとは</h2>
+      <h2 id="concept-title">光景ポートレート。</h2>
       <div class="about-concept-text">
         <p>光景ポートレート。</p>
         <p>
           人物を主役にしながらも、そこに差す光、空気、<span class="no-break">余白</span>、
-          そして時間の気配まで写しとること。
+          そして時の気配まで写しとること。
         </p>
         <p>「写真は真を写すのではなく、光を写す。」</p>
       </div>
-    </div>
-    <div class="about-concept-image">
-      <img src={conceptImage} alt="光景ポートレートの代表作品" loading="lazy" />
-      {conceptImageMemo && <p>{conceptImageMemo}</p>}
+      <div class="about-concept-body">
+        <div class="about-concept-item">
+          <h3>私と光景ポートレート。</h3>
+          <div class="about-concept-text">
+            <p>眠れない夜、私は光景ポートレートについて<span class="no-break">考えることがある。</span></p>
+            <p>
+              電球、街灯、ビルや家の灯り。<br />
+              この街の光、地球の光、太陽や月の光。
+            </p>
+            <p>
+              私はこれまで、多くの人物の魅力に惹かれ、シャッターを切ってきただけでなく、<br />
+              無数の光にも惹かれて作品を作ってきた。
+            </p>
+            <p>
+              人物の瞳に宿る光と頬にある影。<br />
+              木々の隙間から溢れる光。<br />
+              ひとつひとつが重なった時、その場に満ちる光や空気が輝きだす。
+            </p>
+            <p>その瞬間、人と光が結びついた時に私は<span class="no-break">シャッターを切る。</span></p>
+            <p>この煌めくような美しさを、私は光景ポートレートと<span class="no-break">呼んでいる。</span></p>
+            <p>今日も、私は光を追いかけ続けている。</p>
+            <p class="about-concept-date">{conceptNoteDate}</p>
+          </div>
+        </div>
+        <div class="about-concept-image">
+          <img src={conceptImage} alt="光景ポートレートの代表作品" loading="lazy" />
+          {conceptImageMemo && <p>{conceptImageMemo}</p>}
+        </div>
+      </div>
     </div>
   </section>
 
@@ -142,8 +168,6 @@ const conceptImageMemo = siteSettings.aboutImageMemo?.trim();
 
   .about-concept {
     margin-top: 1rem;
-    display: grid;
-    gap: 1.5rem;
     padding-top: 2rem;
     border-top: 1px solid #e8e0f2;
   }
@@ -162,10 +186,30 @@ const conceptImageMemo = siteSettings.aboutImageMemo?.trim();
     max-width: 42rem;
   }
 
+  .about-concept-body {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2.4rem;
+    padding-top: 1.8rem;
+    border-top: 1px solid #e8e0f2;
+  }
+
+  .about-concept-item h3 {
+    margin: 0 0 1.25rem;
+    font-size: clamp(1.22rem, 5vw, 1.6rem);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.45;
+  }
+
   .about-concept-text p {
     margin: 0;
     color: #444;
     line-height: 2;
+  }
+
+  .about-concept-item .about-concept-text p {
+    line-height: 1.95;
   }
 
   .no-break {
@@ -173,12 +217,21 @@ const conceptImageMemo = siteSettings.aboutImageMemo?.trim();
   }
 
   .about-concept-text p:first-child,
-  .about-concept-text p:last-child {
+  .about-concept-text p:last-child:not(.about-concept-date) {
     color: #111;
     font-size: 1.08rem;
   }
 
+  .about-concept-date {
+    margin-top: 0.15rem;
+    color: #8a74a8;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+
   .about-concept-image {
+    min-width: 0;
     overflow: hidden;
     background: transparent;
   }
@@ -281,9 +334,13 @@ const conceptImageMemo = siteSettings.aboutImageMemo?.trim();
     }
 
     .about-concept {
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
-      align-items: center;
-      gap: clamp(2rem, 5vw, 4rem);
+      width: min(100%, 980px);
+    }
+
+    .about-concept-body {
+      grid-template-columns: minmax(0, 1.32fr) minmax(280px, 0.76fr);
+      align-items: start;
+      gap: clamp(1.5rem, 4vw, 3rem);
     }
 
     .about-gear-grid {
