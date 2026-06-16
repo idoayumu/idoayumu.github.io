@@ -42,20 +42,28 @@ const conceptNoteDate = "2026.06.16";
               電球、街灯、ビルや家の灯り。<br />
               この街の光、地球の光、太陽や月の光。
             </p>
-            <p>
-              私はこれまで、<br class="mobile-break" />
-              多くの人物の魅力に惹かれ、<br class="mobile-break" />
-              <span class="no-break">シャッター</span>を切ってきた<br class="mobile-break" />
-              だけでなく、<br class="mobile-break" />
-              無数の光にも惹かれて<br class="mobile-break" />
+            <p class="pc-copy">
+              私はこれまで、多くの人物の魅力に惹かれ、シャッターを切ってきただけでなく、<br />
+              無数の光にも惹かれて作品を作ってきた。
+            </p>
+            <p class="sp-copy" aria-hidden="true">
+              私はこれまで、<br />
+              多くの人物の魅力に惹かれ、<br />
+              <span class="no-break">シャッターを切ってきただけでなく、</span><br />
+              無数の光にも惹かれて<br />
               作品を作ってきた。
             </p>
-            <p>
+            <p class="pc-copy">
               人物の瞳に宿る光と頬にある影。<br />
               木々の隙間から溢れる光。<br />
-              ひとつひとつが重なった時、<br class="mobile-break" />
-              その場に満ちる光や<br class="mobile-break" />
-              <span class="no-break">空気</span>が輝きだす。
+              ひとつひとつが重なった時、その場に満ちる光や空気が輝きだす。
+            </p>
+            <p class="sp-copy" aria-hidden="true">
+              人物の瞳に宿る光と頬にある影。<br />
+              木々の隙間から溢れる光。<br />
+              ひとつひとつが重なった時、<br />
+              その場に満ちる<span class="no-break">光や空気が</span><br />
+              輝きだす。
             </p>
             <p>その瞬間、人と光が結びついた時に私は<span class="no-break">シャッターを切る。</span></p>
             <p>この煌めくような美しさを、私は光景ポートレートと<span class="no-break">呼んでいる。</span></p>
@@ -222,7 +230,7 @@ const conceptNoteDate = "2026.06.16";
     white-space: nowrap;
   }
 
-  .mobile-break {
+  .sp-copy {
     display: none;
   }
 
@@ -352,6 +360,10 @@ const conceptNoteDate = "2026.06.16";
       width: min(100%, 980px);
     }
 
+    .about-section {
+      width: min(100%, 980px);
+    }
+
     .about-concept-body {
       grid-template-columns: minmax(0, 1.32fr) minmax(280px, 0.76fr);
       align-items: start;
@@ -369,8 +381,12 @@ const conceptNoteDate = "2026.06.16";
       order: -1;
     }
 
-    .mobile-break {
-      display: initial;
+    .pc-copy {
+      display: none;
+    }
+
+    .sp-copy {
+      display: block;
     }
   }
 </style>
