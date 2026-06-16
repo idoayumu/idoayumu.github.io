@@ -1,6 +1,6 @@
 {
-  "aboutImage": "/images/site/about/2026_spring_001.webp",
-  "aboutImageSeason": "spring",
+  "aboutImage": "/images/site/about/2026_summer_001.webp",
+  "aboutImageSeason": "summer",
   "aboutImageYear": 2026,
   "aboutImageMemo": "水瀬あおい",
   "aboutImageHistory": [
@@ -10,6 +10,13 @@
       "season": "spring",
       "memo": "水瀬あおい",
       "savedAt": "2026-06-10T00:00:00.000Z"
+    },
+    {
+      "path": "/images/site/about/2026_summer_001.webp",
+      "year": 2026,
+      "season": "summer",
+      "memo": "水瀬あおい",
+      "savedAt": "2026-06-16T01:03:34.966Z"
     }
   ],
   "heroImage": "/images/site/top-hero.webp",
