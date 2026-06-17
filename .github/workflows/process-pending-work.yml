@@ -52,6 +52,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/images/works/large public/images/works/thumbs src/data/works.json tools/admin/public/data/works.json tools/admin/uploads/works/pending
+          node tools/scripts/git-add-existing.cjs \
+            public/images/works/large \
+            public/images/works/thumbs \
+            src/data/works.json \
+            tools/admin/public/data/works.json \
+            tools/admin/uploads/works/pending
+          if git diff --cached --quiet; then
+            echo "No staged changes after processing pending work."
+            exit 0
+          fi
           git commit -m "${{ steps.process.outputs.commit_message }}"
           git push origin dev
