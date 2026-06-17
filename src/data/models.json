@@ -141,5 +141,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "ponymoeka",
+    "name": "ポニもえか",
+    "displayName": "ポニもえか",
+    "nameKana": "ポニモエカ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "ponymoeka_profile.webp",
+    "profileImage": "ponymoeka_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/ponymoeka",
+      "x": "https://x.com/ponymoeka",
+      "threads": "",
+      "website": "https://lit.link/ponymoeka",
+      "websiteLabel": "lit.link"
+    },
+    "featured": true
   }
 ]
