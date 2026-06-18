@@ -284,8 +284,8 @@ async function handleUpdateWork(req, res) {
     const { title, date, location, production, caption } = buildWorkFields(req.body);
     const { modelIds, useSourcePath = 'false', sourcePath: bodySourcePath } = req.body;
 
-    if (!workId || !title || !date || !location || !modelIds) {
-      return res.status(400).json({ ok: false, message: '必須項目が不足しています。' });
+    if (!workId || !title || !date || !location || !production || !modelIds) {
+      return res.status(400).json({ ok: false, message: '必須項目が不足しています。Productionはリク撮の場合も入力してください。' });
     }
 
     let modelIdsArray;
@@ -422,8 +422,8 @@ router.post('/api/register', uploadWorkImage, async (req, res) => {
     const workProduction = asTrimmedString(production);
     const workCaption = asTrimmedString(caption);
 
-    if (!workId || !workTitle || !workDate || !workLocation || !modelIds) {
-      return sendError(res, createHttpError(400, 'missing_required_fields', '必須項目が不足しています。タイトル、撮影日、撮影場所、モデル、作品IDを確認してください。'));
+    if (!workId || !workTitle || !workDate || !workLocation || !workProduction || !modelIds) {
+      return sendError(res, createHttpError(400, 'missing_required_fields', '必須項目が不足しています。タイトル、撮影日、撮影場所、Production、モデル、作品IDを確認してください。Productionはリク撮の場合も入力してください。'));
     }
 
     if (!/^\d{6}[A-Za-z0-9][A-Za-z0-9_-]*_\d{4}$/.test(workId)) {

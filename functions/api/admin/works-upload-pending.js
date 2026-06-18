@@ -178,6 +178,7 @@ function normalizePendingWork(input) {
   if (!title) missing.push('work.title');
   if (!date) missing.push('work.date');
   if (!location) missing.push('work.location');
+  if (!production) missing.push('work.production');
   if (!modelIds.length) missing.push('work.modelIds');
 
   if (missing.length) {

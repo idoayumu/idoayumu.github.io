@@ -490,6 +490,7 @@
       && String(previewTitle?.value || '').trim()
       && String(previewDate?.value || '').trim()
       && String(previewLocation?.value || '').trim()
+      && String(previewProduction?.value || '').trim()
       && selectedModelIds().length
       && generatedLargeBlob
       && generatedThumbBlob
@@ -506,6 +507,7 @@
       && String(previewTitle?.value || '').trim()
       && String(previewDate?.value || '').trim()
       && String(previewLocation?.value || '').trim()
+      && String(previewProduction?.value || '').trim()
       && selectedModelIds().length
       && selectedOriginalFile
       && isPendingSourceImage(selectedOriginalFile)
@@ -656,6 +658,7 @@
       && String(previewTitle?.value || '').trim()
       && String(previewDate?.value || '').trim()
       && String(previewLocation?.value || '').trim()
+      && String(previewProduction?.value || '').trim()
       && selectedModelIds().length
     );
   }
