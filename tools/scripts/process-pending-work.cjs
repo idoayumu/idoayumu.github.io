@@ -127,7 +127,7 @@ function normalizeWork(work, dirName) {
     thumbnail: `/images/works/thumbs/${id}.webp`
   };
 
-  ['title', 'date', 'location'].forEach((key) => {
+  ['title', 'date', 'location', 'production'].forEach((key) => {
     if (!normalized[key]) throw new Error(`${dirName}/work.json: ${key} is required.`);
   });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(normalized.date)) {

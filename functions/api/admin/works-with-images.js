@@ -557,7 +557,7 @@ async function parseDeleteWorkId(request) {
 }
 
 function validatePatchedWork(work) {
-  const missing = ['title', 'date', 'location'].filter((key) => !String(work[key] || '').trim());
+  const missing = ['title', 'date', 'location', 'production'].filter((key) => !String(work[key] || '').trim());
   if (missing.length) {
     const err = new Error('必須項目が空です。');
     err.status = 400;

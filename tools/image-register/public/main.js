@@ -611,7 +611,7 @@ function setMode(mode) {
   editImageNote.hidden = !isEdit;
   editIdNote.hidden = !isEdit;
   overwriteWrap.hidden = isEdit;
-  productionInput.required = !isEdit;
+  productionInput.required = true;
   clearFormButton.textContent = isEdit ? '入力を戻す' : '一括クリア';
   submitButton.textContent = isEdit ? '保存' : '決定（登録）';
   currentEditWork = null;

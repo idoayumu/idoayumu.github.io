@@ -34,6 +34,7 @@ const workImages = Array.isArray(work.files)
         alt: work.title,
       },
     ].filter((image) => image.src);
+const shouldShowProduction = Boolean(work.production && work.production !== "リク撮");
 ---
 
 <Layout title={work.title}>
@@ -41,7 +42,7 @@ const workImages = Array.isArray(work.files)
     <h1>{work.title}</h1>
 
     {work.date && <p class="work-date">{work.date}</p>}
-    {work.production && <p class="work-production">{work.production}</p>}
+    {shouldShowProduction && <p class="work-production">{work.production}</p>}
 
     {relatedModels.length > 0 && (
       <p class="work-models">

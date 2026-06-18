@@ -183,6 +183,7 @@ works.forEach((work, index) => {
   checkRequiredString(work, 'title', label);
   checkRequiredString(work, 'date', label);
   checkRequiredString(work, 'location', label);
+  checkRequiredString(work, 'production', label);
 
   if (Object.prototype.hasOwnProperty.call(work, 'sourcePath')) {
     addError(`${label}: sourcePath must not be saved`);

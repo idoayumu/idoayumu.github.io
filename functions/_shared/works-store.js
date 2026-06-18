@@ -120,7 +120,7 @@ function normalizeWork(input, { requireId }) {
 }
 
 function validateWork(work, works, models, { requireUniqueId = false, currentId = '' } = {}) {
-  const required = ['id', 'title', 'date', 'location', 'image', 'thumbnail'];
+  const required = ['id', 'title', 'date', 'location', 'production', 'image', 'thumbnail'];
   const missing = required.filter((key) => !work[key]);
   if (missing.length) {
     return validationError('missing_required_fields', '必須項目が不足しています。', { missing });
