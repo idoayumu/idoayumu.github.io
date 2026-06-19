@@ -162,5 +162,26 @@
       "websiteLabel": "lit.link"
     },
     "featured": true
+  },
+  {
+    "id": "kiyoseamy",
+    "name": "清瀬エイミ",
+    "displayName": "清瀬エイミ",
+    "nameKana": "キヨセエイミ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "kiyoseamy_profile.webp",
+    "profileImage": "kiyoseamy_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/kiyose_amy",
+      "x": "https://x.com/kiyose_amy_re",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
