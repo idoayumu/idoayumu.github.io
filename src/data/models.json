@@ -183,5 +183,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "harunooto",
+    "name": "春乃愛音",
+    "displayName": "春乃愛音",
+    "nameKana": "ハルノオト",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "むげんこんぜ",
+    "bio": "",
+    "thumbnail": "harunooto_profile.webp",
+    "profileImage": "harunooto_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "https://x.com/comze_oto",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
