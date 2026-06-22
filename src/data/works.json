@@ -390,5 +390,18 @@
     ],
     "image": "/images/works/large/260618momo-osakabimage_0001.webp",
     "thumbnail": "/images/works/thumbs/260618momo-osakabimage_0001.webp"
+  },
+  {
+    "id": "260623yua-manacolle_0001",
+    "title": "やわらかな境界線",
+    "date": "2025-11-02",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "チャッピー考案のタイトル",
+    "modelIds": [
+      "yua-manacolle"
+    ],
+    "image": "/images/works/large/260623yua-manacolle_0001.webp",
+    "thumbnail": "/images/works/thumbs/260623yua-manacolle_0001.webp"
   }
 ]

@@ -69,11 +69,11 @@
     "bio": "",
     "thumbnail": "marin-manacolle_profile.webp",
     "links": {
-      "instagram": "https://www.instagram.com/niram1030/",
+      "instagram": "https://www.instagram.com/niram1030",
       "x": "https://x.com/niram1030",
       "threads": "",
-      "website": "",
-      "websiteLabel": ""
+      "website": "https://miscolle.com/missdoshisha2026/profile/f3",
+      "websiteLabel": "ミスコン"
     },
     "featured": true,
     "displayName": "Marin",
@@ -160,6 +160,48 @@
       "threads": "",
       "website": "https://lit.link/ponymoeka",
       "websiteLabel": "lit.link"
+    },
+    "featured": true
+  },
+  {
+    "id": "kiyoseamy",
+    "name": "清瀬エイミ",
+    "displayName": "清瀬エイミ",
+    "nameKana": "キヨセエイミ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "kiyoseamy_profile.webp",
+    "profileImage": "kiyoseamy_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/kiyose_amy",
+      "x": "https://x.com/kiyose_amy_re",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
+  },
+  {
+    "id": "harunooto",
+    "name": "春乃愛音",
+    "displayName": "春乃愛音",
+    "nameKana": "ハルノオト",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "むげんこんぜ",
+    "bio": "",
+    "thumbnail": "harunooto_profile.webp",
+    "profileImage": "harunooto_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "https://x.com/comze_oto",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
     },
     "featured": true
   }
