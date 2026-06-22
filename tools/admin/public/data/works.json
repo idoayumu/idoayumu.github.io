@@ -429,5 +429,18 @@
     ],
     "image": "/images/works/large/260623harunooto_0001.webp",
     "thumbnail": "/images/works/thumbs/260623harunooto_0001.webp"
+  },
+  {
+    "id": "260623yua-manacolle_0002",
+    "title": "花の時間",
+    "date": "2025-11-02",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "やさしい時間でした",
+    "modelIds": [
+      "yua-manacolle"
+    ],
+    "image": "/images/works/large/260623yua-manacolle_0002.webp",
+    "thumbnail": "/images/works/thumbs/260623yua-manacolle_0002.webp"
   }
 ]
