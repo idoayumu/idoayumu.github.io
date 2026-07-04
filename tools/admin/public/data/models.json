@@ -204,5 +204,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "marin-shirokuro",
+    "name": "真鈴",
+    "displayName": "真鈴",
+    "nameKana": "マリン",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "シロクロ撮影会",
+    "bio": "",
+    "thumbnail": "marin-shirokuro_profile.webp",
+    "profileImage": "marin-shirokuro_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/marin_1010_",
+      "x": "https://x.com/ma2rin_1010",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
