@@ -481,5 +481,18 @@
     ],
     "image": "/images/works/large/260704marin-shirokuro_0001.webp",
     "thumbnail": "/images/works/thumbs/260704marin-shirokuro_0001.webp"
+  },
+  {
+    "id": "260707marin-shirokuro_0001",
+    "title": "酔う夜",
+    "date": "2025-11-29",
+    "location": "大阪",
+    "production": "シロクロ撮影会",
+    "caption": "あなたに酔う夜",
+    "modelIds": [
+      "marin-shirokuro"
+    ],
+    "image": "/images/works/large/260707marin-shirokuro_0001.webp",
+    "thumbnail": "/images/works/thumbs/260707marin-shirokuro_0001.webp"
   }
 ]
