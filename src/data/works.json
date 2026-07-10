@@ -494,5 +494,18 @@
     ],
     "image": "/images/works/large/260707marin-shirokuro_0001.webp",
     "thumbnail": "/images/works/thumbs/260707marin-shirokuro_0001.webp"
+  },
+  {
+    "id": "260710momo-osakabimage_0001",
+    "title": "夏の本気",
+    "date": "2025-07-26",
+    "location": "大阪",
+    "production": "大阪美マージュ",
+    "caption": "夏が本気出してきた",
+    "modelIds": [
+      "momo-osakabimage"
+    ],
+    "image": "/images/works/large/260710momo-osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260710momo-osakabimage_0001.webp"
   }
 ]
