@@ -481,5 +481,44 @@
     ],
     "image": "/images/works/large/260704marin-shirokuro_0001.webp",
     "thumbnail": "/images/works/thumbs/260704marin-shirokuro_0001.webp"
+  },
+  {
+    "id": "260707marin-shirokuro_0001",
+    "title": "酔う夜",
+    "date": "2025-11-29",
+    "location": "大阪",
+    "production": "シロクロ撮影会",
+    "caption": "あなたに酔う夜",
+    "modelIds": [
+      "marin-shirokuro"
+    ],
+    "image": "/images/works/large/260707marin-shirokuro_0001.webp",
+    "thumbnail": "/images/works/thumbs/260707marin-shirokuro_0001.webp"
+  },
+  {
+    "id": "260710momo-osakabimage_0001",
+    "title": "夏の本気",
+    "date": "2025-07-26",
+    "location": "大阪",
+    "production": "大阪美マージュ",
+    "caption": "夏が本気出してきた",
+    "modelIds": [
+      "momo-osakabimage"
+    ],
+    "image": "/images/works/large/260710momo-osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260710momo-osakabimage_0001.webp"
+  },
+  {
+    "id": "260711minaseaoi_0001",
+    "title": "流れる川に",
+    "date": "2025-07-19",
+    "location": "大阪",
+    "production": "マナコレ撮影会",
+    "caption": "流れる川に佇むあなた",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/260711minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/260711minaseaoi_0001.webp"
   }
 ]
