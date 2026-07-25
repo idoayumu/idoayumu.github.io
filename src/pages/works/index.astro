@@ -22,7 +22,10 @@ const works = [...worksData]
 });
 ---
 
-<Layout title="Works | 光の記録　ー光景ノオトー">
+<Layout
+  title="Works | 光の記録　ー光景ノオトー"
+  description="光景ポートレートを中心に、井戸歩が撮影した作品を掲載しています。"
+>
   <section>
     <h1>Works</h1>
     <p>{works.length}作品</p>
@@ -39,7 +42,7 @@ const works = [...worksData]
               />
             )}
           </div>
-          <h3>{work.title}</h3>
+          <h2>{work.title}</h2>
           <p class="work-meta">
             {work.modelNames && `${work.modelNames} ・ `}{work.date}
           </p>
