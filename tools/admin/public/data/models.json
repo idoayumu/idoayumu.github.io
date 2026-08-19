@@ -225,5 +225,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "wako",
+    "name": "わこ",
+    "displayName": "わこ",
+    "nameKana": "ワコ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "mateplus",
+    "bio": "",
+    "thumbnail": "wako_profile.webp",
+    "profileImage": "wako_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "https://x.com/wako_mateplus",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
