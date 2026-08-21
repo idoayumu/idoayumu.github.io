@@ -533,5 +533,18 @@
     ],
     "image": "/images/works/large/260723momo-osakabimage_0001.webp",
     "thumbnail": "/images/works/thumbs/260723momo-osakabimage_0001.webp"
+  },
+  {
+    "id": "260819momo-osakabimage_0001",
+    "title": "また明日が来るから",
+    "date": "2025-12-28",
+    "location": "大阪",
+    "production": "大阪美マージュ",
+    "caption": "中島美嘉さんの歌詞より",
+    "modelIds": [
+      "momo-osakabimage"
+    ],
+    "image": "/images/works/large/260819momo-osakabimage_0001.webp",
+    "thumbnail": "/images/works/thumbs/260819momo-osakabimage_0001.webp"
   }
 ]
