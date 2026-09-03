@@ -376,6 +376,26 @@
     return normalizeText(model?.nameKana || model?.name || id);
   }
 
+  function getModelDisplayName(model) {
+    return String(model?.name || model?.displayName || model?.id || '').trim();
+  }
+
+  function compareModelsByKana(a, b) {
+    const idA = String(a?.id || '');
+    const idB = String(b?.id || '');
+    const kanaCompare = getModelSortValue(a, idA).localeCompare(getModelSortValue(b, idB), 'ja', {
+      numeric: true
+    });
+    if (kanaCompare !== 0) return kanaCompare;
+
+    const displayCompare = normalizeText(getModelDisplayName(a)).localeCompare(normalizeText(getModelDisplayName(b)), 'ja', {
+      numeric: true
+    });
+    if (displayCompare !== 0) return displayCompare;
+
+    return idA.localeCompare(idB, 'ja', { numeric: true });
+  }
+
   function sortedModelIdsForWorkId(modelIds) {
     return [...modelIds].sort((a, b) => {
       const modelA = previewModels.find((model) => model.id === a);
@@ -537,10 +557,11 @@
   function populatePreviewModels(models) {
     if (!previewModelIds) return;
     previewModels = models;
-    previewModelIds.innerHTML = models.map((model) => (
+    const sortedModels = [...models].sort(compareModelsByKana);
+    previewModelIds.innerHTML = sortedModels.map((model) => (
       `<label class="preview-model-chip">
         <input type="checkbox" value="${escapeHtml(model.id)}">
-        <span>${escapeHtml(model.name || model.displayName || model.id)}</span>
+        <span>${escapeHtml(getModelDisplayName(model))}</span>
       </label>`
     )).join('');
   }
