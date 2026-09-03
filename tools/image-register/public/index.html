@@ -217,6 +217,21 @@
   </main>
 
   <script src="./main.js"></script>
+  <script>
+    function syncSingleModelProduction() {
+      const selected = getSelectedModelIds();
+      if (selected.length !== 1) return;
+
+      const model = modelCandidates.find((candidate) => candidate.id === selected[0]);
+      if (!model) return;
+
+      productionInput.value = model.agency || '';
+    }
+
+    const selectedModelsObserver = new MutationObserver(syncSingleModelProduction);
+    selectedModelsObserver.observe(selectedModels, { childList: true });
+    modelIdsInput.addEventListener('input', syncSingleModelProduction);
+  </script>
 </body>
 
 </html>
