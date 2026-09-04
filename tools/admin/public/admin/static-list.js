@@ -350,14 +350,14 @@
   }
 
   function applyProductionAutofill() {
-    if (!previewProduction || editingWorkId || productionEditedByUser) return;
-    if (String(previewProduction.value || '').trim()) return;
+    if (!previewProduction || editingWorkId) return;
 
     const modelIds = selectedModelIds();
     if (modelIds.length !== 1) return;
 
     const model = previewModels.find((item) => item.id === modelIds[0]);
     previewProduction.value = productionCandidateForModel(model);
+    productionEditedByUser = false;
     updateSavePreview();
   }
 
