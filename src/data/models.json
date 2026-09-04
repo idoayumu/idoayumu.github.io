@@ -246,5 +246,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "sakina",
+    "name": "咲菜",
+    "displayName": "咲菜",
+    "nameKana": "サキナ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "sakina_profile.webp",
+    "profileImage": "sakina_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/sakiphoto27",
+      "x": "https://x.com/saa_697",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
