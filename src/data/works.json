@@ -598,5 +598,18 @@
     ],
     "image": "/images/works/large/260904kiyoseamy_0001.webp",
     "thumbnail": "/images/works/thumbs/260904kiyoseamy_0001.webp"
+  },
+  {
+    "id": "260915rei_0001",
+    "title": "言葉の手前",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "チャッピーは言葉の前って言ってたけど、手前の方が優しい",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/260915rei_0001.webp",
+    "thumbnail": "/images/works/thumbs/260915rei_0001.webp"
   }
 ]
