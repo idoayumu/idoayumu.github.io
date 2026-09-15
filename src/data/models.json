@@ -288,5 +288,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "maki",
+    "name": "MAKI",
+    "displayName": "MAKI",
+    "nameKana": "マキ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "maki_profile.webp",
+    "profileImage": "maki_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "https://x.com/model_MAKI",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
