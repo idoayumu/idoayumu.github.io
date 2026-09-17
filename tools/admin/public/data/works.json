@@ -637,5 +637,18 @@
     ],
     "image": "/images/works/large/260915momoseyuuri_0001.webp",
     "thumbnail": "/images/works/thumbs/260915momoseyuuri_0001.webp"
+  },
+  {
+    "id": "260917minaseaoi_0001",
+    "title": "秋桜日和",
+    "date": "2025-11-02",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "コスモス日和ですね",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/260917minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/260917minaseaoi_0001.webp"
   }
 ]
