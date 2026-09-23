@@ -309,5 +309,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "touka",
+    "name": "新免透華",
+    "displayName": "新免透華",
+    "nameKana": "シンメントウカ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "SSR撮影会",
+    "bio": "",
+    "thumbnail": "touka_profile.webp",
+    "profileImage": "touka_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "https://x.com/touka_snmn021",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
