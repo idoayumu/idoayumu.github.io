@@ -262,6 +262,10 @@
   }
 
   function revokePreviewUrls() {
+    // Detach image elements before releasing their backing Object URLs.
+    if (previewOriginalImage) previewOriginalImage.removeAttribute('src');
+    if (previewLargeImage) previewLargeImage.removeAttribute('src');
+    if (previewThumbImage) previewThumbImage.removeAttribute('src');
     [originalPreviewUrl, largePreviewUrl, thumbPreviewUrl].forEach((url) => {
       if (url) URL.revokeObjectURL(url);
     });
@@ -294,15 +298,21 @@
     canvas.width = size.width;
     canvas.height = size.height;
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0, size.width, size.height);
+    try {
+      ctx.drawImage(image, 0, 0, size.width, size.height);
 
-    let blob = await canvasToBlob(canvas, 'image/webp', quality);
-    if (!blob || blob.type !== 'image/webp') {
-      blob = await canvasToBlob(canvas, 'image/jpeg', quality);
-      return { blob, ...size, extension: 'jpg', type: blob?.type || 'image/jpeg' };
+      let blob = await canvasToBlob(canvas, 'image/webp', quality);
+      if (!blob || blob.type !== 'image/webp') {
+        blob = await canvasToBlob(canvas, 'image/jpeg', quality);
+        return { blob, ...size, extension: 'jpg', type: blob?.type || 'image/jpeg' };
+      }
+
+      return { blob, ...size, extension: 'webp', type: blob.type };
+    } finally {
+      // Release the temporary bitmap backing the conversion canvas.
+      canvas.width = 0;
+      canvas.height = 0;
     }
-
-    return { blob, ...size, extension: 'webp', type: blob.type };
   }
 
   function isHeicFile(file) {
@@ -569,14 +579,32 @@
   function loadImageFromUrl(url) {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error('画像を読み込めませんでした。'));
+      img.onload = () => {
+        img.onload = null;
+        img.onerror = null;
+        resolve(img);
+      };
+      img.onerror = () => {
+        img.onload = null;
+        img.onerror = null;
+        reject(new Error('画像を読み込めませんでした。'));
+      };
       img.src = url;
     });
   }
 
+  function releaseLoadedImage(image) {
+    if (!image) return;
+    image.onload = null;
+    image.onerror = null;
+    image.removeAttribute('src');
+  }
+
   async function handlePreviewImageChange() {
-    if (!previewImageInput || !previewImageInput.files?.length) return;
+    if (!previewImageInput || !previewImageInput.files?.length) {
+      clearCancelledWorkImageSelection();
+      return;
+    }
     const file = previewImageInput.files[0];
 
     revokePreviewUrls();
@@ -614,6 +642,7 @@
         previewImages.hidden = false;
         savePreviewSummary.hidden = false;
         previewMessage.textContent = '元画像を確認しました。pending保存ではCanvas変換せず、この画像をそのままdevへ保存します。';
+        releaseLoadedImage(originalImage);
         updateModeVisibility();
         return;
       }
@@ -637,6 +666,7 @@
       previewMeta.hidden = false;
       previewImages.hidden = false;
       savePreviewSummary.hidden = false;
+      releaseLoadedImage(originalImage);
       previewMessage.textContent = generatedExtension === 'webp'
         ? 'WebPでlarge/thumbを生成しました。保存前確認を確認してください。'
         : 'WebP生成に対応していないため、この画面からは保存できません。';
@@ -719,9 +749,6 @@
   function resetImagePreviewState() {
     revokePreviewUrls();
     if (previewImageInput) previewImageInput.value = '';
-    if (previewOriginalImage) previewOriginalImage.removeAttribute('src');
-    if (previewLargeImage) previewLargeImage.removeAttribute('src');
-    if (previewThumbImage) previewThumbImage.removeAttribute('src');
     if (previewFileName) previewFileName.textContent = '-';
     if (previewMimeType) previewMimeType.textContent = '-';
     if (previewFileSize) previewFileSize.textContent = '-';
@@ -730,6 +757,16 @@
     if (previewThumbMeta) previewThumbMeta.textContent = '-';
     if (previewMeta) previewMeta.hidden = true;
     if (previewImages) previewImages.hidden = true;
+  }
+
+  function clearCancelledWorkImageSelection() {
+    pendingSaveCompleted = false;
+    resetImagePreviewState();
+    if (saveApiResult) saveApiResult.hidden = true;
+    hidePostSaveActions();
+    showRetryPendingSave(false);
+    updateSaveButtonState();
+    if (previewMessage) previewMessage.textContent = '画像選択を取り消しました。';
   }
 
   function resetWorkForm({ keepContext = false } = {}) {
@@ -996,10 +1033,10 @@
   }
 
   function clearModelProfilePreview() {
-    if (modelProfilePreviewUrl) URL.revokeObjectURL(modelProfilePreviewUrl);
-    modelProfilePreviewUrl = '';
     if (modelProfilePreview) modelProfilePreview.hidden = true;
     if (modelProfilePreviewImage) modelProfilePreviewImage.removeAttribute('src');
+    if (modelProfilePreviewUrl) URL.revokeObjectURL(modelProfilePreviewUrl);
+    modelProfilePreviewUrl = '';
     if (modelProfileFileName) modelProfileFileName.textContent = '-';
     if (modelProfileMimeType) modelProfileMimeType.textContent = '-';
     if (modelProfileFileSize) modelProfileFileSize.textContent = '-';
@@ -1372,6 +1409,9 @@
       if (modelFormMessage) {
         modelFormMessage.textContent = `登録予約完了。pending保存済みです。branch: ${json.branch || saveBranch} / modelId: ${json.modelId || pendingModel.id}`;
       }
+      if (modelProfileImageInput) modelProfileImageInput.value = '';
+      selectedModelProfileImage = null;
+      clearModelProfilePreview();
       modelPostSaveActions?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       console.error(err);
@@ -1446,6 +1486,7 @@
       pendingSaveCompleted = true;
       previewMessage.textContent = `登録予約完了。pending保存済みです。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
       renderPostSaveActions(json);
+      resetImagePreviewState();
       postSaveActions?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       console.error(err);
@@ -1564,6 +1605,7 @@
       }];
       previewMessage.textContent = `devへ保存しました。本番反映はまだです。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
       updateGeneratedWorkId();
+      resetImagePreviewState();
       renderWorksList?.();
     } catch (err) {
       console.error(err);
@@ -1610,6 +1652,7 @@
       return;
     }
 
+    resetImagePreviewState();
     editingWorkId = work.id;
     generatedWorkId = work.id;
     previewTitle.value = work.title || '';
@@ -1713,6 +1756,7 @@
     previewWorks = works;
     populatePreviewModels(models);
     previewImageInput.addEventListener('change', handlePreviewImageChange);
+    previewImageInput.addEventListener('cancel', clearCancelledWorkImageSelection);
     [previewTitle, previewDate, previewLocation, previewProduction, previewCaption].forEach((input) => {
       input?.addEventListener('input', updateSavePreview);
       input?.addEventListener('change', updateSavePreview);
@@ -1794,7 +1838,7 @@
         const isEditing = editingWorkId === work.id;
         return `
           <article class="static-list-card${isEditing ? ' is-editing' : ''}">
-            <div class="static-list-thumb">${thumb ? `<img src="${escapeHtml(thumb)}" alt="${escapeHtml(work.title || work.id)}" loading="lazy">` : ''}</div>
+            <div class="static-list-thumb">${thumb ? `<img src="${escapeHtml(thumb)}" alt="${escapeHtml(work.title || work.id)}" loading="lazy" decoding="async">` : ''}</div>
             <div class="static-list-body">
               <h3>${escapeHtml(work.title || '(無題)')}</h3>
               ${isEditing ? '<p class="static-list-status">編集中</p>' : ''}
@@ -1866,7 +1910,7 @@
         const isEditing = editingModelId === model.id;
         return `
           <article class="static-list-card${isEditing ? ' is-editing' : ''}">
-            <div class="static-list-thumb static-list-profile">${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(model.name || model.id)}" loading="lazy">` : ''}</div>
+            <div class="static-list-thumb static-list-profile">${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(model.name || model.id)}" loading="lazy" decoding="async">` : ''}</div>
             <div class="static-list-body">
               <h3>${escapeHtml(model.displayName || model.name || model.id)}</h3>
               ${isEditing ? '<p class="static-list-status">編集中</p>' : ''}
@@ -1931,6 +1975,11 @@
       renderModelProfilePreview(selectedModelProfileImage);
       if (modelSaveResult) modelSaveResult.hidden = true;
       hideModelPostSaveActions();
+      updateModelSaveState();
+    });
+    modelProfileImageInput?.addEventListener('cancel', () => {
+      selectedModelProfileImage = null;
+      clearModelProfilePreview();
       updateModelSaveState();
     });
     saveModelDev.addEventListener('click', saveModelToDev);

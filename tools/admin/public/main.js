@@ -9,6 +9,9 @@ const heroImageMemo = document.getElementById('heroImageMemo');
 const heroImageMeta = document.getElementById('heroImageMeta');
 const heroImageThumb = document.getElementById('heroImageThumb');
 const summaryMessage = document.getElementById('summaryMessage');
+const modelWorkCountList = document.getElementById('modelWorkCountList');
+const modelWorkCountMessage = document.getElementById('modelWorkCountMessage');
+const modelWorkCountSortButtons = Array.from(document.querySelectorAll('[data-model-count-sort]'));
 const fallbackHeroImage = '/images/site/top-hero.webp';
 const fallbackHeroSeason = 'spring';
 const fallbackHeroYear = 2026;
@@ -68,6 +71,8 @@ let currentSiteSettings = null;
 let currentSettingsSource = '';
 const selectedSettingsImages = new Map();
 const settingsPreviewUrls = new Map();
+let modelWorkCountRows = [];
+let modelWorkCountSort = 'count';
 
 function fileNameFromPath(value) {
   const text = String(value || '').trim();
@@ -143,7 +148,7 @@ function renderSummary(summary, mode) {
 }
 
 async function loadLocalSummary() {
-  const json = await fetchJson('/api/summary');
+  const json = await fetchJson('/admin/api/summary');
   if (!json.ok) throw new Error(json.message || 'summary api failed');
   return json.summary;
 }
@@ -166,6 +171,8 @@ async function loadStaticSummary() {
     : {};
 
   return {
+    works,
+    models,
     workCount: Array.isArray(works) ? works.length : NaN,
     modelCount: Array.isArray(models) ? models.length : NaN,
     aboutImage: settings.aboutImage || '',
@@ -175,6 +182,95 @@ async function loadStaticSummary() {
     heroImageYear: settings.heroImageYear || fallbackHeroYear,
     heroImageMemo: settings.heroImageMemo || fallbackHeroMemo
   };
+}
+
+function normalizeKana(value) {
+  return String(value || '')
+    .normalize('NFKC')
+    .trim()
+    .replace(/[ァ-ン]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0x60));
+}
+
+function modelDisplayName(model) {
+  return String(model?.displayName || model?.name || model?.id || '名称未設定');
+}
+
+function compareModelCountRowsByKana(a, b) {
+  if (Boolean(a.kana) !== Boolean(b.kana)) return a.kana ? -1 : 1;
+  if (!a.kana && !b.kana) return a.index - b.index;
+
+  const kanaOrder = a.kana.localeCompare(b.kana, 'ja', { sensitivity: 'base', numeric: true });
+  if (kanaOrder) return kanaOrder;
+
+  const nameOrder = a.name.localeCompare(b.name, 'ja', { sensitivity: 'base', numeric: true });
+  if (nameOrder) return nameOrder;
+
+  const idOrder = a.id.localeCompare(b.id, 'en', { sensitivity: 'base', numeric: true });
+  return idOrder || a.index - b.index;
+}
+
+function renderModelWorkCounts() {
+  if (!modelWorkCountList) return;
+  const rows = [...modelWorkCountRows].sort((a, b) => {
+    if (modelWorkCountSort === 'count') {
+      return a.count - b.count || compareModelCountRowsByKana(a, b);
+    }
+    return compareModelCountRowsByKana(a, b);
+  });
+
+  modelWorkCountList.innerHTML = rows.map((row) => `
+    <div class="model-work-count-row">
+      <span>${escapeHtml(row.name)}</span>
+      <strong>${row.count}件</strong>
+    </div>
+  `).join('') || '<p class="note">登録済みモデルはありません。</p>';
+
+  modelWorkCountSortButtons.forEach((button) => {
+    const active = button.dataset.modelCountSort === modelWorkCountSort;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+}
+
+function setModelWorkCountData(works, models) {
+  if (!modelWorkCountList || !Array.isArray(works) || !Array.isArray(models)) {
+    if (modelWorkCountMessage) modelWorkCountMessage.textContent = 'モデル別作品数を取得できませんでした。';
+    return;
+  }
+
+  const counts = new Map(models.map((model) => [model.id, 0]));
+  works.forEach((work) => {
+    const modelIds = Array.isArray(work?.modelIds) ? work.modelIds : Array.isArray(work?.models) ? work.models : [];
+    new Set(modelIds).forEach((modelId) => {
+      if (counts.has(modelId)) counts.set(modelId, counts.get(modelId) + 1);
+    });
+  });
+
+  modelWorkCountRows = models.map((model, index) => ({
+    id: String(model?.id || ''),
+    name: modelDisplayName(model),
+    kana: normalizeKana(model?.nameKana || model?.yomi || ''),
+    count: counts.get(model?.id) || 0,
+    index
+  }));
+  renderModelWorkCounts();
+  if (modelWorkCountMessage) {
+    modelWorkCountMessage.textContent = `${modelWorkCountRows.length}人のモデルを表示しています。`;
+  }
+}
+
+async function loadModelWorkCountsFromStaticJson() {
+  if (!modelWorkCountList) return;
+  try {
+    const [works, models] = await Promise.all([
+      fetchJson('/data/works.json'),
+      fetchJson('/data/models.json')
+    ]);
+    setModelWorkCountData(works, models);
+  } catch (err) {
+    console.info('Model work counts are unavailable.', err);
+    if (modelWorkCountMessage) modelWorkCountMessage.textContent = 'モデル別作品数を取得できませんでした。';
+  }
 }
 
 function activateStaticMode() {
@@ -274,7 +370,7 @@ function renderSettingsHistory(kind, history, container) {
     const action = renderSettingsHistoryAction({ kind, index, isCurrent, canSwitch });
     return `
       <article class="settings-history-card">
-        <img src="${escapeHtml(toSiteImageUrl(item.path))}" alt="${kind === 'hero' ? 'Hero画像履歴' : 'コンセプト画像履歴'} ${index + 1}" loading="lazy">
+        <img src="${escapeHtml(toSiteImageUrl(item.path))}" alt="${kind === 'hero' ? 'Hero画像履歴' : 'コンセプト画像履歴'} ${index + 1}" loading="lazy" decoding="async">
         <div>
           <strong>${escapeHtml(item.memo || 'メモなし')}</strong>
           <dl>
@@ -385,21 +481,33 @@ function settingsUploadRefs(kind) {
 function handleSettingsImageSelected(kind) {
   const refs = settingsUploadRefs(kind);
   const file = refs.fileInput?.files?.[0] || null;
+  if (!file) {
+    clearSettingsImageSelection(kind);
+    return;
+  }
   selectedSettingsImages.set(kind, file);
   renderSettingsUploadPreview(kind, file);
   updateSettingsUploadState(kind);
 }
 
+function clearSettingsImageSelection(kind) {
+  const refs = settingsUploadRefs(kind);
+  selectedSettingsImages.delete(kind);
+  if (refs.fileInput) refs.fileInput.value = '';
+  renderSettingsUploadPreview(kind, null);
+  updateSettingsUploadState(kind);
+}
+
 function renderSettingsUploadPreview(kind, file) {
   const refs = settingsUploadRefs(kind);
-  if (settingsPreviewUrls.has(kind)) URL.revokeObjectURL(settingsPreviewUrls.get(kind));
-  settingsPreviewUrls.delete(kind);
   if (!refs.preview) return;
   const img = refs.preview.querySelector('img');
   const meta = refs.preview.querySelector('small');
+  if (img) img.removeAttribute('src');
+  if (settingsPreviewUrls.has(kind)) URL.revokeObjectURL(settingsPreviewUrls.get(kind));
+  settingsPreviewUrls.delete(kind);
   if (!file) {
     refs.preview.hidden = true;
-    img?.removeAttribute('src');
     if (meta) meta.textContent = '';
     return;
   }
@@ -453,9 +561,7 @@ async function saveSettingsImagePending(kind) {
       return;
     }
     if (settingsMessage) settingsMessage.textContent = '画像差し替えを登録予約しました。GitHub ActionsでWebP変換後、履歴に追加され使用中になります。';
-    refs.fileInput.value = '';
-    selectedSettingsImages.delete(kind);
-    renderSettingsUploadPreview(kind, null);
+    clearSettingsImageSelection(kind);
   } catch (err) {
     renderSettingsResult({ success: false, error: { message: err.message } });
     if (settingsMessage) settingsMessage.textContent = '画像差し替えのpending保存に失敗しました。';
@@ -678,12 +784,14 @@ async function loadSummary() {
   try {
     const summary = await loadLocalSummary();
     renderSummary(summary, 'local');
+    await loadModelWorkCountsFromStaticJson();
   } catch (err) {
     console.info('Local admin API is unavailable. Falling back to static mode.', err);
     activateStaticMode();
     try {
       const summary = await loadStaticSummary();
       renderSummary(summary, 'static');
+      setModelWorkCountData(summary.works, summary.models);
       await loadCloudflareSession();
       await loadPendingStatus();
     } catch (staticErr) {
@@ -1224,6 +1332,15 @@ if (isSummaryPage) {
   loadSummary();
 }
 
+modelWorkCountSortButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const nextSort = button.dataset.modelCountSort;
+    if (nextSort !== 'count' && nextSort !== 'kana') return;
+    modelWorkCountSort = nextSort;
+    renderModelWorkCounts();
+  });
+});
+
 if (isSettingsPage) {
   loadSettingsForPage();
 }
@@ -1250,6 +1367,8 @@ settingsAboutHistory?.addEventListener('click', (event) => {
 });
 settingsHeroUpload?.addEventListener('change', () => handleSettingsImageSelected('hero'));
 settingsAboutUpload?.addEventListener('change', () => handleSettingsImageSelected('about'));
+settingsHeroUpload?.addEventListener('cancel', () => clearSettingsImageSelection('hero'));
+settingsAboutUpload?.addEventListener('cancel', () => clearSettingsImageSelection('about'));
 [settingsHeroYear, settingsHeroSeason, settingsHeroUploadMemo].forEach((input) => {
   input?.addEventListener('input', () => updateSettingsUploadState('hero'));
 });
