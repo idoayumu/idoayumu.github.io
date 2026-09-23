@@ -247,6 +247,98 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.model-work-counts {
+  min-width: 0;
+  margin-top: 22px;
+  padding: 18px;
+  border: 1px solid #e4ddec;
+  background: #fff;
+}
+
+.model-work-counts-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 14px 20px;
+  margin-bottom: 14px;
+}
+
+.model-work-counts-header p {
+  margin: 0 0 6px;
+  color: #8a74a8;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.model-work-counts-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+.model-work-count-sort {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: min(100%, 240px);
+  border: 1px solid #cfc5dc;
+}
+
+.model-work-count-sort button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 0;
+  background: #fff;
+  color: #555;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.model-work-count-sort button + button {
+  border-left: 1px solid #cfc5dc;
+}
+
+.model-work-count-sort button.is-active {
+  background: #ede8f3;
+  color: #111;
+}
+
+.model-work-count-list {
+  border-top: 1px solid #e4ddec;
+}
+
+.model-work-count-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 10px 2px;
+  border-bottom: 1px solid #eeeaf3;
+}
+
+.model-work-count-row span {
+  min-width: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.model-work-count-row strong {
+  min-width: 3.5em;
+  color: #70568f;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.model-work-counts > .note {
+  margin-top: 12px;
+}
+
 .summary-image {
   display: grid;
   gap: 8px;
@@ -1577,6 +1669,18 @@ h2 {
 
   .page-header h1 {
     margin-bottom: 8px;
+  }
+
+  .model-work-counts {
+    padding: 14px;
+  }
+
+  .model-work-counts-header {
+    align-items: stretch;
+  }
+
+  .model-work-count-sort {
+    width: 100%;
   }
 
   .image-preview-tool,

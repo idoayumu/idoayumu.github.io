@@ -78,6 +78,20 @@
           </dd>
         </div>
       </dl>
+      <div class="model-work-counts" aria-labelledby="model-work-counts-title">
+        <div class="model-work-counts-header">
+          <div>
+            <p>Works by model</p>
+            <h3 id="model-work-counts-title">モデル別作品数</h3>
+          </div>
+          <div class="model-work-count-sort" role="group" aria-label="モデル別作品数の並び順">
+            <button class="is-active" type="button" data-model-count-sort="count" aria-pressed="true">作品数順</button>
+            <button type="button" data-model-count-sort="kana" aria-pressed="false">カナ順</button>
+          </div>
+        </div>
+        <div class="model-work-count-list" id="modelWorkCountList" aria-live="polite"></div>
+        <p class="note" id="modelWorkCountMessage">モデル別作品数を読み込み中です。</p>
+      </div>
       <p class="note" id="summaryMessage"></p>
     </section>
 

@@ -25,6 +25,7 @@ app.use('/admin/models', modelRoutes);
 app.use('/admin/settings', express.static(path.join(ROOT, 'tools', 'site-settings', 'public')));
 app.use('/admin/settings', settingsRoutes);
 app.use('/images', express.static(path.join(ROOT, 'public', 'images')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 async function readJsonArray(filePath) {
   try {
