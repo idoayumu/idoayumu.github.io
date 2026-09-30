@@ -676,5 +676,44 @@
     ],
     "image": "/images/works/large/260923touka_0001.webp",
     "thumbnail": "/images/works/thumbs/260923touka_0001.webp"
+  },
+  {
+    "id": "261001wako_0001",
+    "title": "冬が始まるよ",
+    "date": "2025-12-09",
+    "location": "大阪",
+    "production": "mateplus",
+    "caption": "マッキーの曲名。\n投稿時期は秋！",
+    "modelIds": [
+      "wako"
+    ],
+    "image": "/images/works/large/261001wako_0001.webp",
+    "thumbnail": "/images/works/thumbs/261001wako_0001.webp"
+  },
+  {
+    "id": "261001wako_0002",
+    "title": "ウィンク",
+    "date": "2025-12-09",
+    "location": "大阪",
+    "production": "mateplus",
+    "caption": "ウィンクしてくれました！",
+    "modelIds": [
+      "wako"
+    ],
+    "image": "/images/works/large/261001wako_0002.webp",
+    "thumbnail": "/images/works/thumbs/261001wako_0002.webp"
+  },
+  {
+    "id": "261001wako_0003",
+    "title": "ちょっと待った",
+    "date": "2025-12-09",
+    "location": "大阪",
+    "production": "mateplus",
+    "caption": "これ、何のポーズやったんやろうね",
+    "modelIds": [
+      "wako"
+    ],
+    "image": "/images/works/large/261001wako_0003.webp",
+    "thumbnail": "/images/works/thumbs/261001wako_0003.webp"
   }
 ]
