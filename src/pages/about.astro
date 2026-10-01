@@ -250,15 +250,14 @@ const conceptNoteDate = "2026.06.16";
 
   .about-concept-image {
     min-width: 0;
-    overflow: hidden;
     background: transparent;
   }
 
   .about-concept-image img {
+    display: block;
     width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    object-position: center;
+    height: auto;
+    object-fit: contain;
   }
 
   .about-concept-image p {
