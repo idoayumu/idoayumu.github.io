@@ -11,6 +11,7 @@
   const previewDate = document.getElementById('previewDate');
   const previewLocation = document.getElementById('previewLocation');
   const previewProduction = document.getElementById('previewProduction');
+  const previewProductionOptions = document.getElementById('previewProductionOptions');
   const previewCaption = document.getElementById('previewCaption');
   const previewModelIds = document.getElementById('previewModelIds');
   const previewImageInput = document.getElementById('previewImageInput');
@@ -357,6 +358,27 @@
 
   function productionCandidateForModel(model) {
     return String(model?.agency || '').trim() || 'リク撮';
+  }
+
+  function populateProductionOptions(works) {
+    if (!previewProductionOptions) return;
+
+    const values = new Set(['リク撮']);
+    (Array.isArray(works) ? works : []).forEach((work) => {
+      const production = String(work?.production || '').trim();
+      if (production) values.add(production);
+    });
+
+    const sortedValues = [...values].sort((a, b) => a.localeCompare(b, 'ja', {
+      sensitivity: 'base'
+    }));
+    previewProductionOptions.replaceChildren(
+      ...sortedValues.map((value) => {
+        const option = document.createElement('option');
+        option.value = value;
+        return option;
+      })
+    );
   }
 
   function applyProductionAutofill() {
@@ -1754,6 +1776,7 @@
     if (!previewImageInput) return;
     // Phase A/Bでは静的JSONを参照します。保存実装時はGitHub正本API参照へ切り替える予定です。
     previewWorks = works;
+    populateProductionOptions(works);
     populatePreviewModels(models);
     previewImageInput.addEventListener('change', handlePreviewImageChange);
     previewImageInput.addEventListener('cancel', clearCancelledWorkImageSelection);

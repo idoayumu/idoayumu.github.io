@@ -53,7 +53,8 @@
           <input id="previewLocation" type="text" placeholder="大阪" autocomplete="off" />
         </label>
         <label>Production
-          <input id="previewProduction" type="text" placeholder="撮影会名・リク撮など" autocomplete="off" required />
+          <input id="previewProduction" type="text" list="previewProductionOptions" placeholder="撮影会名・リク撮など" autocomplete="off" required />
+          <datalist id="previewProductionOptions"></datalist>
           <small>リク撮の場合も管理上は入力してください。リク撮は公開ページでは表示されません。</small>
         </label>
         <label class="preview-form-wide">caption
