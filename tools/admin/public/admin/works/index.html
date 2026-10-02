@@ -37,6 +37,11 @@
           <legend>モデル</legend>
           <div class="preview-model-list" id="previewModelIds"></div>
         </fieldset>
+        <details class="selected-model-works preview-form-wide" id="selectedModelWorks" open>
+          <summary>出演作品表示 <span id="selectedModelWorksCount">未選択</span></summary>
+          <p class="selected-model-works-message" id="selectedModelWorksMessage" aria-live="polite">モデルを選択すると出演作品を表示します。</p>
+          <div class="model-related-work-list selected-model-work-list" id="selectedModelWorksList" hidden></div>
+        </details>
         <div class="generated-id-panel">
           <span>作品ID</span>
           <strong id="previewGeneratedWorkId">モデル選択で自動生成</strong>
