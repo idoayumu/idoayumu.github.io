@@ -1575,13 +1575,15 @@ h2 {
   font-weight: 700;
 }
 
-.model-related-works {
+.model-related-works,
+.selected-model-works {
   min-width: 0;
   margin-top: 8px;
   border-top: 1px solid #e4ddec;
 }
 
-.model-related-works summary {
+.model-related-works summary,
+.selected-model-works summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1595,7 +1597,8 @@ h2 {
   cursor: pointer;
 }
 
-.model-related-works summary::before {
+.model-related-works summary::before,
+.selected-model-works summary::before {
   content: "▶";
   flex: 0 0 auto;
   color: #70568f;
@@ -1603,11 +1606,13 @@ h2 {
   transition: transform 0.15s ease;
 }
 
-.model-related-works[open] summary::before {
+.model-related-works[open] summary::before,
+.selected-model-works[open] summary::before {
   transform: rotate(90deg);
 }
 
-.model-related-works summary span {
+.model-related-works summary span,
+.selected-model-works summary span {
   margin-left: auto;
   flex: 0 0 auto;
   color: #70568f;
@@ -1618,6 +1623,27 @@ h2 {
   display: grid;
   gap: 8px;
   padding: 2px 0 8px;
+}
+
+.selected-model-works {
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid #e4ddec;
+  background: #faf9fc;
+}
+
+.selected-model-works-message {
+  margin: 0;
+  padding: 0 0 8px;
+  color: #666;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.selected-model-work-list {
+  max-height: 340px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .model-related-work {
@@ -1827,5 +1853,9 @@ h2 {
 
   .model-related-work {
     grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .selected-model-work-list {
+    max-height: 280px;
   }
 }

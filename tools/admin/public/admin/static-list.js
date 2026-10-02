@@ -14,6 +14,10 @@
   const previewProductionOptions = document.getElementById('previewProductionOptions');
   const previewCaption = document.getElementById('previewCaption');
   const previewModelIds = document.getElementById('previewModelIds');
+  const selectedModelWorks = document.getElementById('selectedModelWorks');
+  const selectedModelWorksCount = document.getElementById('selectedModelWorksCount');
+  const selectedModelWorksMessage = document.getElementById('selectedModelWorksMessage');
+  const selectedModelWorksList = document.getElementById('selectedModelWorksList');
   const previewImageInput = document.getElementById('previewImageInput');
   const saveModeInputs = Array.from(document.querySelectorAll('input[name="workSaveMode"]'));
   const previewMessage = document.getElementById('previewMessage');
@@ -354,6 +358,57 @@
   function selectedModelNames() {
     const selected = selectedModelIds();
     return selected.map((id) => previewModels.find((model) => model.id === id)?.name || id).filter(Boolean);
+  }
+
+  function compareWorksByDateDesc(a, b) {
+    return String(b?.date || '').localeCompare(String(a?.date || ''))
+      || String(b?.id || '').localeCompare(String(a?.id || ''));
+  }
+
+  function renderRelatedWorksMarkup(relatedWorks) {
+    if (!relatedWorks.length) return '<p class="model-related-works-empty">作品なし</p>';
+
+    return relatedWorks.map((work) => {
+      const thumb = toSiteImageUrl(work.thumbnail || work.image || '');
+      const workUrl = `${siteImageBaseUrl}/works/${encodeURIComponent(work.id)}/`;
+      return `
+        <a class="model-related-work" href="${escapeHtml(workUrl)}">
+          <span class="model-related-work-thumb">${thumb ? `<img src="${escapeHtml(thumb)}" alt="" loading="lazy" decoding="async">` : ''}</span>
+          <span class="model-related-work-info">
+            <strong>${escapeHtml(work.title || '(無題)')}</strong>
+            <time datetime="${escapeHtml(work.date || '')}">${escapeHtml(work.date || '日付未設定')}</time>
+          </span>
+        </a>
+      `;
+    }).join('');
+  }
+
+  function renderSelectedModelWorks() {
+    if (!selectedModelWorks || !selectedModelWorksCount || !selectedModelWorksMessage || !selectedModelWorksList) return;
+
+    const selectedIds = selectedModelIds();
+    if (!selectedIds.length) {
+      selectedModelWorksCount.textContent = '未選択';
+      selectedModelWorksMessage.textContent = 'モデルを選択すると出演作品を表示します。';
+      selectedModelWorksList.hidden = true;
+      selectedModelWorksList.replaceChildren();
+      return;
+    }
+
+    const selectedIdSet = new Set(selectedIds);
+    const uniqueWorks = new Map();
+    previewWorks.forEach((work) => {
+      if (getWorkModelIds(work).some((id) => selectedIdSet.has(id))) {
+        uniqueWorks.set(work.id, work);
+      }
+    });
+    const relatedWorks = [...uniqueWorks.values()].sort(compareWorksByDateDesc);
+    selectedModelWorksCount.textContent = `${relatedWorks.length}件`;
+    selectedModelWorksMessage.textContent = relatedWorks.length
+      ? `選択中のモデルに紐づく${relatedWorks.length}件の作品です。`
+      : '選択中のモデルに紐づく作品はありません。';
+    selectedModelWorksList.hidden = false;
+    selectedModelWorksList.innerHTML = renderRelatedWorksMarkup(relatedWorks);
   }
 
   function productionCandidateForModel(model) {
@@ -1625,6 +1680,7 @@
         image: `/images/works/large/${work.id}.webp`,
         thumbnail: `/images/works/thumbs/${work.id}.webp`
       }];
+      renderSelectedModelWorks();
       previewMessage.textContent = `devへ保存しました。本番反映はまだです。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
       updateGeneratedWorkId();
       resetImagePreviewState();
@@ -1651,6 +1707,7 @@
     Array.from(previewModelIds?.querySelectorAll('input[type="checkbox"]') || []).forEach((input) => {
       input.checked = selected.has(input.value);
     });
+    renderSelectedModelWorks();
   }
 
   function focusEditForm() {
@@ -1716,6 +1773,7 @@
     );
     previewWorks = previewWorks.map(update);
     worksListRef = worksListRef.map(update);
+    renderSelectedModelWorks();
   }
 
   async function deleteWorkWithImagesFromGitHub(workId) {
@@ -1745,6 +1803,7 @@
 
       previewWorks = previewWorks.filter((item) => item?.id !== workId);
       worksListRef = worksListRef.filter((item) => item?.id !== workId);
+      renderSelectedModelWorks();
       if (editingWorkId === workId) exitEditMode({ keepMessage: true });
       renderWorksList?.();
       previewMessage.textContent = `削除しました。branch: ${json.branch || saveBranch} / workId: ${json.deletedWorkId || workId}`;
@@ -1776,6 +1835,7 @@
     if (!previewImageInput) return;
     // Phase A/Bでは静的JSONを参照します。保存実装時はGitHub正本API参照へ切り替える予定です。
     previewWorks = works;
+    renderSelectedModelWorks();
     populateProductionOptions(works);
     populatePreviewModels(models);
     previewImageInput.addEventListener('change', handlePreviewImageChange);
@@ -1790,6 +1850,7 @@
     previewModelIds?.addEventListener('change', () => {
       applyProductionAutofill();
       updateGeneratedWorkId();
+      renderSelectedModelWorks();
     });
     copyGeneratedWorkId?.addEventListener('click', copyWorkId);
     saveModeInputs.forEach((input) => {
@@ -1911,10 +1972,7 @@
       });
     });
     worksByModelId.forEach((relatedWorks) => {
-      relatedWorks.sort((a, b) => (
-        String(b?.date || '').localeCompare(String(a?.date || ''))
-        || String(b?.id || '').localeCompare(String(a?.id || ''))
-      ));
+      relatedWorks.sort(compareWorksByDateDesc);
     });
 
     function render() {
@@ -1940,21 +1998,7 @@
         )).join(' / ') || 'SNS未設定';
         const isEditing = editingModelId === model.id;
         const relatedWorks = worksByModelId.get(model.id) || [];
-        const relatedWorksMarkup = relatedWorks.length
-          ? relatedWorks.map((work) => {
-            const thumb = toSiteImageUrl(work.thumbnail || work.image || '');
-            const workUrl = `${siteImageBaseUrl}/works/${encodeURIComponent(work.id)}/`;
-            return `
-              <a class="model-related-work" href="${escapeHtml(workUrl)}">
-                <span class="model-related-work-thumb">${thumb ? `<img src="${escapeHtml(thumb)}" alt="" loading="lazy" decoding="async">` : ''}</span>
-                <span class="model-related-work-info">
-                  <strong>${escapeHtml(work.title || '(無題)')}</strong>
-                  <time datetime="${escapeHtml(work.date || '')}">${escapeHtml(work.date || '日付未設定')}</time>
-                </span>
-              </a>
-            `;
-          }).join('')
-          : '<p class="model-related-works-empty">作品なし</p>';
+        const relatedWorksMarkup = renderRelatedWorksMarkup(relatedWorks);
         return `
           <article class="static-list-card${isEditing ? ' is-editing' : ''}">
             <div class="static-list-thumb static-list-profile">${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(model.name || model.id)}" loading="lazy" decoding="async">` : ''}</div>
