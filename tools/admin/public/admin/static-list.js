@@ -1902,11 +1902,19 @@
 
   function renderModels(models, works, meta = {}) {
     modelsListRef = [...models];
-    const workCountByModelId = new Map();
+    const worksByModelId = new Map();
     works.forEach((work) => {
       getWorkModelIds(work).forEach((id) => {
-        workCountByModelId.set(id, (workCountByModelId.get(id) || 0) + 1);
+        const relatedWorks = worksByModelId.get(id) || [];
+        relatedWorks.push(work);
+        worksByModelId.set(id, relatedWorks);
       });
+    });
+    worksByModelId.forEach((relatedWorks) => {
+      relatedWorks.sort((a, b) => (
+        String(b?.date || '').localeCompare(String(a?.date || ''))
+        || String(b?.id || '').localeCompare(String(a?.id || ''))
+      ));
     });
 
     function render() {
@@ -1931,15 +1939,37 @@
           `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`
         )).join(' / ') || 'SNS未設定';
         const isEditing = editingModelId === model.id;
+        const relatedWorks = worksByModelId.get(model.id) || [];
+        const relatedWorksMarkup = relatedWorks.length
+          ? relatedWorks.map((work) => {
+            const thumb = toSiteImageUrl(work.thumbnail || work.image || '');
+            const workUrl = `${siteImageBaseUrl}/works/${encodeURIComponent(work.id)}/`;
+            return `
+              <a class="model-related-work" href="${escapeHtml(workUrl)}">
+                <span class="model-related-work-thumb">${thumb ? `<img src="${escapeHtml(thumb)}" alt="" loading="lazy" decoding="async">` : ''}</span>
+                <span class="model-related-work-info">
+                  <strong>${escapeHtml(work.title || '(無題)')}</strong>
+                  <time datetime="${escapeHtml(work.date || '')}">${escapeHtml(work.date || '日付未設定')}</time>
+                </span>
+              </a>
+            `;
+          }).join('')
+          : '<p class="model-related-works-empty">作品なし</p>';
         return `
           <article class="static-list-card${isEditing ? ' is-editing' : ''}">
             <div class="static-list-thumb static-list-profile">${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(model.name || model.id)}" loading="lazy" decoding="async">` : ''}</div>
             <div class="static-list-body">
               <h3>${escapeHtml(model.displayName || model.name || model.id)}</h3>
               ${isEditing ? '<p class="static-list-status">編集中</p>' : ''}
-              <p>${escapeHtml(model.agency || '所属未設定')} / ${workCountByModelId.get(model.id) || 0} works</p>
+              <p>${escapeHtml(model.agency || '所属未設定')} / ${relatedWorks.length} works</p>
               <p>${links}</p>
               <small>ID: ${escapeHtml(model.id)}</small>
+              <details class="model-related-works">
+                <summary>出演作品を表示 <span>${relatedWorks.length}件</span></summary>
+                <div class="model-related-work-list">
+                  ${relatedWorksMarkup}
+                </div>
+              </details>
               <div class="static-list-actions">
                 <button class="${isEditing ? 'is-editing' : ''}" type="button" data-edit-model-id="${escapeHtml(model.id)}">${isEditing ? '編集中のフォームへ戻る' : '編集'}</button>
               </div>
