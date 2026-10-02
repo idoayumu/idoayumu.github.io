@@ -728,5 +728,44 @@
     ],
     "image": "/images/works/large/261002minaseaoi_0001.webp",
     "thumbnail": "/images/works/thumbs/261002minaseaoi_0001.webp"
+  },
+  {
+    "id": "261002kiyoseamy_0001",
+    "title": "薄暮れ",
+    "date": "2025-11-12",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "うっすらとしか暮れなかった",
+    "modelIds": [
+      "kiyoseamy"
+    ],
+    "image": "/images/works/large/261002kiyoseamy_0001.webp",
+    "thumbnail": "/images/works/thumbs/261002kiyoseamy_0001.webp"
+  },
+  {
+    "id": "261002kiyoseamy_0002",
+    "title": "イルミネーション",
+    "date": "2025-11-12",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "大階段のイルミネーション",
+    "modelIds": [
+      "kiyoseamy"
+    ],
+    "image": "/images/works/large/261002kiyoseamy_0002.webp",
+    "thumbnail": "/images/works/thumbs/261002kiyoseamy_0002.webp"
+  },
+  {
+    "id": "261002kiyoseamy_0003",
+    "title": "少しの距離と",
+    "date": "2025-11-12",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "絶妙な距離感でした",
+    "modelIds": [
+      "kiyoseamy"
+    ],
+    "image": "/images/works/large/261002kiyoseamy_0003.webp",
+    "thumbnail": "/images/works/thumbs/261002kiyoseamy_0003.webp"
   }
 ]
