@@ -330,5 +330,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "aikawayuu",
+    "name": "相川結",
+    "displayName": "相川結",
+    "nameKana": "アイカワユウ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "キイロイツノ撮影会",
+    "bio": "",
+    "thumbnail": "aikawayuu_profile.webp",
+    "profileImage": "aikawayuu_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/yu__nyan16",
+      "x": "https://x.com/yu__nyan16",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
