@@ -780,5 +780,18 @@
     ],
     "image": "/images/works/large/261003aikawayuu_0001.webp",
     "thumbnail": "/images/works/thumbs/261003aikawayuu_0001.webp"
+  },
+  {
+    "id": "261003aikawayuu_0002",
+    "title": "切なさ燻る",
+    "date": "2026-04-25",
+    "location": "大阪",
+    "production": "キイロイツノ撮影会",
+    "caption": "いいタイトル付けれたと自負",
+    "modelIds": [
+      "aikawayuu"
+    ],
+    "image": "/images/works/large/261003aikawayuu_0002.webp",
+    "thumbnail": "/images/works/thumbs/261003aikawayuu_0002.webp"
   }
 ]
