@@ -1,0 +1,325 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="本日のピックアップフォト | 光の記録　ー光景ノオトー"
+  description="AI「Jev」が、光景ノオトの作品から今日の一枚を選びます。"
+>
+  <section class="pickup-page">
+    <header class="pickup-header">
+      <p class="pickup-kicker">TODAY'S PICKUP</p>
+      <h1>本日のピックアップフォト</h1>
+
+      <p class="pickup-intro">
+        今日という日と、作品に刻まれた言葉と時間。<br />
+        AI「Jev」が選ぶ、本日の一枚です。
+      </p>
+    </header>
+
+    <div id="pickup-loading" class="pickup-status">
+      本日の一枚を読み込んでいます…
+    </div>
+
+    <div id="pickup-error" class="pickup-status pickup-error" hidden>
+      本日のピックアップフォトを表示できませんでした。
+    </div>
+
+    <article id="pickup-work" class="pickup-work" hidden>
+      <p id="pickup-date" class="pickup-today"></p>
+
+      <a id="pickup-work-link" href="#">
+        <img
+          id="pickup-image"
+          class="pickup-image"
+          src=""
+          alt=""
+        />
+      </a>
+
+      <div class="pickup-info">
+        <h2 id="pickup-title"></h2>
+
+        <p id="pickup-meta" class="pickup-meta"></p>
+
+        <p id="pickup-models" class="pickup-models"></p>
+
+        <p id="pickup-fallback" class="pickup-fallback" hidden></p>
+
+        <p class="pickup-jev">
+          Selected by Jev
+        </p>
+      </div>
+    </article>
+  </section>
+
+  <script>
+    const API_URL =
+      "https://kokei-note-api.luck10wn.workers.dev/";
+
+    const loading =
+      document.getElementById("pickup-loading");
+
+    const errorBox =
+      document.getElementById("pickup-error");
+
+    const workBox =
+      document.getElementById("pickup-work");
+
+    try {
+      const response = await fetch(API_URL);
+
+      if (!response.ok) {
+        throw new Error(
+          `Pickup API failed: ${response.status}`
+        );
+      }
+
+      const data = await response.json();
+
+      if (!data?.selectedWork) {
+        throw new Error(
+          "Selected work was not returned"
+        );
+      }
+
+      const work = data.selectedWork;
+
+      const dateElement =
+        document.getElementById("pickup-date");
+
+      const imageElement =
+        document.getElementById("pickup-image");
+
+      const titleElement =
+        document.getElementById("pickup-title");
+
+      const metaElement =
+        document.getElementById("pickup-meta");
+
+      const modelsElement =
+        document.getElementById("pickup-models");
+
+      const workLink =
+        document.getElementById("pickup-work-link");
+
+      const fallbackElement =
+        document.getElementById("pickup-fallback");
+
+      if (dateElement) {
+        dateElement.textContent =
+          formatDisplayDate(data.date);
+      }
+
+      if (imageElement) {
+        imageElement.src = work.image;
+        imageElement.alt = work.title;
+      }
+
+      if (titleElement) {
+        titleElement.textContent = work.title;
+      }
+
+      if (metaElement) {
+        metaElement.textContent =
+          `撮影日：${work.date}`;
+      }
+
+      if (workLink) {
+        workLink.href =
+          `/works/${work.id}/`;
+      }
+
+      if (
+        modelsElement &&
+        Array.isArray(work.modelNames)
+      ) {
+        modelsElement.textContent = "";
+
+        work.modelNames.forEach(
+          (name, index) => {
+            const modelId =
+              work.modelIds?.[index];
+
+            if (modelId) {
+              const link =
+                document.createElement("a");
+
+              link.href =
+                `/models/${modelId}/`;
+
+              link.textContent = name;
+
+              modelsElement.appendChild(link);
+            } else {
+              modelsElement.appendChild(
+                document.createTextNode(name)
+              );
+            }
+
+            if (
+              index <
+              work.modelNames.length - 1
+            ) {
+              modelsElement.appendChild(
+                document.createTextNode(" / ")
+              );
+            }
+          }
+        );
+      }
+
+      if (
+        fallbackElement &&
+        data.record?.source ===
+          "fallback_previous"
+      ) {
+        fallbackElement.textContent =
+          data.message ||
+          "本日のAI選出に失敗したため、前回の作品を表示しています。";
+
+        fallbackElement.hidden = false;
+      }
+
+      if (loading) {
+        loading.hidden = true;
+      }
+
+      if (workBox) {
+        workBox.hidden = false;
+      }
+    } catch (error) {
+      console.error(
+        "Pickup load failed",
+        error
+      );
+
+      if (loading) {
+        loading.hidden = true;
+      }
+
+      if (errorBox) {
+        errorBox.hidden = false;
+      }
+    }
+
+    function formatDisplayDate(value) {
+      if (
+        typeof value !== "string" ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(value)
+      ) {
+        return value || "";
+      }
+
+      const [year, month, day] =
+        value.split("-");
+
+      return `${year}年${Number(month)}月${Number(day)}日`;
+    }
+  </script>
+
+  <style>
+    .pickup-page {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .pickup-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .pickup-kicker {
+      margin-bottom: 0.4rem;
+      color: #777;
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+    }
+
+    .pickup-header h1 {
+      margin-bottom: 1rem;
+    }
+
+    .pickup-intro {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 2;
+    }
+
+    .pickup-status {
+      padding: 4rem 1rem;
+      text-align: center;
+      color: #666;
+    }
+
+    .pickup-error {
+      color: #777;
+    }
+
+    .pickup-today {
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    .pickup-image {
+      width: 100%;
+      height: auto;
+    }
+
+    .pickup-info {
+      margin-top: 1.75rem;
+      text-align: center;
+    }
+
+    .pickup-info h2 {
+      margin-bottom: 0.7rem;
+      font-size: 1.6rem;
+      font-weight: 500;
+    }
+
+    .pickup-meta,
+    .pickup-models {
+      margin-bottom: 0.45rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .pickup-models a {
+      border-bottom: 1px solid #ccc;
+    }
+
+    .pickup-jev {
+      margin-top: 2rem;
+      color: #888;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+    }
+
+    .pickup-fallback {
+      margin: 1.5rem auto 0;
+      max-width: 600px;
+      color: #777;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      .pickup-header {
+        margin-bottom: 2rem;
+      }
+
+      .pickup-header h1 {
+        font-size: 1.8rem;
+      }
+
+      .pickup-intro {
+        font-size: 0.9rem;
+      }
+
+      .pickup-info h2 {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</Layout>
