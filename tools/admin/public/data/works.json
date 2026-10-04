@@ -793,5 +793,31 @@
     ],
     "image": "/images/works/large/261003aikawayuu_0002.webp",
     "thumbnail": "/images/works/thumbs/261003aikawayuu_0002.webp"
+  },
+  {
+    "id": "261004misaki_0001",
+    "title": "Sweet Candy Rain",
+    "date": "2025-12-20",
+    "location": "大阪",
+    "production": "シロクロ撮影会",
+    "caption": "雨が降っていた日、吉井和哉さんの曲から",
+    "modelIds": [
+      "misaki"
+    ],
+    "image": "/images/works/large/261004misaki_0001.webp",
+    "thumbnail": "/images/works/thumbs/261004misaki_0001.webp"
+  },
+  {
+    "id": "261004misaki_0002",
+    "title": "Strawberry Time",
+    "date": "2025-12-20",
+    "location": "大阪",
+    "production": "シロクロ撮影会",
+    "caption": "UAさんの曲から",
+    "modelIds": [
+      "misaki"
+    ],
+    "image": "/images/works/large/261004misaki_0002.webp",
+    "thumbnail": "/images/works/thumbs/261004misaki_0002.webp"
   }
 ]
