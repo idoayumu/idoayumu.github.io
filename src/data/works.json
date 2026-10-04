@@ -819,5 +819,18 @@
     ],
     "image": "/images/works/large/261004misaki_0002.webp",
     "thumbnail": "/images/works/thumbs/261004misaki_0002.webp"
+  },
+  {
+    "id": "261004touka_0001",
+    "title": "夢紅",
+    "date": "2025-10-05",
+    "location": "京都",
+    "production": "SSR撮影会",
+    "caption": "ゆめくれない\nと読みます。",
+    "modelIds": [
+      "touka"
+    ],
+    "image": "/images/works/large/261004touka_0001.webp",
+    "thumbnail": "/images/works/thumbs/261004touka_0001.webp"
   }
 ]
