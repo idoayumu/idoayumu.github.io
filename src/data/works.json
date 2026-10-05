@@ -858,5 +858,70 @@
     ],
     "image": "/images/works/large/261004touka_0003.webp",
     "thumbnail": "/images/works/thumbs/261004touka_0003.webp"
+  },
+  {
+    "id": "261005sakina_0001",
+    "title": "光との対話",
+    "date": "2026-01-06",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "チャッピー高評価",
+    "modelIds": [
+      "sakina"
+    ],
+    "image": "/images/works/large/261005sakina_0001.webp",
+    "thumbnail": "/images/works/thumbs/261005sakina_0001.webp"
+  },
+  {
+    "id": "261005sakina_0002",
+    "title": "光微かに香る",
+    "date": "2026-01-06",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "柔らかな感じがするよね",
+    "modelIds": [
+      "sakina"
+    ],
+    "image": "/images/works/large/261005sakina_0002.webp",
+    "thumbnail": "/images/works/thumbs/261005sakina_0002.webp"
+  },
+  {
+    "id": "261005sakina_0003",
+    "title": "回帰線",
+    "date": "2026-01-06",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "尾崎豊さんから",
+    "modelIds": [
+      "sakina"
+    ],
+    "image": "/images/works/large/261005sakina_0003.webp",
+    "thumbnail": "/images/works/thumbs/261005sakina_0003.webp"
+  },
+  {
+    "id": "261005sakina_0004",
+    "title": "あなたを包む",
+    "date": "2026-01-06",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "あなたを包む光が",
+    "modelIds": [
+      "sakina"
+    ],
+    "image": "/images/works/large/261005sakina_0004.webp",
+    "thumbnail": "/images/works/thumbs/261005sakina_0004.webp"
+  },
+  {
+    "id": "261005sakina_0005",
+    "title": "光へ",
+    "date": "2026-01-06",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "光への階段",
+    "modelIds": [
+      "sakina"
+    ],
+    "image": "/images/works/large/261005sakina_0005.webp",
+    "thumbnail": "/images/works/thumbs/261005sakina_0005.webp"
   }
 ]
