@@ -962,5 +962,18 @@
     ],
     "image": "/images/works/large/261006maki_0003.webp",
     "thumbnail": "/images/works/thumbs/261006maki_0003.webp"
+  },
+  {
+    "id": "261006maki_0004",
+    "title": "Shadow Black",
+    "date": "2026-02-14",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "Blackに寄せた作品",
+    "modelIds": [
+      "maki"
+    ],
+    "image": "/images/works/large/261006maki_0004.webp",
+    "thumbnail": "/images/works/thumbs/261006maki_0004.webp"
   }
 ]
