@@ -936,5 +936,18 @@
     ],
     "image": "/images/works/large/261006maki_0001.webp",
     "thumbnail": "/images/works/thumbs/261006maki_0001.webp"
+  },
+  {
+    "id": "261006maki_0002",
+    "title": "この街と私",
+    "date": "2026-02-14",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "街と人物の写真",
+    "modelIds": [
+      "maki"
+    ],
+    "image": "/images/works/large/261006maki_0002.webp",
+    "thumbnail": "/images/works/thumbs/261006maki_0002.webp"
   }
 ]
