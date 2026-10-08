@@ -1027,5 +1027,18 @@
     ],
     "image": "/images/works/large/261008rei_0003.webp",
     "thumbnail": "/images/works/thumbs/261008rei_0003.webp"
+  },
+  {
+    "id": "261008rei_0004",
+    "title": "冬の準備",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "まだ秋やね。撮影は冬やけど。",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0004.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0004.webp"
   }
 ]
