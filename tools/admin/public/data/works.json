@@ -988,5 +988,109 @@
     ],
     "image": "/images/works/large/261006maki_0005.webp",
     "thumbnail": "/images/works/thumbs/261006maki_0005.webp"
+  },
+  {
+    "id": "261008rei_0001",
+    "title": "はじまり",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "ファーストショットの一群",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0001.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0001.webp"
+  },
+  {
+    "id": "261008rei_0002",
+    "title": "ステージ上がる",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "ここはステージしか出てこない",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0002.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0002.webp"
+  },
+  {
+    "id": "261008rei_0003",
+    "title": "光を見る",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "ここも階段やし難しい。",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0003.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0003.webp"
+  },
+  {
+    "id": "261008rei_0004",
+    "title": "冬の準備",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "まだ秋やね。撮影は冬やけど。",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0004.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0004.webp"
+  },
+  {
+    "id": "261008rei_0005",
+    "title": "黄光",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "きこうって読みます。",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0005.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0005.webp"
+  },
+  {
+    "id": "261008rei_0006",
+    "title": "小さく踏み",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "小さなステップのよう",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0006.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0006.webp"
+  },
+  {
+    "id": "261008rei_0007",
+    "title": "結ぶ",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "光を結んで",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0007.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0007.webp"
+  },
+  {
+    "id": "261008rei_0008",
+    "title": "柔く白く",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "清く柔くみたいな",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0008.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0008.webp"
   }
 ]
