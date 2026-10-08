@@ -1066,5 +1066,18 @@
     ],
     "image": "/images/works/large/261008rei_0006.webp",
     "thumbnail": "/images/works/thumbs/261008rei_0006.webp"
+  },
+  {
+    "id": "261008rei_0007",
+    "title": "結ぶ",
+    "date": "2026-01-21",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "光を結んで",
+    "modelIds": [
+      "rei"
+    ],
+    "image": "/images/works/large/261008rei_0007.webp",
+    "thumbnail": "/images/works/thumbs/261008rei_0007.webp"
   }
 ]
