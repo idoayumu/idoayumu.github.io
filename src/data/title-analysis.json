@@ -1,0 +1,2690 @@
+[
+  {
+    "id": "260328minaseaoi_0002",
+    "title": "ひだまりの笑顔",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.96,
+        "confidence": 0.52
+      },
+      "abstract_concrete": {
+        "score": 3.13,
+        "confidence": 0.22
+      },
+      "subjective_objective": {
+        "score": 1.59,
+        "confidence": 0.5
+      },
+      "scenic_subject_centered": {
+        "score": 3.67,
+        "confidence": 0.48
+      },
+      "dynamic_static": {
+        "score": 4.26,
+        "confidence": 0.64
+      },
+      "artistic_documentary": {
+        "score": 1.62,
+        "confidence": 0.57
+      }
+    }
+  },
+  {
+    "id": "260328minaseaoi_0001",
+    "title": "春に触れる",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.56,
+        "confidence": 0.54
+      },
+      "abstract_concrete": {
+        "score": 2.03,
+        "confidence": 0.52
+      },
+      "subjective_objective": {
+        "score": 1.49,
+        "confidence": 0.59
+      },
+      "scenic_subject_centered": {
+        "score": 1.42,
+        "confidence": 0.67
+      },
+      "dynamic_static": {
+        "score": 2.52,
+        "confidence": 0.49
+      },
+      "artistic_documentary": {
+        "score": 1.31,
+        "confidence": 0.75
+      }
+    }
+  },
+  {
+    "id": "260226momo-osakabimage_0001",
+    "title": "委ねる",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.87,
+        "confidence": 0.28
+      },
+      "abstract_concrete": {
+        "score": 1.22,
+        "confidence": 0.84
+      },
+      "subjective_objective": {
+        "score": 1.25,
+        "confidence": 0.79
+      },
+      "scenic_subject_centered": {
+        "score": 3.59,
+        "confidence": 0.19
+      },
+      "dynamic_static": {
+        "score": 3.76,
+        "confidence": 0.35
+      },
+      "artistic_documentary": {
+        "score": 1.12,
+        "confidence": 0.9
+      }
+    }
+  },
+  {
+    "id": "260226momoseyuuri_0001",
+    "title": "あなたの声が",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.95,
+        "confidence": 0.22
+      },
+      "abstract_concrete": {
+        "score": 2.91,
+        "confidence": 0.02
+      },
+      "subjective_objective": {
+        "score": 2.3,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 4.6,
+        "confidence": 0.64
+      },
+      "dynamic_static": {
+        "score": 3.69,
+        "confidence": 0.44
+      },
+      "artistic_documentary": {
+        "score": 1.49,
+        "confidence": 0.6
+      }
+    }
+  },
+  {
+    "id": "260527minaseaoi_0001",
+    "title": "くまといっしょ",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.55,
+        "confidence": 0.41
+      },
+      "abstract_concrete": {
+        "score": 3.82,
+        "confidence": 0.57
+      },
+      "subjective_objective": {
+        "score": 3.21,
+        "confidence": 0.03
+      },
+      "scenic_subject_centered": {
+        "score": 4.16,
+        "confidence": 0.3
+      },
+      "dynamic_static": {
+        "score": 3.45,
+        "confidence": 0.37
+      },
+      "artistic_documentary": {
+        "score": 3.44,
+        "confidence": 0.23
+      }
+    }
+  },
+  {
+    "id": "260527minaseaoi_0002",
+    "title": "立ちポーズ",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 4.65,
+        "confidence": 0.72
+      },
+      "abstract_concrete": {
+        "score": 4.52,
+        "confidence": 0.62
+      },
+      "subjective_objective": {
+        "score": 4.95,
+        "confidence": 0.97
+      },
+      "scenic_subject_centered": {
+        "score": 4.98,
+        "confidence": 0.98
+      },
+      "dynamic_static": {
+        "score": 4.89,
+        "confidence": 0.93
+      },
+      "artistic_documentary": {
+        "score": 4.65,
+        "confidence": 0.7
+      }
+    }
+  },
+  {
+    "id": "260601momo-osakabimage_0001",
+    "title": "夏に触れる",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.76,
+        "confidence": 0.53
+      },
+      "abstract_concrete": {
+        "score": 2.06,
+        "confidence": 0.49
+      },
+      "subjective_objective": {
+        "score": 1.73,
+        "confidence": 0.53
+      },
+      "scenic_subject_centered": {
+        "score": 1.44,
+        "confidence": 0.62
+      },
+      "dynamic_static": {
+        "score": 2.42,
+        "confidence": 0.56
+      },
+      "artistic_documentary": {
+        "score": 1.53,
+        "confidence": 0.56
+      }
+    }
+  },
+  {
+    "id": "260601marin_minaseaoi_0001",
+    "title": "摂津峡ピース",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.47,
+        "confidence": 0.23
+      },
+      "abstract_concrete": {
+        "score": 3.62,
+        "confidence": 0.28
+      },
+      "subjective_objective": {
+        "score": 3.0,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 1.68,
+        "confidence": 0.42
+      },
+      "dynamic_static": {
+        "score": 4.18,
+        "confidence": 0.31
+      },
+      "artistic_documentary": {
+        "score": 2.63,
+        "confidence": 0.07
+      }
+    }
+  },
+  {
+    "id": "260602momo-osakabimage_0001",
+    "title": "広い海",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.54,
+        "confidence": 0.39
+      },
+      "abstract_concrete": {
+        "score": 3.93,
+        "confidence": 0.58
+      },
+      "subjective_objective": {
+        "score": 4.29,
+        "confidence": 0.42
+      },
+      "scenic_subject_centered": {
+        "score": 1.01,
+        "confidence": 0.99
+      },
+      "dynamic_static": {
+        "score": 4.26,
+        "confidence": 0.52
+      },
+      "artistic_documentary": {
+        "score": 2.97,
+        "confidence": 0.02
+      }
+    }
+  },
+  {
+    "id": "260602marin_minaseaoi_0001",
+    "title": "摂津峡にて",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.74,
+        "confidence": 0.47
+      },
+      "abstract_concrete": {
+        "score": 4.53,
+        "confidence": 0.6
+      },
+      "subjective_objective": {
+        "score": 4.72,
+        "confidence": 0.75
+      },
+      "scenic_subject_centered": {
+        "score": 1.04,
+        "confidence": 0.97
+      },
+      "dynamic_static": {
+        "score": 3.96,
+        "confidence": 0.41
+      },
+      "artistic_documentary": {
+        "score": 3.99,
+        "confidence": 0.43
+      }
+    }
+  },
+  {
+    "id": "260602momoseyuuri_0001",
+    "title": "梅小路公園の光景",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 4.17,
+        "confidence": 0.66
+      },
+      "abstract_concrete": {
+        "score": 4.09,
+        "confidence": 0.68
+      },
+      "subjective_objective": {
+        "score": 4.49,
+        "confidence": 0.59
+      },
+      "scenic_subject_centered": {
+        "score": 1.02,
+        "confidence": 0.99
+      },
+      "dynamic_static": {
+        "score": 4.49,
+        "confidence": 0.57
+      },
+      "artistic_documentary": {
+        "score": 4.19,
+        "confidence": 0.61
+      }
+    }
+  },
+  {
+    "id": "260608caho_0001",
+    "title": "Present",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.03,
+        "confidence": 0.03
+      },
+      "abstract_concrete": {
+        "score": 1.3,
+        "confidence": 0.77
+      },
+      "subjective_objective": {
+        "score": 3.98,
+        "confidence": 0.15
+      },
+      "scenic_subject_centered": {
+        "score": 2.44,
+        "confidence": 0.2
+      },
+      "dynamic_static": {
+        "score": 4.0,
+        "confidence": 0.43
+      },
+      "artistic_documentary": {
+        "score": 2.8,
+        "confidence": 0.17
+      }
+    }
+  },
+  {
+    "id": "260610misaki_0001",
+    "title": "煌めく海に",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.34,
+        "confidence": 0.72
+      },
+      "abstract_concrete": {
+        "score": 2.59,
+        "confidence": 0.39
+      },
+      "subjective_objective": {
+        "score": 1.68,
+        "confidence": 0.57
+      },
+      "scenic_subject_centered": {
+        "score": 1.02,
+        "confidence": 0.98
+      },
+      "dynamic_static": {
+        "score": 2.77,
+        "confidence": 0.24
+      },
+      "artistic_documentary": {
+        "score": 1.26,
+        "confidence": 0.78
+      }
+    }
+  },
+  {
+    "id": "260610marin-manacolle_0001",
+    "title": "薄むらさき",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.63,
+        "confidence": 0.47
+      },
+      "abstract_concrete": {
+        "score": 1.87,
+        "confidence": 0.3
+      },
+      "subjective_objective": {
+        "score": 3.1,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 2.53,
+        "confidence": 0.0
+      },
+      "dynamic_static": {
+        "score": 3.81,
+        "confidence": 0.0
+      },
+      "artistic_documentary": {
+        "score": 1.48,
+        "confidence": 0.61
+      }
+    }
+  },
+  {
+    "id": "260610caho_0001",
+    "title": "Cahoピクミン",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.29,
+        "confidence": 0.14
+      },
+      "abstract_concrete": {
+        "score": 3.96,
+        "confidence": 0.36
+      },
+      "subjective_objective": {
+        "score": 4.38,
+        "confidence": 0.49
+      },
+      "scenic_subject_centered": {
+        "score": 3.87,
+        "confidence": 0.06
+      },
+      "dynamic_static": {
+        "score": 3.5,
+        "confidence": 0.24
+      },
+      "artistic_documentary": {
+        "score": 2.45,
+        "confidence": 0.0
+      }
+    }
+  },
+  {
+    "id": "260610momoseyuuri_0001",
+    "title": "秘めた想い",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.11,
+        "confidence": 0.42
+      },
+      "abstract_concrete": {
+        "score": 1.19,
+        "confidence": 0.86
+      },
+      "subjective_objective": {
+        "score": 1.03,
+        "confidence": 0.98
+      },
+      "scenic_subject_centered": {
+        "score": 4.29,
+        "confidence": 0.43
+      },
+      "dynamic_static": {
+        "score": 4.73,
+        "confidence": 0.79
+      },
+      "artistic_documentary": {
+        "score": 1.08,
+        "confidence": 0.93
+      }
+    }
+  },
+  {
+    "id": "260610momo-osakabimage_0001",
+    "title": "光の河",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.06,
+        "confidence": 0.95
+      },
+      "abstract_concrete": {
+        "score": 1.87,
+        "confidence": 0.54
+      },
+      "subjective_objective": {
+        "score": 1.69,
+        "confidence": 0.42
+      },
+      "scenic_subject_centered": {
+        "score": 1.02,
+        "confidence": 0.99
+      },
+      "dynamic_static": {
+        "score": 1.56,
+        "confidence": 0.57
+      },
+      "artistic_documentary": {
+        "score": 1.05,
+        "confidence": 0.96
+      }
+    }
+  },
+  {
+    "id": "260610marin-manacolle_0002",
+    "title": "最高の笑顔",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.34,
+        "confidence": 0.26
+      },
+      "abstract_concrete": {
+        "score": 3.42,
+        "confidence": 0.4
+      },
+      "subjective_objective": {
+        "score": 1.21,
+        "confidence": 0.82
+      },
+      "scenic_subject_centered": {
+        "score": 4.99,
+        "confidence": 0.99
+      },
+      "dynamic_static": {
+        "score": 4.16,
+        "confidence": 0.53
+      },
+      "artistic_documentary": {
+        "score": 2.55,
+        "confidence": 0.25
+      }
+    }
+  },
+  {
+    "id": "260611misaki_0001",
+    "title": "境界",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.67,
+        "confidence": 0.44
+      },
+      "abstract_concrete": {
+        "score": 1.24,
+        "confidence": 0.81
+      },
+      "subjective_objective": {
+        "score": 2.43,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 1.45,
+        "confidence": 0.63
+      },
+      "dynamic_static": {
+        "score": 3.7,
+        "confidence": 0.38
+      },
+      "artistic_documentary": {
+        "score": 1.29,
+        "confidence": 0.76
+      }
+    }
+  },
+  {
+    "id": "260611misaki_0002",
+    "title": "空と海の祝福",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.2,
+        "confidence": 0.84
+      },
+      "abstract_concrete": {
+        "score": 2.35,
+        "confidence": 0.56
+      },
+      "subjective_objective": {
+        "score": 1.35,
+        "confidence": 0.7
+      },
+      "scenic_subject_centered": {
+        "score": 1.05,
+        "confidence": 0.97
+      },
+      "dynamic_static": {
+        "score": 4.29,
+        "confidence": 0.57
+      },
+      "artistic_documentary": {
+        "score": 1.16,
+        "confidence": 0.88
+      }
+    }
+  },
+  {
+    "id": "260613minaseaoi_0001",
+    "title": "恋",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.82,
+        "confidence": 0.32
+      },
+      "abstract_concrete": {
+        "score": 1.13,
+        "confidence": 0.88
+      },
+      "subjective_objective": {
+        "score": 1.08,
+        "confidence": 0.94
+      },
+      "scenic_subject_centered": {
+        "score": 3.96,
+        "confidence": 0.14
+      },
+      "dynamic_static": {
+        "score": 3.88,
+        "confidence": 0.4
+      },
+      "artistic_documentary": {
+        "score": 1.13,
+        "confidence": 0.91
+      }
+    }
+  },
+  {
+    "id": "260613minaseaoi_0002",
+    "title": "ブルーナイト",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.58,
+        "confidence": 0.53
+      },
+      "abstract_concrete": {
+        "score": 2.1,
+        "confidence": 0.42
+      },
+      "subjective_objective": {
+        "score": 2.46,
+        "confidence": 0.23
+      },
+      "scenic_subject_centered": {
+        "score": 1.43,
+        "confidence": 0.62
+      },
+      "dynamic_static": {
+        "score": 3.88,
+        "confidence": 0.47
+      },
+      "artistic_documentary": {
+        "score": 1.39,
+        "confidence": 0.68
+      }
+    }
+  },
+  {
+    "id": "260613momo-osakabimage_0001",
+    "title": "瞳",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.88,
+        "confidence": 0.26
+      },
+      "abstract_concrete": {
+        "score": 3.79,
+        "confidence": 0.35
+      },
+      "subjective_objective": {
+        "score": 3.79,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 4.85,
+        "confidence": 0.86
+      },
+      "dynamic_static": {
+        "score": 4.54,
+        "confidence": 0.62
+      },
+      "artistic_documentary": {
+        "score": 1.46,
+        "confidence": 0.59
+      }
+    }
+  },
+  {
+    "id": "260613marin-manacolle_0001",
+    "title": "雨模様",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.05,
+        "confidence": 0.03
+      },
+      "abstract_concrete": {
+        "score": 2.64,
+        "confidence": 0.2
+      },
+      "subjective_objective": {
+        "score": 4.21,
+        "confidence": 0.33
+      },
+      "scenic_subject_centered": {
+        "score": 1.03,
+        "confidence": 0.98
+      },
+      "dynamic_static": {
+        "score": 3.03,
+        "confidence": 0.08
+      },
+      "artistic_documentary": {
+        "score": 2.8,
+        "confidence": 0.03
+      }
+    }
+  },
+  {
+    "id": "260613yua-manacolle_0001",
+    "title": "光と遊ぶ",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.96,
+        "confidence": 0.52
+      },
+      "abstract_concrete": {
+        "score": 2.23,
+        "confidence": 0.37
+      },
+      "subjective_objective": {
+        "score": 1.91,
+        "confidence": 0.55
+      },
+      "scenic_subject_centered": {
+        "score": 1.21,
+        "confidence": 0.85
+      },
+      "dynamic_static": {
+        "score": 1.8,
+        "confidence": 0.74
+      },
+      "artistic_documentary": {
+        "score": 1.34,
+        "confidence": 0.72
+      }
+    }
+  },
+  {
+    "id": "260616minaseaoi_0001",
+    "title": "夜の隣",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.75,
+        "confidence": 0.38
+      },
+      "abstract_concrete": {
+        "score": 2.27,
+        "confidence": 0.47
+      },
+      "subjective_objective": {
+        "score": 2.91,
+        "confidence": 0.04
+      },
+      "scenic_subject_centered": {
+        "score": 1.58,
+        "confidence": 0.53
+      },
+      "dynamic_static": {
+        "score": 4.52,
+        "confidence": 0.6
+      },
+      "artistic_documentary": {
+        "score": 1.6,
+        "confidence": 0.5
+      }
+    }
+  },
+  {
+    "id": "260617misaki_0001",
+    "title": "私の夏",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.09,
+        "confidence": 0.17
+      },
+      "abstract_concrete": {
+        "score": 1.87,
+        "confidence": 0.55
+      },
+      "subjective_objective": {
+        "score": 2.37,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 1.32,
+        "confidence": 0.73
+      },
+      "dynamic_static": {
+        "score": 3.3,
+        "confidence": 0.41
+      },
+      "artistic_documentary": {
+        "score": 3.25,
+        "confidence": 0.28
+      }
+    }
+  },
+  {
+    "id": "260618ponymoeka_0001",
+    "title": "視線の手前",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.98,
+        "confidence": 0.43
+      },
+      "abstract_concrete": {
+        "score": 1.69,
+        "confidence": 0.43
+      },
+      "subjective_objective": {
+        "score": 2.28,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 1.94,
+        "confidence": 0.22
+      },
+      "dynamic_static": {
+        "score": 3.99,
+        "confidence": 0.55
+      },
+      "artistic_documentary": {
+        "score": 1.6,
+        "confidence": 0.5
+      }
+    }
+  },
+  {
+    "id": "260618ponymoeka_0002",
+    "title": "身体の保ち方",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 4.4,
+        "confidence": 0.53
+      },
+      "abstract_concrete": {
+        "score": 3.43,
+        "confidence": 0.43
+      },
+      "subjective_objective": {
+        "score": 4.27,
+        "confidence": 0.4
+      },
+      "scenic_subject_centered": {
+        "score": 4.93,
+        "confidence": 0.94
+      },
+      "dynamic_static": {
+        "score": 4.42,
+        "confidence": 0.53
+      },
+      "artistic_documentary": {
+        "score": 3.76,
+        "confidence": 0.0
+      }
+    }
+  },
+  {
+    "id": "260618momo-osakabimage_0001",
+    "title": "静謐",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.85,
+        "confidence": 0.31
+      },
+      "abstract_concrete": {
+        "score": 1.01,
+        "confidence": 0.99
+      },
+      "subjective_objective": {
+        "score": 1.71,
+        "confidence": 0.42
+      },
+      "scenic_subject_centered": {
+        "score": 1.13,
+        "confidence": 0.9
+      },
+      "dynamic_static": {
+        "score": 4.99,
+        "confidence": 0.99
+      },
+      "artistic_documentary": {
+        "score": 1.17,
+        "confidence": 0.86
+      }
+    }
+  },
+  {
+    "id": "260623yua-manacolle_0001",
+    "title": "やわらかな境界線",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.44,
+        "confidence": 0.62
+      },
+      "abstract_concrete": {
+        "score": 1.24,
+        "confidence": 0.8
+      },
+      "subjective_objective": {
+        "score": 1.82,
+        "confidence": 0.52
+      },
+      "scenic_subject_centered": {
+        "score": 1.62,
+        "confidence": 0.47
+      },
+      "dynamic_static": {
+        "score": 3.92,
+        "confidence": 0.61
+      },
+      "artistic_documentary": {
+        "score": 1.2,
+        "confidence": 0.85
+      }
+    }
+  },
+  {
+    "id": "260623kiyoseamy_0001",
+    "title": "夜の味",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.35,
+        "confidence": 0.71
+      },
+      "abstract_concrete": {
+        "score": 1.42,
+        "confidence": 0.65
+      },
+      "subjective_objective": {
+        "score": 1.48,
+        "confidence": 0.58
+      },
+      "scenic_subject_centered": {
+        "score": 1.23,
+        "confidence": 0.8
+      },
+      "dynamic_static": {
+        "score": 4.29,
+        "confidence": 0.58
+      },
+      "artistic_documentary": {
+        "score": 1.13,
+        "confidence": 0.89
+      }
+    }
+  },
+  {
+    "id": "260623harunooto_0001",
+    "title": "春の日に",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.5,
+        "confidence": 0.22
+      },
+      "abstract_concrete": {
+        "score": 1.95,
+        "confidence": 0.52
+      },
+      "subjective_objective": {
+        "score": 3.86,
+        "confidence": 0.34
+      },
+      "scenic_subject_centered": {
+        "score": 1.1,
+        "confidence": 0.93
+      },
+      "dynamic_static": {
+        "score": 4.2,
+        "confidence": 0.68
+      },
+      "artistic_documentary": {
+        "score": 2.6,
+        "confidence": 0.22
+      }
+    }
+  },
+  {
+    "id": "260623yua-manacolle_0002",
+    "title": "花の時間",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.46,
+        "confidence": 0.62
+      },
+      "abstract_concrete": {
+        "score": 2.46,
+        "confidence": 0.43
+      },
+      "subjective_objective": {
+        "score": 2.53,
+        "confidence": 0.3
+      },
+      "scenic_subject_centered": {
+        "score": 1.34,
+        "confidence": 0.73
+      },
+      "dynamic_static": {
+        "score": 2.56,
+        "confidence": 0.43
+      },
+      "artistic_documentary": {
+        "score": 1.4,
+        "confidence": 0.69
+      }
+    }
+  },
+  {
+    "id": "260625misaki_0001",
+    "title": "私とこの街",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.46,
+        "confidence": 0.4
+      },
+      "abstract_concrete": {
+        "score": 3.56,
+        "confidence": 0.48
+      },
+      "subjective_objective": {
+        "score": 1.99,
+        "confidence": 0.17
+      },
+      "scenic_subject_centered": {
+        "score": 2.24,
+        "confidence": 0.49
+      },
+      "dynamic_static": {
+        "score": 4.32,
+        "confidence": 0.61
+      },
+      "artistic_documentary": {
+        "score": 2.67,
+        "confidence": 0.29
+      }
+    }
+  },
+  {
+    "id": "260701harunooto_0001",
+    "title": "春光",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.9,
+        "confidence": 0.24
+      },
+      "abstract_concrete": {
+        "score": 1.8,
+        "confidence": 0.56
+      },
+      "subjective_objective": {
+        "score": 2.99,
+        "confidence": 0.04
+      },
+      "scenic_subject_centered": {
+        "score": 1.03,
+        "confidence": 0.98
+      },
+      "dynamic_static": {
+        "score": 3.17,
+        "confidence": 0.17
+      },
+      "artistic_documentary": {
+        "score": 1.67,
+        "confidence": 0.46
+      }
+    }
+  },
+  {
+    "id": "260704marin-shirokuro_0001",
+    "title": "最高の笑顔",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.47,
+        "confidence": 0.35
+      },
+      "abstract_concrete": {
+        "score": 3.35,
+        "confidence": 0.32
+      },
+      "subjective_objective": {
+        "score": 1.23,
+        "confidence": 0.8
+      },
+      "scenic_subject_centered": {
+        "score": 4.99,
+        "confidence": 0.99
+      },
+      "dynamic_static": {
+        "score": 4.09,
+        "confidence": 0.49
+      },
+      "artistic_documentary": {
+        "score": 2.72,
+        "confidence": 0.17
+      }
+    }
+  },
+  {
+    "id": "260707marin-shirokuro_0001",
+    "title": "酔う夜",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.38,
+        "confidence": 0.35
+      },
+      "abstract_concrete": {
+        "score": 3.09,
+        "confidence": 0.17
+      },
+      "subjective_objective": {
+        "score": 2.56,
+        "confidence": 0.12
+      },
+      "scenic_subject_centered": {
+        "score": 1.97,
+        "confidence": 0.46
+      },
+      "dynamic_static": {
+        "score": 2.75,
+        "confidence": 0.23
+      },
+      "artistic_documentary": {
+        "score": 2.76,
+        "confidence": 0.16
+      }
+    }
+  },
+  {
+    "id": "260710momo-osakabimage_0001",
+    "title": "夏の本気",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.09,
+        "confidence": 0.47
+      },
+      "abstract_concrete": {
+        "score": 1.61,
+        "confidence": 0.48
+      },
+      "subjective_objective": {
+        "score": 1.29,
+        "confidence": 0.77
+      },
+      "scenic_subject_centered": {
+        "score": 2.93,
+        "confidence": 0.02
+      },
+      "dynamic_static": {
+        "score": 2.3,
+        "confidence": 0.37
+      },
+      "artistic_documentary": {
+        "score": 1.79,
+        "confidence": 0.51
+      }
+    }
+  },
+  {
+    "id": "260711minaseaoi_0001",
+    "title": "流れる川に",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.08,
+        "confidence": 0.1
+      },
+      "abstract_concrete": {
+        "score": 3.55,
+        "confidence": 0.43
+      },
+      "subjective_objective": {
+        "score": 3.76,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 1.1,
+        "confidence": 0.92
+      },
+      "dynamic_static": {
+        "score": 1.28,
+        "confidence": 0.75
+      },
+      "artistic_documentary": {
+        "score": 1.99,
+        "confidence": 0.43
+      }
+    }
+  },
+  {
+    "id": "260723momo-osakabimage_0001",
+    "title": "最後の花火",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.65,
+        "confidence": 0.47
+      },
+      "abstract_concrete": {
+        "score": 3.7,
+        "confidence": 0.53
+      },
+      "subjective_objective": {
+        "score": 2.12,
+        "confidence": 0.43
+      },
+      "scenic_subject_centered": {
+        "score": 1.12,
+        "confidence": 0.91
+      },
+      "dynamic_static": {
+        "score": 2.93,
+        "confidence": 0.0
+      },
+      "artistic_documentary": {
+        "score": 1.49,
+        "confidence": 0.59
+      }
+    }
+  },
+  {
+    "id": "260819momo-osakabimage_0001",
+    "title": "また明日が来るから",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.01,
+        "confidence": 0.4
+      },
+      "abstract_concrete": {
+        "score": 1.46,
+        "confidence": 0.63
+      },
+      "subjective_objective": {
+        "score": 1.32,
+        "confidence": 0.75
+      },
+      "scenic_subject_centered": {
+        "score": 1.77,
+        "confidence": 0.35
+      },
+      "dynamic_static": {
+        "score": 2.02,
+        "confidence": 0.65
+      },
+      "artistic_documentary": {
+        "score": 1.25,
+        "confidence": 0.8
+      }
+    }
+  },
+  {
+    "id": "260821wako_0001",
+    "title": "仔猫の笑顔",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.95,
+        "confidence": 0.52
+      },
+      "abstract_concrete": {
+        "score": 4.38,
+        "confidence": 0.6
+      },
+      "subjective_objective": {
+        "score": 2.73,
+        "confidence": 0.2
+      },
+      "scenic_subject_centered": {
+        "score": 4.97,
+        "confidence": 0.97
+      },
+      "dynamic_static": {
+        "score": 4.2,
+        "confidence": 0.6
+      },
+      "artistic_documentary": {
+        "score": 2.94,
+        "confidence": 0.09
+      }
+    }
+  },
+  {
+    "id": "260831marin-shirokuro_0001",
+    "title": "光の思索",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.24,
+        "confidence": 0.81
+      },
+      "abstract_concrete": {
+        "score": 1.25,
+        "confidence": 0.8
+      },
+      "subjective_objective": {
+        "score": 1.13,
+        "confidence": 0.9
+      },
+      "scenic_subject_centered": {
+        "score": 1.06,
+        "confidence": 0.96
+      },
+      "dynamic_static": {
+        "score": 4.62,
+        "confidence": 0.68
+      },
+      "artistic_documentary": {
+        "score": 1.02,
+        "confidence": 0.98
+      }
+    }
+  },
+  {
+    "id": "260904sakina_0001",
+    "title": "最高の笑顔",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.39,
+        "confidence": 0.3
+      },
+      "abstract_concrete": {
+        "score": 3.41,
+        "confidence": 0.38
+      },
+      "subjective_objective": {
+        "score": 1.21,
+        "confidence": 0.82
+      },
+      "scenic_subject_centered": {
+        "score": 4.99,
+        "confidence": 0.99
+      },
+      "dynamic_static": {
+        "score": 4.15,
+        "confidence": 0.49
+      },
+      "artistic_documentary": {
+        "score": 2.62,
+        "confidence": 0.22
+      }
+    }
+  },
+  {
+    "id": "260904kiyoseamy_0001",
+    "title": "トイカメラ",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 4.02,
+        "confidence": 0.43
+      },
+      "abstract_concrete": {
+        "score": 4.68,
+        "confidence": 0.72
+      },
+      "subjective_objective": {
+        "score": 4.77,
+        "confidence": 0.8
+      },
+      "scenic_subject_centered": {
+        "score": 2.88,
+        "confidence": 0.22
+      },
+      "dynamic_static": {
+        "score": 4.18,
+        "confidence": 0.53
+      },
+      "artistic_documentary": {
+        "score": 2.98,
+        "confidence": 0.17
+      }
+    }
+  },
+  {
+    "id": "260915rei_0001",
+    "title": "言葉の手前",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.27,
+        "confidence": 0.79
+      },
+      "abstract_concrete": {
+        "score": 1.23,
+        "confidence": 0.82
+      },
+      "subjective_objective": {
+        "score": 1.49,
+        "confidence": 0.59
+      },
+      "scenic_subject_centered": {
+        "score": 2.56,
+        "confidence": 0.3
+      },
+      "dynamic_static": {
+        "score": 4.22,
+        "confidence": 0.57
+      },
+      "artistic_documentary": {
+        "score": 1.16,
+        "confidence": 0.88
+      }
+    }
+  },
+  {
+    "id": "260915maki_0001",
+    "title": "暮灯り",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.3,
+        "confidence": 0.75
+      },
+      "abstract_concrete": {
+        "score": 2.6,
+        "confidence": 0.25
+      },
+      "subjective_objective": {
+        "score": 2.66,
+        "confidence": 0.14
+      },
+      "scenic_subject_centered": {
+        "score": 1.05,
+        "confidence": 0.97
+      },
+      "dynamic_static": {
+        "score": 4.23,
+        "confidence": 0.35
+      },
+      "artistic_documentary": {
+        "score": 1.24,
+        "confidence": 0.8
+      }
+    }
+  },
+  {
+    "id": "260915momoseyuuri_0001",
+    "title": "光の居場所",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.24,
+        "confidence": 0.81
+      },
+      "abstract_concrete": {
+        "score": 1.57,
+        "confidence": 0.53
+      },
+      "subjective_objective": {
+        "score": 1.44,
+        "confidence": 0.65
+      },
+      "scenic_subject_centered": {
+        "score": 1.1,
+        "confidence": 0.92
+      },
+      "dynamic_static": {
+        "score": 4.63,
+        "confidence": 0.68
+      },
+      "artistic_documentary": {
+        "score": 1.07,
+        "confidence": 0.94
+      }
+    }
+  },
+  {
+    "id": "260917minaseaoi_0001",
+    "title": "秋桜日和",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.58,
+        "confidence": 0.53
+      },
+      "abstract_concrete": {
+        "score": 3.03,
+        "confidence": 0.46
+      },
+      "subjective_objective": {
+        "score": 2.27,
+        "confidence": 0.52
+      },
+      "scenic_subject_centered": {
+        "score": 1.16,
+        "confidence": 0.88
+      },
+      "dynamic_static": {
+        "score": 4.27,
+        "confidence": 0.6
+      },
+      "artistic_documentary": {
+        "score": 1.76,
+        "confidence": 0.54
+      }
+    }
+  },
+  {
+    "id": "260918yua-manacolle_0001",
+    "title": "刺す光",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.34,
+        "confidence": 0.72
+      },
+      "abstract_concrete": {
+        "score": 2.0,
+        "confidence": 0.41
+      },
+      "subjective_objective": {
+        "score": 2.25,
+        "confidence": 0.31
+      },
+      "scenic_subject_centered": {
+        "score": 1.2,
+        "confidence": 0.84
+      },
+      "dynamic_static": {
+        "score": 1.76,
+        "confidence": 0.48
+      },
+      "artistic_documentary": {
+        "score": 1.17,
+        "confidence": 0.86
+      }
+    }
+  },
+  {
+    "id": "260923touka_0001",
+    "title": "秋を纏う",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.25,
+        "confidence": 0.77
+      },
+      "abstract_concrete": {
+        "score": 1.57,
+        "confidence": 0.53
+      },
+      "subjective_objective": {
+        "score": 1.76,
+        "confidence": 0.49
+      },
+      "scenic_subject_centered": {
+        "score": 1.31,
+        "confidence": 0.74
+      },
+      "dynamic_static": {
+        "score": 3.88,
+        "confidence": 0.47
+      },
+      "artistic_documentary": {
+        "score": 1.25,
+        "confidence": 0.8
+      }
+    }
+  },
+  {
+    "id": "261001wako_0001",
+    "title": "冬が始まるよ",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.68,
+        "confidence": 0.45
+      },
+      "abstract_concrete": {
+        "score": 3.01,
+        "confidence": 0.08
+      },
+      "subjective_objective": {
+        "score": 3.5,
+        "confidence": 0.28
+      },
+      "scenic_subject_centered": {
+        "score": 1.1,
+        "confidence": 0.93
+      },
+      "dynamic_static": {
+        "score": 1.79,
+        "confidence": 0.77
+      },
+      "artistic_documentary": {
+        "score": 2.88,
+        "confidence": 0.06
+      }
+    }
+  },
+  {
+    "id": "261001wako_0002",
+    "title": "ウィンク",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.96,
+        "confidence": 0.0
+      },
+      "abstract_concrete": {
+        "score": 4.35,
+        "confidence": 0.57
+      },
+      "subjective_objective": {
+        "score": 3.34,
+        "confidence": 0.03
+      },
+      "scenic_subject_centered": {
+        "score": 4.97,
+        "confidence": 0.97
+      },
+      "dynamic_static": {
+        "score": 2.06,
+        "confidence": 0.66
+      },
+      "artistic_documentary": {
+        "score": 2.11,
+        "confidence": 0.09
+      }
+    }
+  },
+  {
+    "id": "261001wako_0003",
+    "title": "ちょっと待った",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.5,
+        "confidence": 0.27
+      },
+      "abstract_concrete": {
+        "score": 2.82,
+        "confidence": 0.0
+      },
+      "subjective_objective": {
+        "score": 2.19,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 3.82,
+        "confidence": 0.19
+      },
+      "dynamic_static": {
+        "score": 3.2,
+        "confidence": 0.0
+      },
+      "artistic_documentary": {
+        "score": 2.15,
+        "confidence": 0.03
+      }
+    }
+  },
+  {
+    "id": "261002minaseaoi_0001",
+    "title": "爽やかな日に",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.07,
+        "confidence": 0.15
+      },
+      "abstract_concrete": {
+        "score": 1.26,
+        "confidence": 0.79
+      },
+      "subjective_objective": {
+        "score": 1.87,
+        "confidence": 0.54
+      },
+      "scenic_subject_centered": {
+        "score": 1.13,
+        "confidence": 0.9
+      },
+      "dynamic_static": {
+        "score": 4.19,
+        "confidence": 0.71
+      },
+      "artistic_documentary": {
+        "score": 3.23,
+        "confidence": 0.13
+      }
+    }
+  },
+  {
+    "id": "261002kiyoseamy_0001",
+    "title": "薄暮れ",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.74,
+        "confidence": 0.38
+      },
+      "abstract_concrete": {
+        "score": 1.74,
+        "confidence": 0.38
+      },
+      "subjective_objective": {
+        "score": 3.48,
+        "confidence": 0.17
+      },
+      "scenic_subject_centered": {
+        "score": 1.02,
+        "confidence": 0.98
+      },
+      "dynamic_static": {
+        "score": 3.65,
+        "confidence": 0.34
+      },
+      "artistic_documentary": {
+        "score": 1.48,
+        "confidence": 0.61
+      }
+    }
+  },
+  {
+    "id": "261002kiyoseamy_0002",
+    "title": "イルミネーション",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.48,
+        "confidence": 0.28
+      },
+      "abstract_concrete": {
+        "score": 3.76,
+        "confidence": 0.43
+      },
+      "subjective_objective": {
+        "score": 4.71,
+        "confidence": 0.78
+      },
+      "scenic_subject_centered": {
+        "score": 1.02,
+        "confidence": 0.99
+      },
+      "dynamic_static": {
+        "score": 3.61,
+        "confidence": 0.27
+      },
+      "artistic_documentary": {
+        "score": 3.18,
+        "confidence": 0.25
+      }
+    }
+  },
+  {
+    "id": "261002kiyoseamy_0003",
+    "title": "少しの距離と",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.6,
+        "confidence": 0.5
+      },
+      "abstract_concrete": {
+        "score": 1.48,
+        "confidence": 0.58
+      },
+      "subjective_objective": {
+        "score": 2.44,
+        "confidence": 0.21
+      },
+      "scenic_subject_centered": {
+        "score": 1.85,
+        "confidence": 0.53
+      },
+      "dynamic_static": {
+        "score": 3.66,
+        "confidence": 0.52
+      },
+      "artistic_documentary": {
+        "score": 1.5,
+        "confidence": 0.58
+      }
+    }
+  },
+  {
+    "id": "261003aikawayuu_0001",
+    "title": "窓辺のひと",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.54,
+        "confidence": 0.4
+      },
+      "abstract_concrete": {
+        "score": 4.11,
+        "confidence": 0.75
+      },
+      "subjective_objective": {
+        "score": 4.19,
+        "confidence": 0.48
+      },
+      "scenic_subject_centered": {
+        "score": 2.62,
+        "confidence": 0.33
+      },
+      "dynamic_static": {
+        "score": 4.74,
+        "confidence": 0.78
+      },
+      "artistic_documentary": {
+        "score": 2.5,
+        "confidence": 0.3
+      }
+    }
+  },
+  {
+    "id": "261003aikawayuu_0002",
+    "title": "切なさ燻る",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.05,
+        "confidence": 0.97
+      },
+      "abstract_concrete": {
+        "score": 1.06,
+        "confidence": 0.96
+      },
+      "subjective_objective": {
+        "score": 1.02,
+        "confidence": 0.98
+      },
+      "scenic_subject_centered": {
+        "score": 1.66,
+        "confidence": 0.44
+      },
+      "dynamic_static": {
+        "score": 3.97,
+        "confidence": 0.41
+      },
+      "artistic_documentary": {
+        "score": 1.02,
+        "confidence": 0.99
+      }
+    }
+  },
+  {
+    "id": "261004misaki_0001",
+    "title": "Sweet Candy Rain",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.26,
+        "confidence": 0.79
+      },
+      "abstract_concrete": {
+        "score": 2.94,
+        "confidence": 0.17
+      },
+      "subjective_objective": {
+        "score": 1.41,
+        "confidence": 0.68
+      },
+      "scenic_subject_centered": {
+        "score": 1.33,
+        "confidence": 0.71
+      },
+      "dynamic_static": {
+        "score": 1.46,
+        "confidence": 0.63
+      },
+      "artistic_documentary": {
+        "score": 1.1,
+        "confidence": 0.92
+      }
+    }
+  },
+  {
+    "id": "261004misaki_0002",
+    "title": "Strawberry Time",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.11,
+        "confidence": 0.57
+      },
+      "abstract_concrete": {
+        "score": 3.1,
+        "confidence": 0.19
+      },
+      "subjective_objective": {
+        "score": 2.43,
+        "confidence": 0.37
+      },
+      "scenic_subject_centered": {
+        "score": 1.85,
+        "confidence": 0.47
+      },
+      "dynamic_static": {
+        "score": 2.3,
+        "confidence": 0.52
+      },
+      "artistic_documentary": {
+        "score": 1.98,
+        "confidence": 0.56
+      }
+    }
+  },
+  {
+    "id": "261004touka_0001",
+    "title": "夢紅",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.16,
+        "confidence": 0.88
+      },
+      "abstract_concrete": {
+        "score": 1.36,
+        "confidence": 0.71
+      },
+      "subjective_objective": {
+        "score": 1.34,
+        "confidence": 0.74
+      },
+      "scenic_subject_centered": {
+        "score": 2.05,
+        "confidence": 0.13
+      },
+      "dynamic_static": {
+        "score": 4.18,
+        "confidence": 0.45
+      },
+      "artistic_documentary": {
+        "score": 1.13,
+        "confidence": 0.88
+      }
+    }
+  },
+  {
+    "id": "261004touka_0002",
+    "title": "傾く夕陽のように",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.13,
+        "confidence": 0.91
+      },
+      "abstract_concrete": {
+        "score": 3.06,
+        "confidence": 0.12
+      },
+      "subjective_objective": {
+        "score": 1.94,
+        "confidence": 0.21
+      },
+      "scenic_subject_centered": {
+        "score": 1.08,
+        "confidence": 0.96
+      },
+      "dynamic_static": {
+        "score": 1.95,
+        "confidence": 0.68
+      },
+      "artistic_documentary": {
+        "score": 1.2,
+        "confidence": 0.84
+      }
+    }
+  },
+  {
+    "id": "261004touka_0003",
+    "title": "輝く月のように",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.05,
+        "confidence": 0.96
+      },
+      "abstract_concrete": {
+        "score": 2.53,
+        "confidence": 0.33
+      },
+      "subjective_objective": {
+        "score": 1.44,
+        "confidence": 0.65
+      },
+      "scenic_subject_centered": {
+        "score": 1.26,
+        "confidence": 0.8
+      },
+      "dynamic_static": {
+        "score": 4.46,
+        "confidence": 0.55
+      },
+      "artistic_documentary": {
+        "score": 1.04,
+        "confidence": 0.97
+      }
+    }
+  },
+  {
+    "id": "261005sakina_0001",
+    "title": "光との対話",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.23,
+        "confidence": 0.8
+      },
+      "abstract_concrete": {
+        "score": 1.51,
+        "confidence": 0.58
+      },
+      "subjective_objective": {
+        "score": 1.25,
+        "confidence": 0.8
+      },
+      "scenic_subject_centered": {
+        "score": 1.09,
+        "confidence": 0.93
+      },
+      "dynamic_static": {
+        "score": 2.77,
+        "confidence": 0.3
+      },
+      "artistic_documentary": {
+        "score": 1.04,
+        "confidence": 0.97
+      }
+    }
+  },
+  {
+    "id": "261005sakina_0002",
+    "title": "光微かに香る",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.07,
+        "confidence": 0.94
+      },
+      "abstract_concrete": {
+        "score": 1.15,
+        "confidence": 0.88
+      },
+      "subjective_objective": {
+        "score": 1.26,
+        "confidence": 0.78
+      },
+      "scenic_subject_centered": {
+        "score": 1.08,
+        "confidence": 0.94
+      },
+      "dynamic_static": {
+        "score": 4.44,
+        "confidence": 0.52
+      },
+      "artistic_documentary": {
+        "score": 1.02,
+        "confidence": 0.99
+      }
+    }
+  },
+  {
+    "id": "261005sakina_0003",
+    "title": "回帰線",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.17,
+        "confidence": 0.0
+      },
+      "abstract_concrete": {
+        "score": 3.11,
+        "confidence": 0.07
+      },
+      "subjective_objective": {
+        "score": 4.71,
+        "confidence": 0.76
+      },
+      "scenic_subject_centered": {
+        "score": 1.4,
+        "confidence": 0.66
+      },
+      "dynamic_static": {
+        "score": 3.48,
+        "confidence": 0.17
+      },
+      "artistic_documentary": {
+        "score": 2.72,
+        "confidence": 0.04
+      }
+    }
+  },
+  {
+    "id": "261005sakina_0004",
+    "title": "あなたを包む",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.6,
+        "confidence": 0.5
+      },
+      "abstract_concrete": {
+        "score": 2.12,
+        "confidence": 0.07
+      },
+      "subjective_objective": {
+        "score": 1.33,
+        "confidence": 0.72
+      },
+      "scenic_subject_centered": {
+        "score": 3.01,
+        "confidence": 0.0
+      },
+      "dynamic_static": {
+        "score": 3.58,
+        "confidence": 0.33
+      },
+      "artistic_documentary": {
+        "score": 1.23,
+        "confidence": 0.82
+      }
+    }
+  },
+  {
+    "id": "261005sakina_0005",
+    "title": "光へ",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.29,
+        "confidence": 0.77
+      },
+      "abstract_concrete": {
+        "score": 1.51,
+        "confidence": 0.6
+      },
+      "subjective_objective": {
+        "score": 1.95,
+        "confidence": 0.19
+      },
+      "scenic_subject_centered": {
+        "score": 1.08,
+        "confidence": 0.93
+      },
+      "dynamic_static": {
+        "score": 1.79,
+        "confidence": 0.57
+      },
+      "artistic_documentary": {
+        "score": 1.11,
+        "confidence": 0.92
+      }
+    }
+  },
+  {
+    "id": "261006maki_0001",
+    "title": "黄昏時",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.03,
+        "confidence": 0.12
+      },
+      "abstract_concrete": {
+        "score": 1.89,
+        "confidence": 0.26
+      },
+      "subjective_objective": {
+        "score": 3.91,
+        "confidence": 0.09
+      },
+      "scenic_subject_centered": {
+        "score": 1.08,
+        "confidence": 0.96
+      },
+      "dynamic_static": {
+        "score": 3.54,
+        "confidence": 0.29
+      },
+      "artistic_documentary": {
+        "score": 2.02,
+        "confidence": 0.12
+      }
+    }
+  },
+  {
+    "id": "261006maki_0002",
+    "title": "この街と私",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 3.44,
+        "confidence": 0.38
+      },
+      "abstract_concrete": {
+        "score": 3.52,
+        "confidence": 0.47
+      },
+      "subjective_objective": {
+        "score": 1.59,
+        "confidence": 0.53
+      },
+      "scenic_subject_centered": {
+        "score": 2.27,
+        "confidence": 0.33
+      },
+      "dynamic_static": {
+        "score": 4.26,
+        "confidence": 0.61
+      },
+      "artistic_documentary": {
+        "score": 2.35,
+        "confidence": 0.47
+      }
+    }
+  },
+  {
+    "id": "261006maki_0003",
+    "title": "Like a star",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.27,
+        "confidence": 0.77
+      },
+      "abstract_concrete": {
+        "score": 2.42,
+        "confidence": 0.22
+      },
+      "subjective_objective": {
+        "score": 1.44,
+        "confidence": 0.62
+      },
+      "scenic_subject_centered": {
+        "score": 1.99,
+        "confidence": 0.17
+      },
+      "dynamic_static": {
+        "score": 4.02,
+        "confidence": 0.42
+      },
+      "artistic_documentary": {
+        "score": 1.15,
+        "confidence": 0.88
+      }
+    }
+  },
+  {
+    "id": "261006maki_0004",
+    "title": "Shadow Black",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.69,
+        "confidence": 0.43
+      },
+      "abstract_concrete": {
+        "score": 1.7,
+        "confidence": 0.41
+      },
+      "subjective_objective": {
+        "score": 2.56,
+        "confidence": 0.07
+      },
+      "scenic_subject_centered": {
+        "score": 2.45,
+        "confidence": 0.0
+      },
+      "dynamic_static": {
+        "score": 4.56,
+        "confidence": 0.65
+      },
+      "artistic_documentary": {
+        "score": 1.45,
+        "confidence": 0.6
+      }
+    }
+  },
+  {
+    "id": "261006maki_0005",
+    "title": "遠く…",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.49,
+        "confidence": 0.58
+      },
+      "abstract_concrete": {
+        "score": 1.22,
+        "confidence": 0.82
+      },
+      "subjective_objective": {
+        "score": 2.01,
+        "confidence": 0.15
+      },
+      "scenic_subject_centered": {
+        "score": 1.26,
+        "confidence": 0.8
+      },
+      "dynamic_static": {
+        "score": 4.19,
+        "confidence": 0.45
+      },
+      "artistic_documentary": {
+        "score": 1.24,
+        "confidence": 0.81
+      }
+    }
+  },
+  {
+    "id": "261008rei_0001",
+    "title": "はじまり",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.19,
+        "confidence": 0.03
+      },
+      "abstract_concrete": {
+        "score": 1.14,
+        "confidence": 0.91
+      },
+      "subjective_objective": {
+        "score": 2.56,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 2.47,
+        "confidence": 0.46
+      },
+      "dynamic_static": {
+        "score": 1.68,
+        "confidence": 0.63
+      },
+      "artistic_documentary": {
+        "score": 1.52,
+        "confidence": 0.57
+      }
+    }
+  },
+  {
+    "id": "261008rei_0002",
+    "title": "ステージ上がる",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 4.14,
+        "confidence": 0.54
+      },
+      "abstract_concrete": {
+        "score": 4.32,
+        "confidence": 0.62
+      },
+      "subjective_objective": {
+        "score": 4.54,
+        "confidence": 0.62
+      },
+      "scenic_subject_centered": {
+        "score": 3.55,
+        "confidence": 0.12
+      },
+      "dynamic_static": {
+        "score": 1.26,
+        "confidence": 0.78
+      },
+      "artistic_documentary": {
+        "score": 3.6,
+        "confidence": 0.23
+      }
+    }
+  },
+  {
+    "id": "261008rei_0003",
+    "title": "光を見る",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.4,
+        "confidence": 0.17
+      },
+      "abstract_concrete": {
+        "score": 2.56,
+        "confidence": 0.12
+      },
+      "subjective_objective": {
+        "score": 2.62,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 1.28,
+        "confidence": 0.79
+      },
+      "dynamic_static": {
+        "score": 2.66,
+        "confidence": 0.36
+      },
+      "artistic_documentary": {
+        "score": 1.51,
+        "confidence": 0.57
+      }
+    }
+  },
+  {
+    "id": "261008rei_0004",
+    "title": "冬の準備",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 4.16,
+        "confidence": 0.67
+      },
+      "abstract_concrete": {
+        "score": 3.24,
+        "confidence": 0.32
+      },
+      "subjective_objective": {
+        "score": 4.47,
+        "confidence": 0.57
+      },
+      "scenic_subject_centered": {
+        "score": 1.45,
+        "confidence": 0.65
+      },
+      "dynamic_static": {
+        "score": 2.35,
+        "confidence": 0.63
+      },
+      "artistic_documentary": {
+        "score": 3.89,
+        "confidence": 0.44
+      }
+    }
+  },
+  {
+    "id": "261008rei_0005",
+    "title": "黄光",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.76,
+        "confidence": 0.0
+      },
+      "abstract_concrete": {
+        "score": 2.25,
+        "confidence": 0.0
+      },
+      "subjective_objective": {
+        "score": 4.61,
+        "confidence": 0.7
+      },
+      "scenic_subject_centered": {
+        "score": 1.04,
+        "confidence": 0.97
+      },
+      "dynamic_static": {
+        "score": 4.19,
+        "confidence": 0.52
+      },
+      "artistic_documentary": {
+        "score": 2.03,
+        "confidence": 0.14
+      }
+    }
+  },
+  {
+    "id": "261008rei_0006",
+    "title": "小さく踏み",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.48,
+        "confidence": 0.0
+      },
+      "abstract_concrete": {
+        "score": 4.02,
+        "confidence": 0.62
+      },
+      "subjective_objective": {
+        "score": 3.65,
+        "confidence": 0.15
+      },
+      "scenic_subject_centered": {
+        "score": 4.65,
+        "confidence": 0.69
+      },
+      "dynamic_static": {
+        "score": 1.96,
+        "confidence": 0.76
+      },
+      "artistic_documentary": {
+        "score": 2.01,
+        "confidence": 0.17
+      }
+    }
+  },
+  {
+    "id": "261008rei_0007",
+    "title": "結ぶ",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 2.64,
+        "confidence": 0.0
+      },
+      "abstract_concrete": {
+        "score": 3.49,
+        "confidence": 0.31
+      },
+      "subjective_objective": {
+        "score": 3.81,
+        "confidence": 0.0
+      },
+      "scenic_subject_centered": {
+        "score": 4.02,
+        "confidence": 0.19
+      },
+      "dynamic_static": {
+        "score": 2.2,
+        "confidence": 0.52
+      },
+      "artistic_documentary": {
+        "score": 1.65,
+        "confidence": 0.47
+      }
+    }
+  },
+  {
+    "id": "261008rei_0008",
+    "title": "柔く白く",
+    "analyzedAt": "2026-10-09",
+    "analysisVersion": 1,
+    "scores": {
+      "poetic_explanatory": {
+        "score": 1.78,
+        "confidence": 0.35
+      },
+      "abstract_concrete": {
+        "score": 1.15,
+        "confidence": 0.88
+      },
+      "subjective_objective": {
+        "score": 2.04,
+        "confidence": 0.33
+      },
+      "scenic_subject_centered": {
+        "score": 2.93,
+        "confidence": 0.0
+      },
+      "dynamic_static": {
+        "score": 4.6,
+        "confidence": 0.66
+      },
+      "artistic_documentary": {
+        "score": 1.4,
+        "confidence": 0.66
+      }
+    }
+  }
+]

@@ -32,3 +32,4 @@ tools/*/.tmp/
 tools/jev/.DS_Store
 tools/jev/output/
 tools/jev/old/
+tools/analysis-output/
