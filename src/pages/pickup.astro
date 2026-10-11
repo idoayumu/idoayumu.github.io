@@ -15,6 +15,9 @@ import Layout from "../layouts/Layout.astro";
         今日という日と、作品に刻まれた言葉と時間。<br />
         AI「Jev」が選ぶ、本日の一枚です。
       </p>
+      <p class="pickup-note">
+        ※AI「Jev」に提供する情報は、作品のタイトルと撮影日のみです。写真画像をAIに送信することはなく、画像解析やAI学習にも使用しておりません。
+      </p>
     </header>
 
     <div id="pickup-loading" class="pickup-status">
@@ -244,6 +247,14 @@ import Layout from "../layouts/Layout.astro";
       color: #555;
       font-size: 0.95rem;
       line-height: 2;
+    }
+
+    .pickup-note {
+      max-width: 700px;
+      margin: 0.65rem auto 0;
+      color: #777;
+      font-size: 0.78rem;
+      line-height: 1.8;
     }
 
     .pickup-status {
