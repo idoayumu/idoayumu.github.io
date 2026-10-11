@@ -1092,5 +1092,18 @@
     ],
     "image": "/images/works/large/261008rei_0008.webp",
     "thumbnail": "/images/works/thumbs/261008rei_0008.webp"
+  },
+  {
+    "id": "261011caho_0001",
+    "title": "白に包まれて",
+    "date": "2026-04-25",
+    "location": "大阪",
+    "production": "リク撮",
+    "caption": "白い！",
+    "modelIds": [
+      "caho"
+    ],
+    "image": "/images/works/large/261011caho_0001.webp",
+    "thumbnail": "/images/works/thumbs/261011caho_0001.webp"
   }
 ]
