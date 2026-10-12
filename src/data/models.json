@@ -351,5 +351,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "himemiyayurina",
+    "name": "姫宮ゆりな",
+    "displayName": "姫宮ゆりな",
+    "nameKana": "ヒメミヤユリナ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "",
+    "bio": "",
+    "thumbnail": "himemiyayurina_profile.webp",
+    "profileImage": "himemiyayurina_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/hmmysun",
+      "x": "https://x.com/hmmysun",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
