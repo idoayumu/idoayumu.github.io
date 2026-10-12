@@ -1118,5 +1118,18 @@
     ],
     "image": "/images/works/large/261012himemiyayurina_0001.webp",
     "thumbnail": "/images/works/thumbs/261012himemiyayurina_0001.webp"
+  },
+  {
+    "id": "261012himemiyayurina_0002",
+    "title": "Heart station",
+    "date": "2026-04-25",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "宇多田ヒカルさんの曲から",
+    "modelIds": [
+      "himemiyayurina"
+    ],
+    "image": "/images/works/large/261012himemiyayurina_0002.webp",
+    "thumbnail": "/images/works/thumbs/261012himemiyayurina_0002.webp"
   }
 ]
