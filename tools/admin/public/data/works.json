@@ -1105,5 +1105,18 @@
     ],
     "image": "/images/works/large/261011caho_0001.webp",
     "thumbnail": "/images/works/thumbs/261011caho_0001.webp"
+  },
+  {
+    "id": "261012himemiyayurina_0001",
+    "title": "ビタミンドロップ",
+    "date": "2026-04-25",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "Perfumeの曲から",
+    "modelIds": [
+      "himemiyayurina"
+    ],
+    "image": "/images/works/large/261012himemiyayurina_0001.webp",
+    "thumbnail": "/images/works/thumbs/261012himemiyayurina_0001.webp"
   }
 ]
