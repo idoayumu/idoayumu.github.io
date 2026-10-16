@@ -1131,5 +1131,18 @@
     ],
     "image": "/images/works/large/261012himemiyayurina_0002.webp",
     "thumbnail": "/images/works/thumbs/261012himemiyayurina_0002.webp"
+  },
+  {
+    "id": "261016yua-manacolle_0001",
+    "title": "コスモス通りで",
+    "date": "2025-11-02",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "手がいい感じ",
+    "modelIds": [
+      "yua-manacolle"
+    ],
+    "image": "/images/works/large/261016yua-manacolle_0001.webp",
+    "thumbnail": "/images/works/thumbs/261016yua-manacolle_0001.webp"
   }
 ]
