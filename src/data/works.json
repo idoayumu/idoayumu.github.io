@@ -1183,5 +1183,18 @@
     ],
     "image": "/images/works/large/261016minaseaoi_0001.webp",
     "thumbnail": "/images/works/thumbs/261016minaseaoi_0001.webp"
+  },
+  {
+    "id": "261016minaseaoi_0002",
+    "title": "秋桜の夕",
+    "date": "2025-11-02",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "タイトル苦戦",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/261016minaseaoi_0002.webp",
+    "thumbnail": "/images/works/thumbs/261016minaseaoi_0002.webp"
   }
 ]
