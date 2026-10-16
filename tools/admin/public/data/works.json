@@ -1170,5 +1170,18 @@
     ],
     "image": "/images/works/large/261016yua-manacolle_0003.webp",
     "thumbnail": "/images/works/thumbs/261016yua-manacolle_0003.webp"
+  },
+  {
+    "id": "261016minaseaoi_0001",
+    "title": "スターロード",
+    "date": "2025-11-02",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "星が繋がってるような",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/261016minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/261016minaseaoi_0001.webp"
   }
 ]
