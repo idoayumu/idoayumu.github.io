@@ -1209,5 +1209,18 @@
     ],
     "image": "/images/works/large/261019kakiayano_0001.webp",
     "thumbnail": "/images/works/thumbs/261019kakiayano_0001.webp"
+  },
+  {
+    "id": "261019kakiayano_0002",
+    "title": "午後",
+    "date": "2026-02-15",
+    "location": "京都",
+    "production": "SSR撮影会",
+    "caption": "午後のひといき",
+    "modelIds": [
+      "kakiayano"
+    ],
+    "image": "/images/works/large/261019kakiayano_0002.webp",
+    "thumbnail": "/images/works/thumbs/261019kakiayano_0002.webp"
   }
 ]
