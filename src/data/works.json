@@ -1196,5 +1196,18 @@
     ],
     "image": "/images/works/large/261016minaseaoi_0002.webp",
     "thumbnail": "/images/works/thumbs/261016minaseaoi_0002.webp"
+  },
+  {
+    "id": "261019kakiayano_0001",
+    "title": "ドロップ",
+    "date": "2026-02-15",
+    "location": "京都",
+    "production": "SSR撮影会",
+    "caption": "ドロップみたいな背景",
+    "modelIds": [
+      "kakiayano"
+    ],
+    "image": "/images/works/large/261019kakiayano_0001.webp",
+    "thumbnail": "/images/works/thumbs/261019kakiayano_0001.webp"
   }
 ]
