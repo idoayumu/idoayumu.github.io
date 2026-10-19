@@ -372,5 +372,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "kakiayano",
+    "name": "賀喜あやの",
+    "displayName": "賀喜あやの",
+    "nameKana": "カキアヤノ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "SSR撮影会",
+    "bio": "",
+    "thumbnail": "kakiayano_profile.webp",
+    "profileImage": "kakiayano_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "https://www.instagram.com/__ayasmile_",
+      "x": "https://x.com/ayano_goyangi",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
