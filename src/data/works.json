@@ -1274,5 +1274,18 @@
     ],
     "image": "/images/works/large/261020ponymoeka_0003.webp",
     "thumbnail": "/images/works/thumbs/261020ponymoeka_0003.webp"
+  },
+  {
+    "id": "261022aikawayuu_0001",
+    "title": "あたる",
+    "date": "2025-08-17",
+    "location": "大阪",
+    "production": "キイロイツノ撮影会",
+    "caption": "陽の当たる",
+    "modelIds": [
+      "aikawayuu"
+    ],
+    "image": "/images/works/large/261022aikawayuu_0001.webp",
+    "thumbnail": "/images/works/thumbs/261022aikawayuu_0001.webp"
   }
 ]
