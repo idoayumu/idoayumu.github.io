@@ -33,10 +33,10 @@
       "savedAt": "2026-10-22T06:02:38.667Z"
     }
   ],
-  "heroImage": "/images/site/hero/2026_special_001.webp",
-  "heroImageSeason": "special",
+  "heroImage": "/images/site/hero/2026_autumn_002.webp",
+  "heroImageSeason": "autumn",
   "heroImageYear": 2026,
-  "heroImageMemo": "10/23が誕生日の水瀬あおいさん",
+  "heroImageMemo": "秋の写真に。",
   "heroImageHistory": [
     {
       "path": "/images/site/top-hero.webp",
@@ -58,6 +58,13 @@
       "season": "special",
       "memo": "10/23が誕生日の水瀬あおいさん",
       "savedAt": "2026-10-22T05:57:27.517Z"
+    },
+    {
+      "path": "/images/site/hero/2026_autumn_002.webp",
+      "year": 2026,
+      "season": "autumn",
+      "memo": "秋の写真に。",
+      "savedAt": "2026-10-22T06:04:31.818Z"
     }
   ],
   "adminTestMemo": "Cloudflare Settings API Test 2026-06-12 21:56"
