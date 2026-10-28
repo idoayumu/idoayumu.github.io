@@ -1313,5 +1313,18 @@
     ],
     "image": "/images/works/large/261028harunooto_0001.webp",
     "thumbnail": "/images/works/thumbs/261028harunooto_0001.webp"
+  },
+  {
+    "id": "261028harunooto_0002",
+    "title": "春の緑と",
+    "date": "2026-04-18",
+    "location": "大阪",
+    "production": "むげんこんぜ",
+    "caption": "春の緑はきれいだね",
+    "modelIds": [
+      "harunooto"
+    ],
+    "image": "/images/works/large/261028harunooto_0002.webp",
+    "thumbnail": "/images/works/thumbs/261028harunooto_0002.webp"
   }
 ]
