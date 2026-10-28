@@ -1352,5 +1352,18 @@
     ],
     "image": "/images/works/large/261028harunooto_0004.webp",
     "thumbnail": "/images/works/thumbs/261028harunooto_0004.webp"
+  },
+  {
+    "id": "261028harunooto_0005",
+    "title": "春の賑わい",
+    "date": "2026-04-18",
+    "location": "大阪",
+    "production": "むげんこんぜ",
+    "caption": "春、賑わってた！",
+    "modelIds": [
+      "harunooto"
+    ],
+    "image": "/images/works/large/261028harunooto_0005.webp",
+    "thumbnail": "/images/works/thumbs/261028harunooto_0005.webp"
   }
 ]
