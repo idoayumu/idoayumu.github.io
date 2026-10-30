@@ -1365,5 +1365,18 @@
     ],
     "image": "/images/works/large/261028harunooto_0005.webp",
     "thumbnail": "/images/works/thumbs/261028harunooto_0005.webp"
+  },
+  {
+    "id": "261030himemiyayurina_0001",
+    "title": "丁寧に",
+    "date": "2026-04-15",
+    "location": "京都",
+    "production": "リク撮",
+    "caption": "ていねいに、と悩むね",
+    "modelIds": [
+      "himemiyayurina"
+    ],
+    "image": "/images/works/large/261030himemiyayurina_0001.webp",
+    "thumbnail": "/images/works/thumbs/261030himemiyayurina_0001.webp"
   }
 ]
