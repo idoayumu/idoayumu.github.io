@@ -1430,5 +1430,18 @@
     ],
     "image": "/images/works/large/261031caho_0001.webp",
     "thumbnail": "/images/works/thumbs/261031caho_0001.webp"
+  },
+  {
+    "id": "261031caho_0002",
+    "title": "小さな秋拾い",
+    "date": "2025-11-30",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "小さな紅葉🍁",
+    "modelIds": [
+      "caho"
+    ],
+    "image": "/images/works/large/261031caho_0002.webp",
+    "thumbnail": "/images/works/thumbs/261031caho_0002.webp"
   }
 ]
