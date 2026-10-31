@@ -1456,5 +1456,18 @@
     ],
     "image": "/images/works/large/261031caho_0003.webp",
     "thumbnail": "/images/works/thumbs/261031caho_0003.webp"
+  },
+  {
+    "id": "261031caho_0004",
+    "title": "指先から",
+    "date": "2025-11-30",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "指先にも神経を使ってもらえてます",
+    "modelIds": [
+      "caho"
+    ],
+    "image": "/images/works/large/261031caho_0004.webp",
+    "thumbnail": "/images/works/thumbs/261031caho_0004.webp"
   }
 ]
