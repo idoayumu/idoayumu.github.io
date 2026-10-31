@@ -1417,5 +1417,18 @@
     ],
     "image": "/images/works/large/261030himemiyayurina_0004.webp",
     "thumbnail": "/images/works/thumbs/261030himemiyayurina_0004.webp"
+  },
+  {
+    "id": "261031caho_0001",
+    "title": "煌めく秋に",
+    "date": "2025-11-30",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "煌めくとか好きなんよね〜",
+    "modelIds": [
+      "caho"
+    ],
+    "image": "/images/works/large/261031caho_0001.webp",
+    "thumbnail": "/images/works/thumbs/261031caho_0001.webp"
   }
 ]
