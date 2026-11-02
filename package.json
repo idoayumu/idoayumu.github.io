@@ -8,6 +8,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "validate:data": "node tools/validate-data.cjs",
+    "analyze:titles": "python3 tools/jev/analyze_title_axes.py",
+    "plot:title-analysis": "python3 tools/jev/plot_title_scatter.py",
     "image-register": "node tools/image-register/server.cjs",
     "model-register": "node tools/model-register/server.cjs",
     "site-settings": "node tools/site-settings/server.cjs",

@@ -437,7 +437,7 @@
   }
 
   function applyProductionAutofill() {
-    if (!previewProduction || editingWorkId) return;
+    if (!previewProduction || editingWorkId || productionEditedByUser) return;
 
     const modelIds = selectedModelIds();
     if (modelIds.length !== 1) return;
@@ -851,11 +851,12 @@
     const keepDate = keepContext ? previewDate?.value || '' : '';
     const keepLocation = keepContext ? previewLocation?.value || '' : '';
     const keepProduction = keepContext ? previewProduction?.value || '' : '';
+    const keepProductionEditedByUser = keepContext ? productionEditedByUser : false;
 
     editingWorkId = '';
     generatedWorkId = '';
     pendingSaveCompleted = false;
-    productionEditedByUser = Boolean(keepProduction);
+    productionEditedByUser = keepProductionEditedByUser;
     if (previewTitle) previewTitle.value = '';
     if (previewDate) previewDate.value = keepDate;
     if (previewLocation) previewLocation.value = keepLocation;

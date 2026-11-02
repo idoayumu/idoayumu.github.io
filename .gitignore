@@ -27,3 +27,9 @@ tools/*/.tmp/
 
 # jetbrains setting folder
 .idea/
+
+# Jev local/generated files
+tools/jev/.DS_Store
+tools/jev/output/
+tools/jev/old/
+tools/analysis-output/
