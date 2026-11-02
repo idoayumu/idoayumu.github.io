@@ -1469,5 +1469,18 @@
     ],
     "image": "/images/works/large/261031caho_0004.webp",
     "thumbnail": "/images/works/thumbs/261031caho_0004.webp"
+  },
+  {
+    "id": "261102misaki_0001",
+    "title": "明日は晴れて",
+    "date": "2025-11-01",
+    "location": "大阪",
+    "production": "シロクロ撮影会",
+    "caption": "明日は晴れて、良い天候",
+    "modelIds": [
+      "misaki"
+    ],
+    "image": "/images/works/large/261102misaki_0001.webp",
+    "thumbnail": "/images/works/thumbs/261102misaki_0001.webp"
   }
 ]
