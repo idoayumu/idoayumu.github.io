@@ -1508,5 +1508,18 @@
     ],
     "image": "/images/works/large/261102marin-shirokuro_0002.webp",
     "thumbnail": "/images/works/thumbs/261102marin-shirokuro_0002.webp"
+  },
+  {
+    "id": "261104kakiayano_0001",
+    "title": "夕",
+    "date": "2026-02-15",
+    "location": "京都",
+    "production": "SSR撮影会",
+    "caption": "一文字に込めた想い",
+    "modelIds": [
+      "kakiayano"
+    ],
+    "image": "/images/works/large/261104kakiayano_0001.webp",
+    "thumbnail": "/images/works/thumbs/261104kakiayano_0001.webp"
   }
 ]
