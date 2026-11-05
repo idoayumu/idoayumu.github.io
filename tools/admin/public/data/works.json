@@ -1534,5 +1534,44 @@
     ],
     "image": "/images/works/large/261104kakiayano_0002.webp",
     "thumbnail": "/images/works/thumbs/261104kakiayano_0002.webp"
+  },
+  {
+    "id": "261104kakiayano_0003",
+    "title": "とまどい",
+    "date": "2026-02-15",
+    "location": "京都",
+    "production": "SSR撮影会",
+    "caption": "とまどい学んで",
+    "modelIds": [
+      "kakiayano"
+    ],
+    "image": "/images/works/large/261104kakiayano_0003.webp",
+    "thumbnail": "/images/works/thumbs/261104kakiayano_0003.webp"
+  },
+  {
+    "id": "261104kakiayano_0004",
+    "title": "しずくの声",
+    "date": "2026-02-15",
+    "location": "京都",
+    "production": "SSR撮影会",
+    "caption": "しずくが声をあげる、しずくの形から崩れる瞬間のイメージ",
+    "modelIds": [
+      "kakiayano"
+    ],
+    "image": "/images/works/large/261104kakiayano_0004.webp",
+    "thumbnail": "/images/works/thumbs/261104kakiayano_0004.webp"
+  },
+  {
+    "id": "261104kakiayano_0005",
+    "title": "書きもの、探しものの途中",
+    "date": "2026-02-15",
+    "location": "京都",
+    "production": "SSR撮影会",
+    "caption": "賀喜あやのの書きもの探し",
+    "modelIds": [
+      "kakiayano"
+    ],
+    "image": "/images/works/large/261104kakiayano_0005.webp",
+    "thumbnail": "/images/works/thumbs/261104kakiayano_0005.webp"
   }
 ]
