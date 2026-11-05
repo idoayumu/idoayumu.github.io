@@ -9,6 +9,8 @@
   const registrationDateNote = document.getElementById('registrationDateNote');
   const previewTitle = document.getElementById('previewTitle');
   const previewDate = document.getElementById('previewDate');
+  const previewDateSuggestions = document.getElementById('previewDateSuggestions');
+  const previewDateSuggestionsField = document.getElementById('previewDateSuggestionsField');
   const previewLocation = document.getElementById('previewLocation');
   const previewProduction = document.getElementById('previewProduction');
   const previewProductionOptions = document.getElementById('previewProductionOptions');
@@ -384,6 +386,7 @@
   }
 
   function renderSelectedModelWorks() {
+    updateDateSuggestions();
     if (!selectedModelWorks || !selectedModelWorksCount || !selectedModelWorksMessage || !selectedModelWorksList) return;
 
     const selectedIds = selectedModelIds();
@@ -409,6 +412,32 @@
       : '選択中のモデルに紐づく作品はありません。';
     selectedModelWorksList.hidden = false;
     selectedModelWorksList.innerHTML = renderRelatedWorksMarkup(relatedWorks);
+  }
+
+  function updateDateSuggestions() {
+    if (!previewDateSuggestions || !previewDateSuggestionsField) return;
+    const selected = new Set(selectedModelIds());
+    const dates = new Set();
+    previewWorks.forEach((work) => {
+      const modelIds = getWorkModelIds(work);
+      if (!Array.isArray(modelIds) || !modelIds.some((id) => selected.has(id))) return;
+      const date = work?.date;
+      if (typeof date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+      const parsed = new Date(`${date}T00:00:00Z`);
+      if (!Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) return;
+      dates.add(date);
+    });
+    const options = [...dates].sort().reverse().map((date) => {
+      const option = document.createElement('option');
+      option.value = date;
+      option.textContent = date;
+      return option;
+    });
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '撮影日を選択';
+    previewDateSuggestions.replaceChildren(placeholder, ...options);
+    previewDateSuggestionsField.hidden = options.length === 0;
   }
 
   function productionCandidateForModel(model) {
@@ -1561,6 +1590,7 @@
       }
 
       previewWorks = [...previewWorks, work];
+      updateDateSuggestions();
       pendingSaveCompleted = true;
       previewMessage.textContent = `登録予約完了。pending保存済みです。branch: ${json.branch || saveBranch} / workId: ${json.workId || work.id}`;
       renderPostSaveActions(json);
@@ -1839,6 +1869,12 @@
     renderSelectedModelWorks();
     populateProductionOptions(works);
     populatePreviewModels(models);
+    previewDateSuggestions?.addEventListener('change', () => {
+      if (!previewDate || !previewDateSuggestions.value) return;
+      previewDate.value = previewDateSuggestions.value;
+      updateSavePreview();
+      previewDateSuggestions.value = '';
+    });
     previewImageInput.addEventListener('change', handlePreviewImageChange);
     previewImageInput.addEventListener('cancel', clearCancelledWorkImageSelection);
     [previewTitle, previewDate, previewLocation, previewProduction, previewCaption].forEach((input) => {
