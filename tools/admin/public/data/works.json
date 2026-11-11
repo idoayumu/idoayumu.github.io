@@ -1573,5 +1573,18 @@
     ],
     "image": "/images/works/large/261104kakiayano_0005.webp",
     "thumbnail": "/images/works/thumbs/261104kakiayano_0005.webp"
+  },
+  {
+    "id": "261111ponymoeka_0001",
+    "title": "トッポもあるよ",
+    "date": "2025-11-11",
+    "location": "大阪",
+    "production": "リク撮",
+    "caption": "ポッキーandプリッツの日に撮影",
+    "modelIds": [
+      "ponymoeka"
+    ],
+    "image": "/images/works/large/261111ponymoeka_0001.webp",
+    "thumbnail": "/images/works/thumbs/261111ponymoeka_0001.webp"
   }
 ]
