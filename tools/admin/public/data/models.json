@@ -393,5 +393,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "an-nanasaku",
+    "name": "杏",
+    "displayName": "杏",
+    "nameKana": "アン",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "ななサク撮影会",
+    "bio": "",
+    "thumbnail": "an-nanasaku_profile.webp",
+    "profileImage": "an-nanasaku_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "https://x.com/anuanu773",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
