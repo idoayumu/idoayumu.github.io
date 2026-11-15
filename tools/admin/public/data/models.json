@@ -414,5 +414,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "tachibanaan",
+    "name": "立花杏",
+    "displayName": "立花杏",
+    "nameKana": "タチバナアン",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "シロクロ撮影会",
+    "bio": "",
+    "thumbnail": "tachibanaan_profile.webp",
+    "profileImage": "tachibanaan_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "https://x.com/an__tachibana",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
