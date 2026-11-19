@@ -435,5 +435,26 @@
       "websiteLabel": ""
     },
     "featured": true
+  },
+  {
+    "id": "honoka",
+    "name": "ほのか",
+    "displayName": "ほのか",
+    "nameKana": "ホノカ",
+    "nameEn": "",
+    "aliases": [],
+    "agency": "ななサク撮影会",
+    "bio": "",
+    "thumbnail": "honoka_profile.webp",
+    "profileImage": "honoka_profile.webp",
+    "profileImagePosition": "center",
+    "links": {
+      "instagram": "",
+      "x": "https://x.com/hOn0ka_3",
+      "threads": "",
+      "website": "",
+      "websiteLabel": ""
+    },
+    "featured": true
   }
 ]
