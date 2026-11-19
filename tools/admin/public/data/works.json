@@ -1729,5 +1729,18 @@
     ],
     "image": "/images/works/large/261119minaseaoi_0002.webp",
     "thumbnail": "/images/works/thumbs/261119minaseaoi_0002.webp"
+  },
+  {
+    "id": "261119minaseaoi_0003",
+    "title": "序章",
+    "date": "2025-11-30",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "物語の始まりです。",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/261119minaseaoi_0003.webp",
+    "thumbnail": "/images/works/thumbs/261119minaseaoi_0003.webp"
   }
 ]
