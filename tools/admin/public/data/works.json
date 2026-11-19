@@ -1716,5 +1716,18 @@
     ],
     "image": "/images/works/large/261119minaseaoi_0001.webp",
     "thumbnail": "/images/works/thumbs/261119minaseaoi_0001.webp"
+  },
+  {
+    "id": "261119minaseaoi_0002",
+    "title": "空から降る",
+    "date": "2026-05-31",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "一億の星のように",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/261119minaseaoi_0002.webp",
+    "thumbnail": "/images/works/thumbs/261119minaseaoi_0002.webp"
   }
 ]
