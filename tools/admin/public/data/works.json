@@ -1703,5 +1703,18 @@
     ],
     "image": "/images/works/large/261119honoka_0003.webp",
     "thumbnail": "/images/works/thumbs/261119honoka_0003.webp"
+  },
+  {
+    "id": "261119minaseaoi_0001",
+    "title": "花浴衣",
+    "date": "2026-05-31",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "浴衣姿美しい",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/261119minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/261119minaseaoi_0001.webp"
   }
 ]
