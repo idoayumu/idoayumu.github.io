@@ -1690,5 +1690,57 @@
     ],
     "image": "/images/works/large/261119honoka_0002.webp",
     "thumbnail": "/images/works/thumbs/261119honoka_0002.webp"
+  },
+  {
+    "id": "261119honoka_0003",
+    "title": "さわめき",
+    "date": "2025-07-20",
+    "location": "大阪",
+    "production": "ななサク撮影会",
+    "caption": "さんざめくざわめき",
+    "modelIds": [
+      "honoka"
+    ],
+    "image": "/images/works/large/261119honoka_0003.webp",
+    "thumbnail": "/images/works/thumbs/261119honoka_0003.webp"
+  },
+  {
+    "id": "261119minaseaoi_0001",
+    "title": "花浴衣",
+    "date": "2026-05-31",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "浴衣姿美しい",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/261119minaseaoi_0001.webp",
+    "thumbnail": "/images/works/thumbs/261119minaseaoi_0001.webp"
+  },
+  {
+    "id": "261119minaseaoi_0002",
+    "title": "空から降る",
+    "date": "2026-05-31",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "一億の星のように",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/261119minaseaoi_0002.webp",
+    "thumbnail": "/images/works/thumbs/261119minaseaoi_0002.webp"
+  },
+  {
+    "id": "261119minaseaoi_0003",
+    "title": "序章",
+    "date": "2025-11-30",
+    "location": "京都",
+    "production": "マナコレ撮影会",
+    "caption": "物語の始まりです。",
+    "modelIds": [
+      "minaseaoi"
+    ],
+    "image": "/images/works/large/261119minaseaoi_0003.webp",
+    "thumbnail": "/images/works/thumbs/261119minaseaoi_0003.webp"
   }
 ]
