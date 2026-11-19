@@ -1664,5 +1664,18 @@
     ],
     "image": "/images/works/large/261115tachibanaan_0003.webp",
     "thumbnail": "/images/works/thumbs/261115tachibanaan_0003.webp"
+  },
+  {
+    "id": "261119honoka_0001",
+    "title": "雨色の笑顔",
+    "date": "2025-05-24",
+    "location": "大阪",
+    "production": "ななサク撮影会",
+    "caption": "チャッピー考案タイトル",
+    "modelIds": [
+      "honoka"
+    ],
+    "image": "/images/works/large/261119honoka_0001.webp",
+    "thumbnail": "/images/works/thumbs/261119honoka_0001.webp"
   }
 ]
